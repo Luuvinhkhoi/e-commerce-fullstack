@@ -10,6 +10,7 @@ const port=4001;
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const store=new session.MemoryStore();
+const allProductRouter=require('./product.js')
 app.use(
     session({
         secret: {secret},
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(passport.initialize())
 app.use(passport.session());
+
 passport.serializeUser((user, done) => {
     console.log(user)
     done(null, user.user_id);
@@ -50,6 +52,7 @@ app.post("/login",
       res.status(200).send('Login succesfull')
     }
 );
+app.use('/allproduct', allProductRouter)
 app.listen(port, ()=>{
     console.log(`Server is listening on port ${port}`)
 });

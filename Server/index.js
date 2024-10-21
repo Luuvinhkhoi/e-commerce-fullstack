@@ -62,9 +62,72 @@ const login = async (email, password, done)=>{
         return done(error);
     }
 };
+const getAllCategoryFromDatabase = () => {
+  return new Promise((resolve, reject) => {
+    pool.query('SELECT * FROM category', (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results.rows);
+      }
+    });
+  });
+};
+const convert = (string) => {
+  const categoriesMap = {
+      'ao_khoac': 'Áo khoác',
+      'ao_thun': 'Áo thun',
+      'quan_dai': 'Quần dài',
+      'phu_kien': 'Phụ kiện',
+  };
 
+  return categoriesMap[string] || slug.replace(/_/g, ' ')
+};
+
+const getProductFromDatabaseByCategoryName = async (categoryName) => {
+  const category_name = convert(categoryName);
+  console.log(category_name)
+  try {
+      const categoryResult = await pool.query('SELECT category_id FROM category WHERE category_name=$1', [category_name]);
+
+      if (categoryResult.rows.length === 0) {
+          return { message: 'Category not found' };
+      }
+      console.log(categoryResult)
+      const categoryId = categoryResult.rows[0].category_id;
+      const productResult = await pool.query('SELECT * FROM product WHERE category_id = $1', [categoryId]);
+      if (productResult.rows.length === 0) {
+          return { message: 'No products found for this category' };
+      }
+      return productResult.rows; // trả về danh sách sản phẩm
+  } catch (error) {
+      console.error("Error fetching products:", error);
+      throw error; // ném lỗi nếu có
+  }
+};
+
+const getAllProductFromDatabase=()=>{
+  return new Promise((resolve, reject) => {
+    pool.query('SELECT * FROM product', (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results.rows);
+      }
+    });
+  });
+}
+const getProductFromDatabaseById=async(id)=>{
+    const result = await pool.query('select * from product where product_id=$1',[id])
+    const product= result.rows
+    return product
+}
 module.exports={
     createUser,
     login,
-    findById
+    findById,
+    getAllProductFromDatabase,
+    getProductFromDatabaseById,
+    getAllCategoryFromDatabase,
+    getProductFromDatabaseByCategoryName,
 }
