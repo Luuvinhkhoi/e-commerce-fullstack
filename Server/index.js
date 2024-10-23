@@ -1,8 +1,8 @@
 const Pool= require('pg').Pool
 const bcrypt=require('bcrypt');
 const passport = require("passport");
+const { deleteUser } = require('../../my-back-end-app/queries');
 const LocalStrategy = require("passport-local").Strategy;
-const { response } = require('express');
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
@@ -20,9 +20,9 @@ const findById=(id)=>{
   })
 }
 const createUser = async (request, response)=>{
-    const {userName, email, phoneNumber ,password} = request.body
+    const {userName, email, phoneNumber ,pass} = request.body
     const saltRound=await bcrypt.genSalt(10);
-    const hashPassword=await  bcrypt.hash(password, saltRound);
+    const hashPassword=await  bcrypt.hash(pass, saltRound);
     if (hashPassword){
         pool.query('insert into users(user_name, pass, email, phone_number) values ($1, $2, $3, $4) returning *', [userName,hashPassword, email, phoneNumber], (error, results)=>{
             if (error){
@@ -89,7 +89,6 @@ const getProductFromDatabaseByCategoryName = async (categoryName) => {
   console.log(category_name)
   try {
       const categoryResult = await pool.query('SELECT category_id FROM category WHERE category_name=$1', [category_name]);
-
       if (categoryResult.rows.length === 0) {
           return { message: 'Category not found' };
       }
@@ -122,6 +121,133 @@ const getProductFromDatabaseById=async(id)=>{
     const product= result.rows
     return product
 }
+const createProduct=async(product_name, description, price, quantity, category_id)=>{
+  try {
+    let result;
+    if (description) {
+      result = await pool.query(
+        'INSERT INTO product (product_name, description, price, quantity, category_id) VALUES ($1, $2, $3, $4, $5)',
+        [product_name, description, price, quantity, category_id]
+      );
+    } else {
+      result = await pool.query(
+        'INSERT INTO product (product_name, price, quantity, category_id) VALUES ($1, $2, $3, $4)',
+        [product_name, price, quantity, category_id]
+      );
+    }
+    return { message: 'Success' };
+  } catch (error) {
+    throw new Error('Error: ' + error.message);
+  }
+};
+const updateProduct=async(id, updateData)=>{
+  try{
+    const fieldsToUpdate = updateData;
+    console.log(fieldsToUpdate)
+    if (!id || Object.keys(fieldsToUpdate).length === 0) {
+      return res.status(400).send('Failed');
+    }
+    const columnNames = Object.keys(fieldsToUpdate);
+    const columnValues = Object.values(fieldsToUpdate);
+  
+    const setClause = columnNames
+      .map((columnName, index) => `${columnName} = $${index + 1}`)
+      .join(', ');
+    const query = `UPDATE product SET ${setClause} WHERE product_id = $${columnNames.length + 1}`;
+    console.log(query)
+    console.log([...columnValues, id])
+    await pool.query(query, [...columnValues, parseInt(id, 10)]);
+    return {message:`Success update with ${id}`};
+  } catch (err){
+    throw new Error('Error ' + err.message);
+  }
+
+}
+const deleteAllProduct=async(id)=>{
+  try{
+    pool.query('Delete from product');
+    return {message:`Success delete all product`}
+  } catch(err){
+    throw new Error('Error'+err.message)
+  }
+}
+const deleteProductById=async(id)=>{
+  try{
+    pool.query('Delete from product where product_id=$1', [id]);
+    return {message:`Success delete with ${id}`}
+  } catch(err){
+    throw new Error('Error'+err.message)
+  }
+}
+const getAllUser=async()=>{
+  return new Promise((resolve, reject) => {
+    try{
+      pool.query('select * from users', (error, results) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results.rows);
+        }
+      });
+    } catch(error){
+      throw new Error('Error'+err.message)
+    }
+  })
+}
+const getUserById=async(id)=>{
+  return new Promise((resolve, reject)=>{
+    try{
+      pool.query('select * from users where user_id=$1',[id],(error, results)=>{
+        if(error){
+          reject(error)
+        } else{
+          resolve(results.rows)
+        }
+      })   
+    }catch(err){
+      throw new Error('Error'+err.message)
+    }
+  })
+}
+const updateUser=async(id, updateData)=>{
+  try{
+    const fieldsToUpdate = updateData;
+    console.log(fieldsToUpdate)
+    if (!id || Object.keys(fieldsToUpdate).length === 0) {
+      return res.status(400).send('Failed');
+    }
+    const columnNames = Object.keys(fieldsToUpdate);
+    const columnValues = Object.values(fieldsToUpdate);
+  
+    const setClause = columnNames
+      .map((columnName, index) => `${columnName} = $${index + 1}`)
+      .join(', ');
+    const query = `UPDATE users SET ${setClause} WHERE user_id = $${columnNames.length + 1}`;
+    console.log(query)
+    console.log([...columnValues, id])
+    await pool.query(query, [...columnValues, parseInt(id, 10)]);
+    return {message:`Success update with ${id}`};
+  } catch (err){
+    throw new Error('Error ' + err.message);
+  }
+
+}
+const deleteUserById=async(id)=>{
+    try{
+      pool.query('Delete from users where user_id=$1', [id]);
+      return {message:`Success delete with ${id}`}
+    } catch(err){
+      throw new Error('Error'+err.message)
+    }
+}
+const deleteAllUser=async(id)=>{
+  try{
+    pool.query('Delete from users');
+    return {message:`Success delete all user`}
+  } catch(err){
+    throw new Error('Error'+err.message)
+  }
+}
 module.exports={
     createUser,
     login,
@@ -130,4 +256,13 @@ module.exports={
     getProductFromDatabaseById,
     getAllCategoryFromDatabase,
     getProductFromDatabaseByCategoryName,
+    createProduct,
+    updateProduct,
+    deleteProductById,
+    deleteAllProduct, 
+    getAllUser,
+    getUserById,
+    updateUser,
+    deleteAllUser,
+    deleteUserById
 }

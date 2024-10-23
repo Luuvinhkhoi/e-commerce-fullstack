@@ -18,14 +18,12 @@ allProductRouter.get('/',async(req, res, next)=>{
         res.status(500).send("Error fetching data");
     }
 })
-allProductRouter.use('/category', categoryRouter)
-allProductRouter.use('/product', productRouter)
 categoryRouter.get('/:category_name', async (req, res, next)=>{
     const product= await db.getProductFromDatabaseByCategoryName(req.params.category_name);
     if(product){
         res.status(200).send(product)
     } else{
-        res.status(400).send()
+        res.status(404).send()
     }
 })
 productRouter.get('/:product_id', async (req, res, next) => {
@@ -33,7 +31,45 @@ productRouter.get('/:product_id', async (req, res, next) => {
     if(product){
         res.status(200).send(product)
     } else{
-        res.status(400).send()
+        res.status(404).send()
     }
 });
+productRouter.post('/', async (req, res, next)=>{
+    const {product_name, description, price, quantity, category_id}= req.body;
+    try{
+      const result=await db.createProduct(product_name, description, price, quantity, category_id)
+      res.status(200).send(result)
+    } catch(err){
+      res.status(500).send(err)
+    }
+});
+productRouter.patch('/:product_id', async (req, res) => {
+    const id=req.params.product_id;
+    console.log(id)
+    try{
+      const result=await db.updateProduct(id, req.body);
+      res.status(200).send(result)
+    } catch(err){
+      res.status(500).send(err)
+    }
+});
+productRouter.delete('/:product_id', async(req, res)=>{
+    const id=parseInt(req.params.product_id,10)
+    try{
+        const result=await db.deleteProductById(id)
+        res.status(200).send(result)
+    } catch(err){
+        res.status(500).send(err)
+    }
+})
+productRouter.delete('/:product_id', async(req, res)=>{
+    try{
+        const result=await db.deleteAllProduct()
+        res.status(200).send(result)
+    } catch(err){
+        res.status(500).send(err)
+    }
+})
+allProductRouter.use('/category', categoryRouter)
+allProductRouter.use('/product', productRouter)
 module.exports=allProductRouter
