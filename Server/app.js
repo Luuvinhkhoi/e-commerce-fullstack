@@ -12,10 +12,11 @@ const LocalStrategy = require("passport-local").Strategy;
 const store=new session.MemoryStore();
 const allProductRouter=require('./product.js')
 const userRouter=require('./user.js')
+const cartRouter=require('./cart.js')
 app.use(
     session({
-        secret: {secret},
-        cookie: {maxAge:30000000, secure:false},
+        secret: secret,
+        cookie: {maxAge:30000000},
         resave: false,
         saveUninitialized: false,
         store,
@@ -33,28 +34,31 @@ passport.serializeUser((user, done) => {
     done(null, user.user_id);
 });
   
-passport.deserializeUser((id, done) => {
-    // Look up user id in database.
-    db.findById(id, function (err, user) {
-      if (err) {
-        return done(err);
-      }
-      done(null, user);
-    });
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await db.findById(id); // Gọi findById
+        console.log("Deserialized user:", user); // Log user
+        done(null, user); // Hoặc done(null, false) nếu không tìm thấy user
+    } catch (error) {
+        done(error); // Kích hoạt lỗi nếu có lỗi
+    }
 });
+
 passport.use(new LocalStrategy(
-    { usernameField: 'email', passwordField: 'password' }, // Đặt tên trường cho email và password
+    { usernameField: 'email', passwordField: 'pass' }, // Đặt tên trường cho email và password
     db.login // Gọi hàm login để xác thực
 ));
 app.post('/register',db.createUser);
 app.post("/login",
     passport.authenticate("local"),
     (req, res) => {
+      console.log(req.session);
       res.status(200).send('Login succesfull')
     }
 );
 app.use('/allproduct', allProductRouter)
 app.use('/user', userRouter)
+app.use('/cart', cartRouter)
 app.listen(port, ()=>{
     console.log(`Server is listening on port ${port}`)
 });

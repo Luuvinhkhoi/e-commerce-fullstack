@@ -1,7 +1,6 @@
 const Pool= require('pg').Pool
 const bcrypt=require('bcrypt');
 const passport = require("passport");
-const { deleteUser } = require('../../my-back-end-app/queries');
 const LocalStrategy = require("passport-local").Strategy;
 const pool = new Pool({
     user: 'postgres',
@@ -10,21 +9,27 @@ const pool = new Pool({
     password: 'elkhoikun282002',
     port: 5432,
 });
-const findById=(id)=>{
-  const user = pool.query('select * from users where id=$1',[id], ()=>{
-  if (user){
-    return user
-  } else{
-    throw error
-  }
-  })
-}
+const findById = (id) => {
+  return new Promise((resolve, reject) => {
+      pool.query('SELECT * FROM users WHERE user_id = $1', [id], (error, result) => {
+          if (error) {
+              return reject(error);
+          }
+          if (result.rows.length > 0) {
+              resolve(result.rows[0]);
+          } else {
+              resolve(null); 
+          }
+      });
+  });
+};
+
 const createUser = async (request, response)=>{
-    const {userName, email, phoneNumber ,pass} = request.body
+    const {user_name, email, phone_number ,pass} = request.body
     const saltRound=await bcrypt.genSalt(10);
     const hashPassword=await  bcrypt.hash(pass, saltRound);
     if (hashPassword){
-        pool.query('insert into users(user_name, pass, email, phone_number) values ($1, $2, $3, $4) returning *', [userName,hashPassword, email, phoneNumber], (error, results)=>{
+        pool.query('insert into users(user_name, pass, email, phone_number) values ($1, $2, $3, $4) returning *', [user_name,hashPassword, email, phone_number], (error, results)=>{
             if (error){
                 throw error
             } else if (!Array.isArray(results.rows)||results.rows.length < 1){
@@ -54,8 +59,9 @@ const login = async (email, password, done)=>{
         if (!matchFound) {
             return done(null, false, { message: 'Incorrect password' });
         }
-
+        
         // Xác thực thành công, trả về người dùng
+        console.log('Success');
         return done(null, user);
     } catch (error) {
         // Trả về lỗi nếu có
@@ -248,6 +254,72 @@ const deleteAllUser=async(id)=>{
     throw new Error('Error'+err.message)
   }
 }
+const getCartByUserId=async(id)=>{
+  return new Promise((resolve, reject)=>{
+    try{
+      pool.query('select * from cart where user_id=$1',[id],(error, results)=>{
+        if(error){
+          reject(error)
+        } else{
+          resolve(results.rows)
+        }
+      })   
+    }catch(err){
+      throw new Error('Error'+err.message)
+    }
+  })
+}
+const insertProductIntoCart=async(userId,productId, quantity)=>{
+  try{
+    const cartId=await pool.query("select cart_id from cart where user_id=$1", [userId])
+    console.log(cartId)
+    const product = await pool.query("insert into cart_product(cart_id, product_id, quantity) values ($1, $2, $2)", [cartId, productId, quantity])
+    return { message: 'Product added to cart' };
+  }catch(error){
+    throw new Error('Error'+err.message)
+  }
+}
+const updateCart=async(userId, updateData)=>{
+  try{
+    const fieldsToUpdate = updateData;
+    console.log(fieldsToUpdate)
+    if (!id || Object.keys(fieldsToUpdate).length === 0) {
+      return res.status(400).send('Failed');
+    }
+    const columnNames = Object.keys(fieldsToUpdate);
+    const columnValues = Object.values(fieldsToUpdate);
+  
+    const setClause = columnNames
+      .map((columnName, index) => `${columnName} = $${index + 1}`)
+      .join(', ');
+    const cart_id = await pool.query('select cart_id from cart where user_id=$1', [userId])
+    const query = `UPDATE cart_product SET ${setClause} WHERE cart_id = $${columnNames.length + 1}`;
+    console.log(cart_id)
+    console.log([...columnValues, cart_id])
+    await pool.query(query, [...columnValues, parseInt(cart_id, 10)]);
+    return {message:`Success update with ${cart_id}`};
+  } catch (err){
+    throw new Error('Error ' + err.message);
+  }
+
+}
+const deleteProductInCartByProductId=async(userId, productId)=>{
+    try{
+      const cart_id = await pool.query('select cart_id from cart where user_id=$1', [userId])
+      pool.query('Delete from cart_product where cart_id=$1 and product_id=$2', [parseInt(cart_id, 10),arseInt(productId, 10)]);
+      return {message:`Success delete with ${id}`}
+    } catch(err){
+      throw new Error('Error'+err.message)
+    }
+}
+const deleteAllProductInCart=async(cartId)=>{
+  try{
+    pool.query('Delete from cart_product where cart_id=$1',[cartId]);
+    return {message:`Success delete all product in cart`}
+  } catch(err){
+    throw new Error('Error'+err.message)
+  }
+}
 module.exports={
     createUser,
     login,
@@ -264,5 +336,10 @@ module.exports={
     getUserById,
     updateUser,
     deleteAllUser,
-    deleteUserById
+    deleteUserById,
+    getCartByUserId, 
+    insertProductIntoCart,
+    updateCart,
+    deleteAllProductInCart,
+    deleteProductInCartByProductId,
 }

@@ -1,4 +1,3 @@
-const express=require('express')
 const userRouter=require('express').Router();
 const db=require('./index.js')
 userRouter.get('/',async(req, res, next)=>{
