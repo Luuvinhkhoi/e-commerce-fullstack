@@ -13,6 +13,7 @@ const store=new session.MemoryStore();
 const allProductRouter=require('./product.js')
 const userRouter=require('./user.js')
 const cartRouter=require('./cart.js')
+const orderRouter=require('./order.js')
 app.use(
     session({
         secret: secret,
@@ -59,6 +60,7 @@ app.post("/login",
 app.use('/allproduct', allProductRouter)
 app.use('/user', userRouter)
 app.use('/cart', cartRouter)
+app.use('/order', orderRouter)
 app.listen(port, ()=>{
     console.log(`Server is listening on port ${port}`)
 });

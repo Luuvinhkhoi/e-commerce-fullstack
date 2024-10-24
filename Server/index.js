@@ -267,7 +267,7 @@ const insertProductIntoCart=async(userId,productId, quantity)=>{
     const product = await pool.query("insert into cart_product(cart_id, product_id, quantity) values ($1, $2, $3)", [cartId.rows[0].cart_id, productId, quantity])
     return { message: 'Product added to cart' };
   }catch(error){
-    throw new Error('Error'+err.message)
+    throw new Error('Error'+error.message)
   }
 }
 const updateCart=async(userId, updateData)=>{
@@ -322,7 +322,15 @@ const checkout=async(user_id, address)=>{
     const deleteCart = await deleteAllProductInCart(user_id)
     return ({ message: 'Checkout success'});
   } catch(error){
-    throw new Error('Error'+err.message)
+    throw new Error('Error'+error.message)
+  }
+}
+const getOrderByUserId=async(user_id)=>{
+  try{
+    const order= await pool.query('select * from orders where user_id=$1',[user_id])
+    return (order.rows[0])
+  } catch(error){
+    throw new Error('Error'+error.message)
   }
 }
 module.exports={
@@ -347,5 +355,6 @@ module.exports={
     updateCart,
     deleteAllProductInCart,
     deleteProductInCartByProductId,
-    checkout
+    checkout, 
+    getOrderByUserId
 }
