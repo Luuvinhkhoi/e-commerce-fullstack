@@ -29,14 +29,9 @@ const createUser = async (request, response)=>{
     const saltRound=await bcrypt.genSalt(10);
     const hashPassword=await  bcrypt.hash(pass, saltRound);
     if (hashPassword){
-        pool.query('insert into users(user_name, pass, email, phone_number) values ($1, $2, $3, $4) returning *', [user_name,hashPassword, email, phone_number], (error, results)=>{
-            if (error){
-                throw error
-            } else if (!Array.isArray(results.rows)||results.rows.length < 1){
-                throw error
-            }
-            response.status(201).send(`User added with ID: ${results.rows[0].id}`)
-        })    
+        const userId= await pool.query('insert into users(user_name, pass, email, phone_number) values ($1, $2, $3, $4) returning *', [user_name,hashPassword, email, phone_number])
+        const cart= await pool.query('insert into cart (user_id) values ($1)',[userId.rows[0].user_id])    
+        response.status(201).send(`User added with ID: ${userId.rows[0].user_id}`)
     } else{
         reponse.status(500).send('Fall to hashpassword')
     }
@@ -271,9 +266,10 @@ const getCartByUserId=async(id)=>{
 }
 const insertProductIntoCart=async(userId,productId, quantity)=>{
   try{
+    console.log(productId)
+    console.log(quantity)
     const cartId=await pool.query("select cart_id from cart where user_id=$1", [userId])
-    console.log(cartId)
-    const product = await pool.query("insert into cart_product(cart_id, product_id, quantity) values ($1, $2, $2)", [cartId, productId, quantity])
+    const product = await pool.query("insert into cart_product(cart_id, product_id, quantity) values ($1, $2, $3)", [cartId.rows[0].cart_id, productId, quantity])
     return { message: 'Product added to cart' };
   }catch(error){
     throw new Error('Error'+err.message)
@@ -281,23 +277,14 @@ const insertProductIntoCart=async(userId,productId, quantity)=>{
 }
 const updateCart=async(userId, updateData)=>{
   try{
-    const fieldsToUpdate = updateData;
-    console.log(fieldsToUpdate)
-    if (!id || Object.keys(fieldsToUpdate).length === 0) {
-      return res.status(400).send('Failed');
-    }
-    const columnNames = Object.keys(fieldsToUpdate);
-    const columnValues = Object.values(fieldsToUpdate);
-  
-    const setClause = columnNames
-      .map((columnName, index) => `${columnName} = $${index + 1}`)
-      .join(', ');
+    const { product_id, quantity } = updateData;
     const cart_id = await pool.query('select cart_id from cart where user_id=$1', [userId])
-    const query = `UPDATE cart_product SET ${setClause} WHERE cart_id = $${columnNames.length + 1}`;
-    console.log(cart_id)
-    console.log([...columnValues, cart_id])
-    await pool.query(query, [...columnValues, parseInt(cart_id, 10)]);
-    return {message:`Success update with ${cart_id}`};
+    if (cart_id.rows.length === 0) {
+      throw new Error('Cart not found');
+    }
+    // Thực thi câu lệnh SQL với quantity, cart_id và product_id
+    const result = await pool.query("UPDATE cart_product SET quantity = quantity + $1 WHERE cart_id = $2 AND product_id = $3", [quantity, cart_id.rows[0].cart_id, product_id]);
+    return {message:`Success update with ${cart_id.rows[0].cart_id}`};
   } catch (err){
     throw new Error('Error ' + err.message);
   }
@@ -306,15 +293,18 @@ const updateCart=async(userId, updateData)=>{
 const deleteProductInCartByProductId=async(userId, productId)=>{
     try{
       const cart_id = await pool.query('select cart_id from cart where user_id=$1', [userId])
-      pool.query('Delete from cart_product where cart_id=$1 and product_id=$2', [parseInt(cart_id, 10),arseInt(productId, 10)]);
-      return {message:`Success delete with ${id}`}
+      console.log(productId)
+      console.log(cart_id.rows[0].cart_id)
+      pool.query('Delete from cart_product where cart_id=$1 and product_id=$2', [cart_id.rows[0].cart_id,parseInt(productId, 10)]);
+      return {message:`Success delete with ${productId}`}
     } catch(err){
       throw new Error('Error'+err.message)
     }
 }
-const deleteAllProductInCart=async(cartId)=>{
+const deleteAllProductInCart=async(userId)=>{
   try{
-    pool.query('Delete from cart_product where cart_id=$1',[cartId]);
+    const cart_id = await pool.query('select cart_id from cart where user_id=$1', [userId])
+    pool.query('Delete from cart_product where cart_id=$1',[cart_id.rows[0].cart_id]);
     return {message:`Success delete all product in cart`}
   } catch(err){
     throw new Error('Error'+err.message)
