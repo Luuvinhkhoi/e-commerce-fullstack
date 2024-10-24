@@ -1,4 +1,6 @@
 const cartRouter=require('express').Router();
+const express=require('express')
+const checkoutRouter = express.Router({mergeParams: true});
 const db=require('./index.js')
 cartRouter.get('/',async(req, res, next)=>{
     try{
@@ -18,6 +20,17 @@ cartRouter.post('/', async(req,res,next)=>{
         res.status(500).send(err)
     }
 })
+checkoutRouter.post('/', async(req, res, next)=>{
+    try{
+        console.log('hihi')
+        const {address}=req.body
+        const result = await db.checkout(req.user.user_id, address)
+        res.status(200).send(result)
+    } catch(err){
+        res.status(500).send(err)
+    }
+})
+cartRouter.use('/checkout', checkoutRouter)
 cartRouter.patch('/', async(req, res, next)=>{
     try{
         const result=await db.updateCart(req.user.user_id, req.body)

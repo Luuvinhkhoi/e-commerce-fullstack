@@ -250,19 +250,14 @@ const deleteAllUser=async(id)=>{
   }
 }
 const getCartByUserId=async(id)=>{
-  return new Promise((resolve, reject)=>{
     try{
-      pool.query('select * from cart where user_id=$1',[id],(error, results)=>{
-        if(error){
-          reject(error)
-        } else{
-          resolve(results.rows)
-        }
-      })   
+      const cart_id = await pool.query('select cart_id from cart where user_id=$1',[id])
+      console.log(cart_id.rows[0].cart_id)
+      const cartProduct = await pool.query('select product_id, quantity, price from cart_product where cart_id=$1',[cart_id.rows[0].cart_id])
+      return cartProduct.rows
     }catch(err){
       throw new Error('Error'+err.message)
     }
-  })
 }
 const insertProductIntoCart=async(userId,productId, quantity)=>{
   try{
@@ -310,6 +305,26 @@ const deleteAllProductInCart=async(userId)=>{
     throw new Error('Error'+err.message)
   }
 }
+const checkout=async(user_id, address)=>{
+  try{
+    console.log(address)
+    const cartProduct=await getCartByUserId(user_id)
+    console.log(cartProduct)
+    if (!cartProduct || cartProduct.length===0){
+      return ({message:'Failed'})
+    }
+    const totalPrice = cartProduct.reduce((total, product)=>{
+      const price = parseFloat(product.price.replace('$', ''))
+      return total + (product.quantity * price)
+    }, 0)
+    console.log(totalPrice)
+    const order = pool.query('insert into orders (fee, address, user_id) values($1, $2, $3)',[totalPrice, address, user_id])
+    const deleteCart = await deleteAllProductInCart(user_id)
+    return ({ message: 'Checkout success'});
+  } catch(error){
+    throw new Error('Error'+err.message)
+  }
+}
 module.exports={
     createUser,
     login,
@@ -332,4 +347,5 @@ module.exports={
     updateCart,
     deleteAllProductInCart,
     deleteProductInCartByProductId,
+    checkout
 }
