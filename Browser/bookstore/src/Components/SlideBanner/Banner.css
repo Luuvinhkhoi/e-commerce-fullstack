@@ -1,0 +1,10 @@
+.banner{
+    background-color: #430D54;
+}
+.banner button{
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #cdcdcd;
+    background-color: #8D28AD;
+    color: #FFFFFF;
+}
