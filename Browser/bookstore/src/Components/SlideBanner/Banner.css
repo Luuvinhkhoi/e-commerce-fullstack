@@ -1,10 +1,37 @@
 .banner{
-    background-color: #430D54;
+    background-color: #6f1c88;
+    color: #FFFFFF;
+    height: 500px;
+    text-align: start;
+}
+.banner-description{
+    width: 40%;
+    position: absolute;
+    top: 35%;
+    left: 5%;
+}
+.banner-description-child{
+    margin:1rem
 }
 .banner button{
     padding: 1rem;
     border-radius: 0.5rem;
-    border: 1px solid #cdcdcd;
+    border: none;
     background-color: #8D28AD;
     color: #FFFFFF;
+    box-shadow: 10px 5px 5px  #521764;
+}
+.theme{
+    display: inline-flex;
+    background-color: rgba(255, 255, 255, 0.25);
+    border: none;
+    border-radius: 1rem;
+}
+.theme-option{
+    padding: 0.5rem;
+}
+.theme-option:focus{
+    background-color: #D9176C;
+    border-radius: 1rem;
+    text-transform: uppercase;
 }
