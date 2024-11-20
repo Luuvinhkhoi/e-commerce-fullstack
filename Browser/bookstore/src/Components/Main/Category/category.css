@@ -1,0 +1,17 @@
+.category{
+    text-align: start;
+    width: 90%;
+    margin: 0 auto;
+}
+.category h2{
+    margin-bottom: 2rem;
+}
+.category .swiper-slide{
+    padding: 2rem 0;
+    border-radius: 1rem;
+    background-color: #8D28AD;
+}
+.category p{
+    padding: 0 1rem;
+    color: #FFFFFF;
+}
