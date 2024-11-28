@@ -5,13 +5,15 @@ import { Header } from './Components/Header/header';
 import { Banner } from './Components/SlideBanner/Banner';
 import { Main } from './Components/Main/main';
 import { Login } from './Components/Login/login';
+import { Signup } from './Components/Sign-up/sign-up';
 import { Root } from './Components/Homepage/homepage';
 function App() {
   const router=createBrowserRouter(createRoutesFromElements(
       <>
         <Route path='/' element={<Root></Root>}>
         </Route>
-        <Route path='/login' element={<Login></Login>}></Route>    
+        <Route path='/login' element={<Login></Login>}></Route>   
+        <Route path='/sign-up' element={<Signup></Signup>}></Route> 
       </>  
   ))
   return (

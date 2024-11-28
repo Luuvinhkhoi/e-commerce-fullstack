@@ -35,6 +35,15 @@ html, body{
     border: none;
     outline: none;
 }
+.login-box-row-2 .login-password-input{
+    background-color: #ffff;
+    padding: 1.5rem 3rem;
+    border-radius: 0.5rem;
+}
+.login-box-row-2 .login-password-input input{
+    border: none;
+    outline: none;
+}
 .login-box-row-2 .login-button{
     background-color: #8D28AD;
     border-radius: 0.5rem;

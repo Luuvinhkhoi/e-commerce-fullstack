@@ -10,7 +10,7 @@ export const Login = ()=>{
                         <div className='login-email-input'>
                             <input type='email' placeholder='Type your email here'></input>
                         </div>
-                        <div className='login-email-input'>
+                        <div className='login-password-input'>
                             <input type='password' placeholder='Type your password here'></input>
                         </div>
                         <div className='login-button'>

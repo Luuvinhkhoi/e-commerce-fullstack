@@ -25,15 +25,18 @@ const findById = (id) => {
 };
 
 const createUser = async (request, response)=>{
-    const {user_name, email, phone_number ,pass} = request.body
+    const {user_name, email, pass} = request.body
     const saltRound=await bcrypt.genSalt(10);
     const hashPassword=await  bcrypt.hash(pass, saltRound);
     if (hashPassword){
-        const userId= await pool.query('insert into users(user_name, pass, email, phone_number) values ($1, $2, $3, $4) returning *', [user_name,hashPassword, email, phone_number])
-        const cart= await pool.query('insert into cart (user_id) values ($1)',[userId.rows[0].user_id])    
-        response.status(201).send(`User added with ID: ${userId.rows[0].user_id}`)
+        const userId= await pool.query('insert into users(user_name, pass, email) values ($1, $2, $3) returning *', [user_name,hashPassword, email])
+        const cart= await pool.query('insert into cart (user_id) values ($1)',[userId.rows[0].user_id])   
+        if (!cart){
+          throw new Error('Failed to create cart');
+        } 
+        return userId.rows[0]
     } else{
-        reponse.status(500).send('Fall to hashpassword')
+        throw new Error('Failed to hash password');
     }
 };
 const login = async (email, password, done)=>{
