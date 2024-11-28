@@ -5,6 +5,7 @@ import {Link, useNavigate} from 'react-router-dom'
 import mathImg from '../../Assets/maths .png'
 import cartImg from '../../Assets/shopping-cart.png'
 import searchImg from '../../Assets/search.png'
+import profileUser from '../../Assets/profile-user.png'
 export const Header = () => {
     const [userName, setUserName] = useState(null)
     console.log(userName)
@@ -27,7 +28,6 @@ export const Header = () => {
     async function handleLogout(){
         try{
             const response = await clevr.logOut()
-
             if (response.ok) {
                 console.log('Logged out successfully');
                 navigate('/login');  // Redirect đến trang login sử dụng React Router
@@ -59,8 +59,13 @@ export const Header = () => {
             </div>
             {userName ? 
                 <div className='user-name'>
-                    <span>{userName}</span>
-                    <button onClick={handleLogout}>Logout</button>
+                    <div className='user-name-col-1'>
+                        <img src={profileUser}></img>
+                        <span>{userName}</span>
+                    </div>
+                    <div className='user-name-col-2'>
+                        <button onClick={handleLogout}>Logout</button>
+                    </div>
                 </div>
             : <div className='link'>
                 <div className='sign-in'>

@@ -70,5 +70,45 @@
     background-color: #8D28AD;
     color: #FFFFFF;
 }
+.user-name{
+    display: flex;
+    gap: 2rem;
+}
+.user-name .user-name-col-1{
+    height: 50px;
+    border: 1px solid #8D28AD;
+    color: #8D28AD;
+    padding: 0 2.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 600;
+}
+.user-name .user-name-col-1 img{
+    height: 28px;
+    width: 28px;
+}
+.user-name .user-name-col-2{
+    height: 50px;
+    border: 1px solid #8D28AD;
+    background-color: #8D28AD;
+    padding: 0 1.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+.user-name .user-name-col-2 button{
+    background: none;
+    border: none;
+    outline: none;
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+
+
 
 

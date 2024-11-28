@@ -21,8 +21,9 @@
 .trending .trending-item:hover .item-price{
     background-color: #8D28AD;
     color: #FFFFFF;
-    border-radius: 1rem;
-    width: 60%;
+    border-radius: 0.5rem;
+    width: 50%;
+    text-align: center;
 }
 .trending .item-img{
     width: 200px;

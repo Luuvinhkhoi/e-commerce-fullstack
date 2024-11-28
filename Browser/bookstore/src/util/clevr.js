@@ -52,6 +52,26 @@ let clevr={
             method: 'POST',
             credentials: 'include',
         }).then(response => {
+            if (!response.ok) {
+                throw new Error(`Request failed with status ${response.status}`)
+            }
+            return response
+        }).catch(networkError => {
+            console.log(networkError.message);
+        });
+    },
+    logIn(email, password){
+        return fetch('http://localhost:4001/login',{
+            method:'POST',
+            credentials:'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                pass: password
+            }),
+        }).then(response => {
             if (response.ok) {
               return response.json();
             }
@@ -65,6 +85,7 @@ let clevr={
         }).catch(networkError => {
             console.log(networkError.message);
         });
+
     }
 }
 export default clevr
