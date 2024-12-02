@@ -15,6 +15,8 @@ const allProductRouter=require('./product.js')
 const userRouter=require('./user.js')
 const cartRouter=require('./cart.js')
 const orderRouter=require('./order.js');
+const uploadRouter=require('./upload.js')
+const imageRouter=require('./image.js')
 const Pool= require('pg').Pool;
 require('dotenv').config();
 var FacebookStrategy = require('passport-facebook').Strategy;
@@ -208,6 +210,8 @@ app.use('/allproduct', allProductRouter)
 app.use('/user',authorizedUser, userRouter)
 app.use('/cart',authorizedUser, cartRouter)
 app.use('/order',authorizedUser, orderRouter)
+app.use('/upload', uploadRouter)
+app.use('/image', imageRouter)
 app.listen(port, ()=>{
     console.log(`Server is listening on port ${port}`)
 });

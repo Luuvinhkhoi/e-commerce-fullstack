@@ -71,3 +71,6 @@ html, body{
     display: flex;
     gap: 1rem;
 }
+.sign-up-link a{
+    text-decoration: none;
+}

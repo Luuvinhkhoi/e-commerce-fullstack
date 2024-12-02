@@ -336,6 +336,23 @@ const getOrderByUserId=async(user_id)=>{
     throw new Error('Error'+error.message)
   }
 }
+const upload=async(data,productId, width, height)=>{
+  try{
+    const result=await pool.query('INSERT INTO product_images (data, product_id,  width, height) VALUES ($1, $2, $3, $4)',
+    [data ,productId, width, height])
+    return (result.rows[0])
+  } catch(error){
+    throw new Error('Error'+error.message)
+  }
+}
+const getAllImage=async()=>{
+  try{
+    const result=await pool.query('Select * from product_images where width=300 and height=500')
+    return (result.rows)
+  } catch(error){
+    throw new Error('Error'+error.message)
+  }
+}
 module.exports={
     createUser,
     login,
@@ -359,5 +376,7 @@ module.exports={
     deleteAllProductInCart,
     deleteProductInCartByProductId,
     checkout, 
-    getOrderByUserId
+    getOrderByUserId,
+    upload,
+    getAllImage
 }
