@@ -336,10 +336,10 @@ const getOrderByUserId=async(user_id)=>{
     throw new Error('Error'+error.message)
   }
 }
-const upload=async(data,productId, width, height)=>{
+const upload=async(cloudinary_url,productId)=>{
   try{
-    const result=await pool.query('INSERT INTO product_images (data, product_id,  width, height) VALUES ($1, $2, $3, $4)',
-    [data ,productId, width, height])
+    const result=await pool.query('INSERT INTO product_images (cloudinary_url, product_id) VALUES ($1, $2)',
+    [cloudinary_url ,productId])
     return (result.rows[0])
   } catch(error){
     throw new Error('Error'+error.message)
