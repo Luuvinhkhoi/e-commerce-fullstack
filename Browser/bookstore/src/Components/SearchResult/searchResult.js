@@ -1,5 +1,17 @@
 import { useState } from 'react';
+import arrow from '../../Assets/right-arrow.png'
+import store from '../../Assets/store.png'
+import customer from '../../Assets/white-group.png'
+import book from '../../Assets/book.png'
+import mathImg from '../../Assets/maths .png'
 import './searchResult.css'
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/scrollbar';
+import { Swiper, SwiperSlide } from 'swiper/react';
+// import required modules
+import { Navigation } from 'swiper/modules';
+import { Scrollbar } from 'swiper/modules';
 export const SearchResult=()=>{
     let [categoryOptionState, setCategoryOptionState]=useState('all genres');
     let [formatOptionState, setFormatOptionState]=useState('all format')
@@ -7,7 +19,48 @@ export const SearchResult=()=>{
     const [maxPrice, setMaxPrice] = useState(7500);
     const priceGap = 1000;
     const maxRange = 10000;
-
+    const arr = [
+        {
+            img:'https://images.unsplash.com/photo-1535398089889-dd807df1dfaa?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category:'Biography',
+            name: 'Such a Fun Age',
+            author: 'James Sulivan',
+            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            price: 55,
+        },
+        {
+            img:'https://images.unsplash.com/photo-1539877254216-818ed7c76096?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category:'Advanture',
+            name: 'The Adventure',
+            author: 'Margareth Mc. Lee',
+            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            price: 50,
+        },
+        {
+            img:'https://images.unsplash.com/photo-1511108690759-009324a90311?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category:'Fiction',
+            name: 'Emily and the Backbone',
+            author: 'Cloe Mamora',
+            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            price: 51,
+        },
+        {
+            img:'https://images.unsplash.com/photo-1551300317-58b878a9ff6e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category:'Fairy tails',
+            name: 'Luster: a Novel',
+            author: 'Raven Jaelani',
+            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            price: 58,
+        },
+        {
+            img:'https://images.unsplash.com/photo-1551300329-dc0a750a7483?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category:'Fiction',
+            name: 'Real Life',
+            author: 'David Johanson',
+            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            price: 57,
+        }
+    ]
     // Handle thay đổi giá trị từ input number
     const handlePriceInput = (e, type) => {
         const value = parseInt(e.target.value);
@@ -54,6 +107,7 @@ export const SearchResult=()=>{
         setFormatOptionState(e.target.value)
     }
     return (
+      <>
         <div className='searchResult'>
             <div className='filter'>
                 <h2>Filter</h2>
@@ -138,7 +192,167 @@ export const SearchResult=()=>{
             </div>
             <div className='book-list'>
                 <h2>Books</h2>
+                <div className='book-list-row-1'>
+                    {arr.map(item=>
+                        <div className='book-list-item'>
+                            <div className='book-list-item-image'>
+                                <img src={item.img}></img>
+                            </div>
+                            <div className='book-list-item-desc'>
+                                <div className='item-category'>
+                                    <span>{item.category}</span>
+                                </div>
+                                <div className='item-name-author'>
+                                    <div className='item-name'>
+                                        <span>{item.name}</span>
+                                    </div>
+                                    <div className='item-author'>
+                                        <span>{item.author}</span>
+                                    </div>
+                                </div>
+                                <div className='item-price'>
+                                    <span>${item.price}</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
+        <div className='best-seller'>
+              <div className='best-seller-context'>
+                <h2>Best Sellers</h2>
+                <div className='best-seller-button'>
+                    <span>View more</span>
+                    <a><img src={arrow}></img></a>
+                </div>
+              </div>
+              <div className='best-seller-slide-container'>
+                    <Swiper
+                        slidesPerView={3}
+                        spaceBetween={30}
+                        navigation={true}
+                        modules={[Navigation]}
+                        className="mySwiper"
+                    >
+                        {arr.map(item=>
+                        <SwiperSlide>
+                          <div className='best-seller-item'>
+                            <div className='best-seller-item-image'>
+                                <img src={item.img}></img>
+                            </div> 
+                            <div className='best-seller-item-desc'>
+                                    <div className='best-seller-item-category'>
+                                        <p>{item.category}</p>
+                                    </div> 
+                                    <div className='best-seller-item-name-author'>
+                                            <div className='item-name'>
+                                                <p>{item.name}</p>
+                                            </div>
+                                            <div className='item-author'>
+                                                <p>{item.author}</p>
+                                            </div>
+                                    </div>
+                                    <div className='best-seller-item-price'>
+                                            <div className='item-price'>
+                                                <p>${item.price}</p>
+                                            </div>
+                                    </div>     
+                            </div>
+                          </div>
+                        </SwiperSlide>
+                        )} 
+                    </Swiper>
+                </div>
+        </div>
+        <div className='our-desc'>
+                <div className='desc-item'>
+                   <div className='desc-item-flex'>
+                      <img src={store}></img>
+                      <span>268</span>
+                   </div>
+                   <span>Our stores around the world</span>
+                </div>
+                <div className='desc-item'>
+                   <div className='desc-item-flex'>
+                      <img src={customer}></img>
+                      <span>25,634</span>
+                   </div>
+                   <span>Our happy customers</span>
+                </div>
+                <div className='desc-item'>
+                   <div className='desc-item-flex'>
+                      <img src={book}></img>
+                      <span>68+k</span>
+                   </div>
+                   <span>Book Collections</span>
+                </div>
+        </div>
+        <div className='subscribe'>
+                <div className='subscribe-context'>
+                    <span>Subscribe our newsletter for newest books updates</span>
+                </div>
+                <div className='subscribe-email'>
+                    <div className='subscribe-email-input'>
+                       <input type='email' placeholder='Type your email here'></input>
+                    </div>
+                    <div className='subscribe-email-button'>
+                        <button>SUBSCRIBE</button>
+                    </div>
+                </div>
+        </div>
+        <div className='footer'>
+                <div className='footer-col-1'>
+                    <div className='footer-col-1-row-1'>
+                        <div className='footer-col-1-row-1-image'>
+                            <img src={mathImg}></img>
+                        </div>
+                        <span>Clevr</span>
+                    </div>
+                    <div className='footer-col-1-row-2'>
+                        <span>Clevr is an online bookstore website who sells all genres of books from around the world. Find your book here now</span>
+                    </div>
+                    <div className='footer-col-1-row-3'>
+                        <span>Follow Us</span>
+                        <div className='social media'>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div className='footer-col-2'>
+                    <span>Quick Links</span>
+                    <ul>
+                        <li>About us</li>
+                        <li>Contact us</li>
+                        <li>Products</li>
+                        <li>Login</li>
+                        <li>Sign Up</li>
+                    </ul>
+                </div>
+                <div className='footer-col-3'>
+                    <span>Customer Area</span>
+                    <ul>
+                        <li>My Account</li>
+                        <li>Orders</li>
+                        <li>Tracking List</li>
+                        <li>Terms</li>
+                        <li>Privacy Policy</li>
+                        <li>FAQ</li>
+                    </ul>
+                </div>
+                <div className='footer-col-4'>
+                    <span>Don’t miss the newest books</span>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut</p>
+                    <div className='footer-subscribe-email'>
+                        <div className='subscribe-email-input'>
+                            <input type='email' placeholder='Type your email here'></input>
+                        </div>
+                        <div className='subscribe-email-button'>
+                            <button>SUBSCRIBE</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+      </>    
     )
 }
