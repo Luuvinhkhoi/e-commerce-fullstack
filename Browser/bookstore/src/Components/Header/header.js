@@ -8,6 +8,7 @@ import searchImg from '../../Assets/search.png'
 import profileUser from '../../Assets/profile-user.png'
 export const Header = () => {
     const [userName, setUserName] = useState(null)
+    const [isOpen, setIsOpen]= useState('closeToogle')
     console.log(userName)
     const navigate = useNavigate()
     useEffect(() => {
@@ -38,14 +39,34 @@ export const Header = () => {
             console.log(error);
         };
     }
+    function handleToogleBar(){
+        if(isOpen==='closeToogle'){
+           setIsOpen('openToogle')
+        } else{
+            setIsOpen('closeToogle')
+        }
+    }
     return (
         <div className='header'>
-            <div className='brand'>
+            <Link to='/'><div className='brand'>
                 <div className='brand-img'>
                     <img src={mathImg}/>
                 </div>
                 <div className='brand-name'>
                     <h1>Clevr</h1>
+                </div>
+            </div></Link>
+            <div className='toogle-bar'>
+                <button className='toogle-bar-button' onClick={handleToogleBar}>Menu</button>
+                <div className={isOpen}>
+                    <ul className='navigation-list'>
+                        <li><Link to='/search'>All books</Link></li>
+                        <li><Link>Fiction</Link></li>
+                        <li><Link>Romance</Link></li>
+                        <li><Link>Horror</Link></li>
+                        <li><Link>Classic litterature</Link></li>
+                        <li><Link>Mystery</Link></li>
+                    </ul>
                 </div>
             </div>
             <div className='search-bar'>

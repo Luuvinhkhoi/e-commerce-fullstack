@@ -1,3 +1,4 @@
+
 const baseUrl="http://localhost:4001"
 let clevr={
     sigUpAccount(userName, email, password){
@@ -86,6 +87,23 @@ let clevr={
             console.log(networkError.message);
         });
 
+    },
+    getAllProduct(){
+        return fetch('http://localhost:4001/allproduct', {
+            method:"GET",
+            credentials:'include'
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
     }
 }
 export default clevr

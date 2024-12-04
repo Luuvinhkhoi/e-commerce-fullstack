@@ -77,22 +77,11 @@ const getAllCategoryFromDatabase = () => {
     });
   });
 };
-const convert = (string) => {
-  const categoriesMap = {
-      'ao_khoac': 'Áo khoác',
-      'ao_thun': 'Áo thun',
-      'quan_dai': 'Quần dài',
-      'phu_kien': 'Phụ kiện',
-  };
-
-  return categoriesMap[string] || slug.replace(/_/g, ' ')
-};
-
 const getProductFromDatabaseByCategoryName = async (categoryName) => {
-  const category_name = convert(categoryName);
-  console.log(category_name)
+  console.log(categoryName)
   try {
-      const categoryResult = await pool.query('SELECT category_id FROM category WHERE category_name=$1', [category_name]);
+      const categoryResult = await pool.query('SELECT category_id FROM category WHERE category_name=$1', [categoryName]);
+      console.log(categoryResult)
       if (categoryResult.rows.length === 0) {
           return { message: 'Category not found' };
       }
@@ -111,7 +100,7 @@ const getProductFromDatabaseByCategoryName = async (categoryName) => {
 
 const getAllProductFromDatabase=()=>{
   return new Promise((resolve, reject) => {
-    pool.query('SELECT * FROM product', (error, results) => {
+    pool.query('SELECT * FROM product left join product_images on product.product_id=product_images.product_id inner join category on product.category_id=category.category_id', (error, results) => {
       if (error) {
         reject(error);
       } else {

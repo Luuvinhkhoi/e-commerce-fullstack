@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import clevr from '../../util/clevr';
 import arrow from '../../Assets/right-arrow.png'
 import store from '../../Assets/store.png'
 import customer from '../../Assets/white-group.png'
@@ -17,50 +18,13 @@ export const SearchResult=()=>{
     let [formatOptionState, setFormatOptionState]=useState('all format')
     const [minPrice, setMinPrice] = useState(2500);
     const [maxPrice, setMaxPrice] = useState(7500);
+    const [products, setProducts] = useState();
+    const [loading, setLoading] = useState(true);
     const priceGap = 1000;
     const maxRange = 10000;
-    const arr = [
-        {
-            img:'https://images.unsplash.com/photo-1535398089889-dd807df1dfaa?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            category:'Biography',
-            name: 'Such a Fun Age',
-            author: 'James Sulivan',
-            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            price: 55,
-        },
-        {
-            img:'https://images.unsplash.com/photo-1539877254216-818ed7c76096?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            category:'Advanture',
-            name: 'The Adventure',
-            author: 'Margareth Mc. Lee',
-            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            price: 50,
-        },
-        {
-            img:'https://images.unsplash.com/photo-1511108690759-009324a90311?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            category:'Fiction',
-            name: 'Emily and the Backbone',
-            author: 'Cloe Mamora',
-            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            price: 51,
-        },
-        {
-            img:'https://images.unsplash.com/photo-1551300317-58b878a9ff6e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            category:'Fairy tails',
-            name: 'Luster: a Novel',
-            author: 'Raven Jaelani',
-            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            price: 58,
-        },
-        {
-            img:'https://images.unsplash.com/photo-1551300329-dc0a750a7483?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            category:'Fiction',
-            name: 'Real Life',
-            author: 'David Johanson',
-            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            price: 57,
-        }
-    ]
+    function getAllProduct(){
+        return clevr.getAllProduct()
+    }
     // Handle thay đổi giá trị từ input number
     const handlePriceInput = (e, type) => {
         const value = parseInt(e.target.value);
@@ -106,6 +70,57 @@ export const SearchResult=()=>{
     function handleFormatOption(e){
         setFormatOptionState(e.target.value)
     }
+    useEffect(()=>{
+        const fetchProduct= async()=>{
+           let result= await getAllProduct()
+           setProducts(result); // Cập nhật kết quả
+           setLoading(false);
+        }
+        fetchProduct()
+    },[])
+    const arr = [
+        {
+            img:'https://images.unsplash.com/photo-1535398089889-dd807df1dfaa?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category:'Biography',
+            name: 'Such a Fun Age',
+            author: 'James Sulivan',
+            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            price: 55,
+        },
+        {
+            img:'https://images.unsplash.com/photo-1539877254216-818ed7c76096?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category:'Advanture',
+            name: 'The Adventure',
+            author: 'Margareth Mc. Lee',
+            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            price: 50,
+        },
+        {
+            img:'https://images.unsplash.com/photo-1511108690759-009324a90311?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category:'Fiction',
+            name: 'Emily and the Backbone',
+            author: 'Cloe Mamora',
+            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            price: 51,
+        },
+        {
+            img:'https://images.unsplash.com/photo-1551300317-58b878a9ff6e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category:'Fairy tails',
+            name: 'Luster: a Novel',
+            author: 'Raven Jaelani',
+            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            price: 58,
+        },
+        {
+            img:'https://images.unsplash.com/photo-1551300329-dc0a750a7483?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            category:'Fiction',
+            name: 'Real Life',
+            author: 'David Johanson',
+            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            price: 57,
+        }
+
+    ]
     return (
       <>
         <div className='searchResult'>
@@ -192,31 +207,35 @@ export const SearchResult=()=>{
             </div>
             <div className='book-list'>
                 <h2>Books</h2>
-                <div className='book-list-row-1'>
-                    {arr.map(item=>
-                        <div className='book-list-item'>
-                            <div className='book-list-item-image'>
-                                <img src={item.img}></img>
-                            </div>
-                            <div className='book-list-item-desc'>
-                                <div className='item-category'>
-                                    <span>{item.category}</span>
+                {loading ? (
+                <p>Loading...</p> // Hiển thị thông báo loading trong khi dữ liệu đang được tải
+                ) : (
+                    <div className='book-list-row-1'>
+                        {products.map(item=>
+                            <div className='book-list-item'>
+                                <div className='book-list-item-image'>
+                                    <img src={item.cloudinary_url}></img>
                                 </div>
-                                <div className='item-name-author'>
-                                    <div className='item-name'>
-                                        <span>{item.name}</span>
+                                <div className='book-list-item-desc'>
+                                    <div className='item-category'>
+                                        <span>{item.category_name}</span>
                                     </div>
-                                    <div className='item-author'>
-                                        <span>{item.author}</span>
+                                    <div className='item-name-author'>
+                                        <div className='item-name'>
+                                            <span>{item.product_name.length>20 ? item.product_name.substring(0, 20)+('...') : item.product_name}</span>
+                                        </div>
+                                        <div className='item-author'>
+                                            <span>{item.author}</span>
+                                        </div>
+                                    </div>
+                                    <div className='item-price'>
+                                        <span>${item.price}</span>
                                     </div>
                                 </div>
-                                <div className='item-price'>
-                                    <span>${item.price}</span>
-                                </div>
                             </div>
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
+                )}   
             </div>
         </div>
         <div className='best-seller'>
