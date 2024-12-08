@@ -114,6 +114,21 @@ const getProductFromDatabaseById=async(id)=>{
     const product= result.rows
     return product
 }
+const getProductImageFromDatabaseById=async(id)=>{
+  const result= await pool.query('select cloudinary_url from product_images where product_id=$1',[id])
+  console.log(result)
+  return result.rows
+}
+const getRelatedProduct=async(id)=>{
+  const categoryId = await pool.query('select category_id from product where product_id=$1',[id])
+  const result=await pool.query('select * from product left join product_images on product.product_id=product_images.product_id where product.category_id=$1 and product.product_id != $2 limit 3',[categoryId.rows[0].category_id, id])
+  return result.rows
+}
+const getSameAuthorProduct=async(id)=>{
+  const author = await pool.query('select author from product where product_id=$1',[id])
+  const result=await pool.query('select * from product left join product_images on product.product_id=product_images.product_id where product.author=$1',[author])
+  return result.rows
+}
 const createProduct=async(product_name, description, price, quantity, category_id)=>{
   try {
     let result;
@@ -367,5 +382,8 @@ module.exports={
     checkout, 
     getOrderByUserId,
     upload,
-    getAllImage
+    getAllImage, 
+    getSameAuthorProduct,
+    getRelatedProduct,
+    getProductImageFromDatabaseById
 }

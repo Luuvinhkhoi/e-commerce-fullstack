@@ -1,4 +1,3 @@
-
 const baseUrl="http://localhost:4001"
 let clevr={
     sigUpAccount(userName, email, password){
@@ -89,9 +88,57 @@ let clevr={
 
     },
     getAllProduct(){
-        return fetch('http://localhost:4001/allproduct', {
+        return fetch('http://localhost:4001/product', {
             method:"GET",
-            credentials:'include'
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    },
+    getBookDetail(id){
+        console.log(id)
+        return fetch(`http://localhost:4001/product/${id}`,{
+            method:'GET'
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    },
+    getRelatedBook(id){
+        return fetch(`http://localhost:4001/product/related_product/${id}`,{
+            method:'GET'
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    },
+    getProductImages(id){
+        return fetch(`http://localhost:4001/product/product_images/${id}`,{
+            method:'GET'
         }).then(response=>{
             if (response.ok){
                 return response.json()

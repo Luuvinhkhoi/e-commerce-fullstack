@@ -11,7 +11,8 @@ const port=4001;
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const store=new session.MemoryStore();
-const allProductRouter=require('./product.js')
+const productRouter=require('./product.js')
+const categoryRouter=require('./category.js')
 const userRouter=require('./user.js')
 const cartRouter=require('./cart.js')
 const orderRouter=require('./order.js');
@@ -206,7 +207,8 @@ app.post('/logout', function(req, res, next){
   });
 });
 app.use(express.json());
-app.use('/allproduct', allProductRouter)
+app.use('/product', productRouter)
+app.use('/category',categoryRouter)
 app.use('/user',authorizedUser, userRouter)
 app.use('/cart',authorizedUser, cartRouter)
 app.use('/order',authorizedUser, orderRouter)

@@ -1,9 +1,7 @@
 const express=require('express')
-const allProductRouter=require('express').Router();
-const categoryRouter = express.Router({mergeParams: true});
-const productRouter = express.Router({mergeParams: true});
+const productRouter = express.Router();
 const db=require('./index.js')
-allProductRouter.get('/',async(req, res, next)=>{
+productRouter.get('/',async(req, res, next)=>{
     try {
         const [products] = await Promise.all([
             db.getAllProductFromDatabase(), 
@@ -14,14 +12,13 @@ allProductRouter.get('/',async(req, res, next)=>{
         res.status(500).send("Error fetching data");
     }
 })
-categoryRouter.get('/:category_name', async (req, res, next)=>{
-    console.log('product')
-    const product= await db.getProductFromDatabaseByCategoryName(req.params.category_name);
-    if(product){
-        res.status(200).send(product)
-    } else{
-        res.status(404).send()
-    }
+productRouter.get('/related_product/:product_id', async(req, res, next)=>{
+    const relatedProduct= await db.getRelatedProduct(req.params.product_id)
+    res.send(relatedProduct)
+})
+productRouter.get('/product_images/:product_id', async(req, res, next)=>{
+    const product_images=await db.getProductImageFromDatabaseById(req.params.product_id)
+    res.send(product_images)
 })
 productRouter.get('/:product_id', async (req, res, next) => {
     const product=await db.getProductFromDatabaseById(req.params.product_id);
@@ -67,6 +64,4 @@ productRouter.delete('/:product_id', async(req, res)=>{
         res.status(500).send(err)
     }
 })
-allProductRouter.use('/category', categoryRouter)
-allProductRouter.use('/product', productRouter)
-module.exports=allProductRouter
+module.exports=productRouter
