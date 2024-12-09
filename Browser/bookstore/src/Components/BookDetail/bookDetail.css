@@ -55,7 +55,7 @@
 .book-detail-row-1-column-1 .item-quantity button{
     height: 100%;
     color: #8D28AD;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 600;
     background: none;
     border: none;
@@ -88,10 +88,18 @@
 }
 .book-detail-row-2{
     display: grid;
+    gap: 2rem;
     grid-template-columns: 2fr 1fr;
 }
-.book-detail-table{
+.book-detail-row-2-col-1{
     display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.book-detail-table{
+    display: grid;
+    grid-template-columns: 1fr 3fr;
 }
 .book-detail-table-col-1 {
     background-color: #4D4D4D;
@@ -107,10 +115,90 @@
 }
 .book-detail-table-col-2{
     background-color: #FCF8FD;
-    width: 60%;
 }
 .book-detail-table-col-2 p{
     margin: 2.5rem 1rem; 
+}
+.book-detail-review-row-1{
+    display: flex;
+    align-items: center;
+    background-color: #FCF8FD;
+    gap: 4rem;
+    border-radius: 0.5rem;
+    padding: 2rem;
+}
+.book-detail-review-row-1 .rating-score {
+    font-size: 2rem;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+
+}
+.book-detail-review-row-1 .rating-score div{
+    margin: 0 auto;
+
+}
+.book-detail-review-row-1 .rating-score span{
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+.book-detail-review-row-1 .rating-score .star-score{
+    width: 90px;
+    height: 18px;
+    background-size: 18px 18px;
+}
+.book-detail-review-row-1 .rating-score .star-score >div{
+    width: 100%;
+    height: 18px;
+    background: url(https://res.cloudinary.com/dgkeufmje/image/upload/v1733677454/star_jcb102.png) repeat-x;
+    background-size: 18px 18px;
+}
+.book-detail-review-row-1 .rating-chart{
+    width: 100%;
+}
+.book-detail-review-row-1 .rating-chart >div{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.book-detail-review-row-1 .rating-chart >div span{
+    display: flex;
+    align-items: baseline;
+    font-size: 20px;
+    font-weight: 500;
+    gap: 0.3rem;
+    min-width: 36px;
+}
+.book-detail-review-row-1 .rating-chart >div span img{
+    height: 18px;
+    width: 18px;
+}
+.book-detail-review-row-1 .rating-chart >div >div{
+    background-color: #DDDDDD;
+    border-radius: 1rem;
+    height: 10px;
+    width: 100%;
+}
+.book-detail-review-row-2{
+    position: relative;
+}
+.book-detail-review-row-2 >div{
+    display: flex;
+    position: absolute;
+    top: -25px;
+    left: 40%;
+    box-shadow: 10px 5px 5px  #DDDDDD;
+    background-color: #fff;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 2rem;
+}
+.book-detail-review-row-2 >div img{
+    height: 18px;
+    width: 18px;
+}
+.book-detail-review-row-2 >div button{
+    font-weight: 500;
 }
 .book-detail-row-2-col-2 .related-book{
     display: flex;
@@ -118,7 +206,7 @@
     margin: 2rem 0;
 }
 .book-detail-row-2-col-2 .related-book-image{
-    height: 300px;
+    height: 250px;
     width: 200px;
     border-radius: 0.5rem;
     overflow: hidden;

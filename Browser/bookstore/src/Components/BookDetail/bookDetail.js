@@ -3,6 +3,8 @@ import clevr from '../../util/clevr'
 import { useEffect, useState } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import cartImg from '../../Assets/shopping-cart-white.png'
+import star from '../../Assets/star.png'
+import downArrow from '../../Assets/arrow-down.png'
 export const BookDetail = ({image}) =>{
     const [bookDetail, setBookDetail]=useState()
     const [relatedBook, setRelatedBook]=useState()
@@ -66,7 +68,7 @@ export const BookDetail = ({image}) =>{
                                 <span>{item.description}</span>
                             </div>
                             <div className='item-price'>
-                                <span>{item.price}</span>
+                                <span>{item.price} đ</span>
                             </div>
                             <div className='quantity-add-box'>
                                 <div className='item-quantity'>
@@ -117,7 +119,63 @@ export const BookDetail = ({image}) =>{
                                     <p>{item.publisher}</p>
                                 </div>                           
                             </div>
-                            
+                            <span>Review</span>
+                            <div className='book-detail-review'>
+                                <div className='book-detail-review-row-1'>
+                                    <div className='rating-score'>
+                                        <div>5<span>/5</span></div>
+                                        <div className='star-score'>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                    <div className='rating-chart'>
+                                        <div>
+                                            <span><img src={star}></img>5</span>
+                                            <div>
+                                                <div></div>
+                                            </div>
+                                            <span></span>
+                                        </div>
+                                        <div>
+                                            <span><img src={star}></img>4</span>
+                                            <div>
+                                                <div></div>
+                                            </div>
+                                            <span></span>
+                                        </div>
+                                        <div>
+                                            <span><img src={star}></img>3</span>
+                                            <div>
+                                                <div></div>
+                                            </div>
+                                            <span></span>
+                                        </div>
+                                        <div>
+                                            <span><img src={star}></img>2</span>
+                                            <div>
+                                                <div></div>
+                                            </div>
+                                            <span></span>
+                                        </div>
+                                        <div>
+                                            <span><img src={star}></img>1</span>
+                                            <div>
+                                                <div></div>
+                                            </div>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='book-detail-review-row-2'>
+                                    <div>
+                                        <img src={downArrow}></img>
+                                        <button>View reviews</button>
+                                    </div>
+                                </div>
+                                <div className='book-detail-review-row-3'>
+                                     
+                                </div>
+                            </div>
                         </div>
                         <div className='book-detail-row-2-col-2'>
                             <span>Related book</span>
@@ -129,7 +187,7 @@ export const BookDetail = ({image}) =>{
                                    <div className='related-book-desc'>
                                        <span className='item-name'>{item.product_name.length>10 ? item.product_name.substring(0, 10)+('...') : item.product_name}</span>
                                        <br></br>
-                                       <span className='item-price'>{item.price}</span>
+                                       <span className='item-price'>{item.price} đ</span>
                                    </div>
                                </div>
                             )}
