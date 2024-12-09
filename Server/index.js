@@ -357,6 +357,22 @@ const getAllImage=async()=>{
     throw new Error('Error'+error.message)
   }
 }
+const getReview=async()=>{
+  try{
+    const result=await pool.query('Select * from product_review')
+    return result.rows
+  } catch(error){
+    throw new Error('Error'+error.message)
+  }
+}
+const addReview=async(score, content, product_id, user_id)=>{
+  try{
+    const result= await pool.query('Insert into product_review(score, content, product_id, user_id) values($1,$2,$3,$4)', [score, content, product_id, user_id])
+    return result.rows
+  } catch(error){
+    throw new Error('Error'+error.message)
+  }
+}
 module.exports={
     createUser,
     login,
@@ -385,5 +401,7 @@ module.exports={
     getAllImage, 
     getSameAuthorProduct,
     getRelatedProduct,
-    getProductImageFromDatabaseById
+    getProductImageFromDatabaseById,
+    getReview,
+    addReview
 }

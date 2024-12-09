@@ -5,10 +5,12 @@ import { useParams, useLocation } from 'react-router-dom'
 import cartImg from '../../Assets/shopping-cart-white.png'
 import star from '../../Assets/star.png'
 import downArrow from '../../Assets/arrow-down.png'
+import upArrow from '../../Assets/top.png'
 export const BookDetail = ({image}) =>{
     const [bookDetail, setBookDetail]=useState()
     const [relatedBook, setRelatedBook]=useState()
     const [productImages, setProductImages]=useState([])
+    const [isActive, setIsActive]=useState('close')
     const location=useLocation()
     const first_selected_image=location.state
     const [selectedImage, setSeletedImage]=useState(first_selected_image)
@@ -29,6 +31,12 @@ export const BookDetail = ({image}) =>{
         if (quantity>1){
             setQuantity(prev=>prev-1)
         }
+    }
+    function closeReview(){
+        setIsActive('close')
+    }
+    function openReview(){
+        setIsActive('open')
     }
     useEffect(()=>{
         async function fetchDetail(){
@@ -167,13 +175,34 @@ export const BookDetail = ({image}) =>{
                                     </div>
                                 </div>
                                 <div className='book-detail-review-row-2'>
-                                    <div>
+                                    <div onClick={openReview} className={`${isActive}-button`}>
                                         <img src={downArrow}></img>
                                         <button>View reviews</button>
                                     </div>
                                 </div>
-                                <div className='book-detail-review-row-3'>
-                                     
+                                <div className={`${isActive}-book-detail-review-row-3`}>
+                                     <div>
+                                        <div className='rating-score'>
+                                            <div>5</div>
+                                            <div className='star-score'>
+                                                <div></div>
+                                            </div>
+                                        </div>
+                                        <div className='review-detail'>
+                                            <p>abcxyz</p>
+                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+                                        </div>
+                                     </div>
+                                     <div className='button-flex'>
+                                        <div className='load-more'>
+                                            <img src={downArrow}></img>
+                                            <button>Load more</button>
+                                        </div>
+                                        <div onClick={closeReview} className='close-review'>
+                                            <img src={upArrow}></img>
+                                            <button>Close</button>
+                                        </div>
+                                     </div>
                                 </div>
                             </div>
                         </div>
