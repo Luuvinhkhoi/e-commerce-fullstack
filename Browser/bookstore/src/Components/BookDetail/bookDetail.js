@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import cartImg from '../../Assets/shopping-cart-white.png'
 import star from '../../Assets/star.png'
+import pen from '../../Assets/pen.png'
 import downArrow from '../../Assets/arrow-down.png'
 import upArrow from '../../Assets/top.png'
 export const BookDetail = ({image}) =>{
@@ -11,6 +12,12 @@ export const BookDetail = ({image}) =>{
     const [relatedBook, setRelatedBook]=useState()
     const [productImages, setProductImages]=useState([])
     const [isActive, setIsActive]=useState('close')
+    const [activeStar, setActiveStar] = useState(0)
+    const [selectedStar, setSelectedStar] = useState(0)
+    const [reviewContent, setReviewContent]=useState('')
+    const [listReview, setListReview]=useState([])
+    const [isOpenAddReview, setIsOpenAddReview]=useState(false)
+    const [ratingStat, setRatingStat]=useState()
     const location=useLocation()
     const first_selected_image=location.state
     const [selectedImage, setSeletedImage]=useState(first_selected_image)
@@ -38,22 +45,54 @@ export const BookDetail = ({image}) =>{
     function openReview(){
         setIsActive('open')
     }
+    function handAddReview(){
+        setIsOpenAddReview(prev=>!prev)
+    }
+    function handleAddReviewButton(){
+        handAddReview();
+        openReview()
+    }
+    function handleCloseAddReviewButton(){
+        handAddReview();
+        closeReview()
+    }
+    function handleMouseOverStar(e) {
+        const starValue = e.target.getAttribute('data')
+        setActiveStar(starValue)
+    }
+      
+    function handleMouseOutStar(e) {
+        const starValue = e.target.getAttribute('data')
+        setActiveStar(starValue)
+    }
+    function handleStarClick (e){
+        const starValue = e.target.getAttribute('data')
+        setSelectedStar(starValue)  
+    }
+    function handleReviewContent(e){
+        setReviewContent(e.target.value)
+    }
+    function handleSubmitReview(){
+        return clevr.submitReview(activeStar, reviewContent, id)
+    }
+    
     useEffect(()=>{
         async function fetchDetail(){
           let result = await getBookDetail(id)
           let result2=await getRelatedBook(id)
           let result3=await clevr.getProductImages(id)
+          let result4=await clevr.getReview(id)
+          let result5=await clevr.getRatingStat(id)
           setBookDetail(result)
           setRelatedBook(result2)
           setProductImages(result3)
+          setListReview(result4)
           setLoading(false)
+          setRatingStat(result5)
         }
         fetchDetail()
     }, [])
-    console.log(loading)
-    console.log(bookDetail)
-    console.log(relatedBook)
-    console.log(productImages)
+    console.log(ratingStat)
     return (
       <> 
         <div className='book-detail'>
@@ -131,78 +170,141 @@ export const BookDetail = ({image}) =>{
                             <div className='book-detail-review'>
                                 <div className='book-detail-review-row-1'>
                                     <div className='rating-score'>
-                                        <div>5<span>/5</span></div>
+                                        <div>{(ratingStat.totalScore/ratingStat.countReview)}<span>/5</span></div>
                                         <div className='star-score'>
-                                            <div></div>
+                                            <div style={{width:`${(ratingStat.totalScore/ratingStat.countReview)*20}%`}}></div>
                                         </div>
                                     </div>
                                     <div className='rating-chart'>
                                         <div>
                                             <span><img src={star}></img>5</span>
                                             <div>
-                                                <div></div>
+                                                <div style={{width:`${(ratingStat.count5Star/ratingStat.countReview)*100}%`}}></div>
                                             </div>
                                             <span></span>
                                         </div>
                                         <div>
                                             <span><img src={star}></img>4</span>
                                             <div>
-                                                <div></div>
+                                                <div style={{width:`${(ratingStat.count4Star/ratingStat.countReview)*100}%`}}></div>
                                             </div>
                                             <span></span>
                                         </div>
                                         <div>
                                             <span><img src={star}></img>3</span>
                                             <div>
-                                                <div></div>
+                                                <div style={{width:`${(ratingStat.count3Star/ratingStat.countReview)*100}%`}}></div>
                                             </div>
                                             <span></span>
                                         </div>
                                         <div>
                                             <span><img src={star}></img>2</span>
                                             <div>
-                                                <div></div>
+                                                <div style={{width:`${(ratingStat.count2Star/ratingStat.countReview)*100}%`}}></div>
                                             </div>
                                             <span></span>
                                         </div>
                                         <div>
                                             <span><img src={star}></img>1</span>
                                             <div>
-                                                <div></div>
+                                                <div style={{width:`${(ratingStat.count1Star/ratingStat.countReview)*100}%`}}></div>
                                             </div>
                                             <span></span>
                                         </div>
                                     </div>
                                 </div>
-                                <div className='book-detail-review-row-2'>
+                                <div className={`${isActive}-book-detail-review-row-2`}>
+                                    <div className={`${isActive}-add-review-button`} onClick={handleAddReviewButton}>
+                                        <img src={pen}></img>
+                                        <button>Add review</button>
+                                    </div>
                                     <div onClick={openReview} className={`${isActive}-button`}>
                                         <img src={downArrow}></img>
                                         <button>View reviews</button>
                                     </div>
                                 </div>
-                                <div className={`${isActive}-book-detail-review-row-3`}>
-                                     <div>
-                                        <div className='rating-score'>
-                                            <div>5</div>
-                                            <div className='star-score'>
-                                                <div></div>
+                                <div className={`${isActive}-book-detail-review-row-4`}>
+                                    {isOpenAddReview ?
+                                        (
+                                            <div className='add-review-box'>
+                                                <div className='rating-score'>
+                                                    <div className='star-score'>
+                                                        <div
+                                                            className={`${activeStar >=1 || (!activeStar && selectedStar >=1) ? 'active' : 'unActive'}-star-item`}
+                                                            onMouseOver={handleMouseOverStar}
+                                                            onMouseOut={handleMouseOutStar}
+                                                            onClick={handleStarClick}
+                                                            data="1"
+                                                        ></div>
+                                                        <div
+                                                            className={`${activeStar >=2 || (!activeStar && selectedStar >=2) ? 'active' : 'unActive'}-star-item`}
+                                                            onMouseOver={handleMouseOverStar}
+                                                            onMouseOut={handleMouseOutStar}
+                                                            onClick={handleStarClick}
+                                                            data="2"
+                                                        ></div>
+                                                        <div
+                                                            className={`${activeStar >=3 || (!activeStar && selectedStar >=3) ? 'active' : 'unActive'}-star-item`}
+                                                            onMouseOver={handleMouseOverStar}
+                                                            onMouseOut={handleMouseOutStar}
+                                                            onClick={handleStarClick}
+                                                            data="3"
+                                                        ></div>
+                                                        <div
+                                                            className={`${activeStar >=4 || (!activeStar && selectedStar >=4) ? 'active' : 'unActive'}-star-item`}
+                                                            onMouseOver={handleMouseOverStar}
+                                                            onMouseOut={handleMouseOutStar}
+                                                            onClick={handleStarClick}
+                                                            data="4"
+                                                        ></div>
+                                                        <div
+                                                            className={`${activeStar >=5 || (!activeStar && selectedStar >=5) ? 'active' : 'unActive'}-star-item`}
+                                                            onMouseOver={handleMouseOverStar}
+                                                            onMouseOut={handleMouseOutStar}
+                                                            onClick={handleStarClick}
+                                                            data="5"
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                                <div className='review-input'>
+                                                    <input onChange={handleReviewContent}></input>
+                                                </div>
+                                                <div className='review-button'>
+                                                    <button onClick={handleCloseAddReviewButton}>Cancel</button>
+                                                    <button onClick={handleSubmitReview}>Submit</button>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className='review-detail'>
-                                            <p>abcxyz</p>
-                                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
-                                        </div>
-                                     </div>
-                                     <div className='button-flex'>
-                                        <div className='load-more'>
-                                            <img src={downArrow}></img>
-                                            <button>Load more</button>
-                                        </div>
-                                        <div onClick={closeReview} className='close-review'>
-                                            <img src={upArrow}></img>
-                                            <button>Close</button>
-                                        </div>
-                                     </div>
+                                        ) : 
+                                        (
+                                            <div className='list-review'>
+                                                {listReview.map(item=>
+                                                    <div>
+                                                        <div className='rating-score'>
+                                                            <div>{item.score}</div>
+                                                            <div className='star-score'>
+                                                                <div style={{width:`${(item.score)*20}%`}}></div>
+                                                            </div>
+                                                        </div>
+                                                        <div className='review-detail'>
+                                                            <p>{item.user_name}</p>
+                                                            <span>{item.content}</span>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                <div className='button-flex'>
+                                                    <div className='load-more'>
+                                                        <img src={downArrow}></img>
+                                                        <button>Load more</button>
+                                                    </div>
+                                                    <div onClick={closeReview} className='close-review'>
+                                                        <img src={upArrow}></img>
+                                                        <button>Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>    
+                                               
+                                        ) 
+                                    }
                                 </div>
                             </div>
                         </div>

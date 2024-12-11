@@ -357,9 +357,9 @@ const getAllImage=async()=>{
     throw new Error('Error'+error.message)
   }
 }
-const getReview=async()=>{
+const getReview=async(id)=>{
   try{
-    const result=await pool.query('Select * from product_review')
+    const result=await pool.query('Select * from product_review left join users on product_review.user_id=users.user_id where product_id=$1',[id])
     return result.rows
   } catch(error){
     throw new Error('Error'+error.message)
@@ -369,6 +369,40 @@ const addReview=async(score, content, product_id, user_id)=>{
   try{
     const result= await pool.query('Insert into product_review(score, content, product_id, user_id) values($1,$2,$3,$4)', [score, content, product_id, user_id])
     return result.rows
+  } catch(error){
+    throw new Error('Error'+error.message)
+  }
+}
+const getRatingScore=async(id)=>{
+  try{
+    const result=await pool.query(`SELECT 
+         SUM(score) AS total_score,
+         COUNT(score) AS count_review,
+         COUNT(CASE WHEN score = 5 THEN 1 END) AS count_5_star,
+         COUNT(CASE WHEN score = 4 THEN 1 END) AS count_4_star,
+         COUNT(CASE WHEN score = 3 THEN 1 END) AS count_3_star,
+         COUNT(CASE WHEN score = 2 THEN 1 END) AS count_2_star,
+         COUNT(CASE WHEN score = 1 THEN 1 END) AS count_1_star
+       FROM product_review 
+       WHERE product_id = $1`, [id])
+    const {
+      total_score,
+      count_review,
+      count_5_star,
+      count_4_star,
+      count_3_star,
+      count_2_star,
+      count_1_star,
+    } = result.rows[0]
+    return {
+      totalScore: Number(total_score) || 0,
+      countReview:Number(count_review) || 0,
+      count5Star:Number(count_5_star) || 0,
+      count4Star:Number(count_4_star) || 0,
+      count3Star:Number(count_3_star) || 0,
+      count2Star:Number(count_2_star) || 0,
+      count1Star:Number(count_1_star) || 0,
+    };
   } catch(error){
     throw new Error('Error'+error.message)
   }
@@ -403,5 +437,6 @@ module.exports={
     getRelatedProduct,
     getProductImageFromDatabaseById,
     getReview,
-    addReview
+    addReview, 
+    getRatingScore
 }

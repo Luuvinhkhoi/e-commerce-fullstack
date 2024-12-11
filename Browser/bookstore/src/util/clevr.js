@@ -151,6 +151,65 @@ let clevr={
         }). catch(networkError=>{
             console.log(networkError.message)
         })
+    },
+    submitReview(score, content, id){
+        console.log(score)
+        console.log(content)
+        return fetch(`http://localhost:4001/review/${id}`,{
+            method:'POST',
+            credentials: 'include',
+            body:JSON.stringify({
+                score,
+                content
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    },
+    getReview(id){
+        return fetch(`http://localhost:4001/review/${id}`,{
+            method:'GET',
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    },
+    getRatingStat(id){
+        return fetch(`http://localhost:4001/review/stat/${id}`,{
+            method:'GET',
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
     }
+
 }
 export default clevr
