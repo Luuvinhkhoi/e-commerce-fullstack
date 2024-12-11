@@ -172,42 +172,42 @@ export const BookDetail = ({image}) =>{
                                     <div className='rating-score'>
                                         <div>{ratingStat.countReview > 0 ? ratingStat.totalScore/ratingStat.countReview : 0}<span>/5</span></div>
                                         <div className='star-score'>
-                                            <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.totalScore/ratingStat.countReview : 0}%`}}></div>
+                                            <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.totalScore/ratingStat.countReview *20 : 0}%`}}></div>
                                         </div>
                                     </div>
                                     <div className='rating-chart'>
                                         <div>
                                             <span><img src={star}></img>5</span>
                                             <div>
-                                                <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count5Star/ratingStat.countReview : 0}%`}}></div>
+                                                <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count5Star/ratingStat.countReview*100 : 0}%`}}></div>
                                             </div>
                                             <span></span>
                                         </div>
                                         <div>
                                             <span><img src={star}></img>4</span>
                                             <div>
-                                                <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count4Star/ratingStat.countReview : 0}%`}}></div>
+                                                <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count4Star/ratingStat.countReview*100 : 0}%`}}></div>
                                             </div>
                                             <span></span>
                                         </div>
                                         <div>
                                             <span><img src={star}></img>3</span>
                                             <div>
-                                                <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count3Star/ratingStat.countReview : 0}%`}}></div>
+                                                <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count3Star/ratingStat.countReview*100 : 0}%`}}></div>
                                             </div>
                                             <span></span>
                                         </div>
                                         <div>
                                             <span><img src={star}></img>2</span>
                                             <div>
-                                                <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count2Star/ratingStat.countReview : 0}%`}}></div>
+                                                <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count2Star/ratingStat.countReview*100 : 0}%`}}></div>
                                             </div>
                                             <span></span>
                                         </div>
                                         <div>
                                             <span><img src={star}></img>1</span>
                                             <div>
-                                                <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count1Star/ratingStat.countReview : 0}%`}}></div>
+                                                <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count1Star/ratingStat.countReview*100 : 0}%`}}></div>
                                             </div>
                                             <span></span>
                                         </div>
