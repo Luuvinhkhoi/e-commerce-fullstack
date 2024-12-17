@@ -4,7 +4,6 @@ const checkoutRouter = express.Router({mergeParams: true});
 const db=require('./index.js')
 cartRouter.get('/',async(req, res, next)=>{
     try{
-        console.log('ye')
         const result=await db.getCartByUserId(req.user.user_id)
         res.status(200).send(result)
     } catch(err){
@@ -31,9 +30,9 @@ checkoutRouter.post('/', async(req, res, next)=>{
     }
 })
 cartRouter.use('/checkout', checkoutRouter)
-cartRouter.patch('/', async(req, res, next)=>{
+cartRouter.put('/', async(req, res, next)=>{
     try{
-        const result=await db.updateCart(req.user.user_id, req.body)
+        const result=await db.updateCart(req.user.user_id, req.body.updateData)
         res.status(200).send(result)
     } catch(err){
         res.status(500).send(err)
@@ -42,7 +41,7 @@ cartRouter.patch('/', async(req, res, next)=>{
 cartRouter.delete('/', async(req, res, next)=>{
     try{
         console.log('hihi')
-        const result=await db.deleteProductInCartByProductId(req.user.user_id, req.body.product_id)
+        const result=await db.deleteProductInCartByProductId(req.user.user_id, req.body.id)
         res.status(200).send(result)
     } catch(err){
         res.status(500).send(err)

@@ -12,6 +12,14 @@ productRouter.get('/',async(req, res, next)=>{
         res.status(500).send("Error fetching data");
     }
 })
+productRouter.get('/best-seller', async(req,res,next)=>{
+    const bestSellerProduct= await db.getBestSeller()
+    res.send(bestSellerProduct)
+})
+productRouter.get('/disount', async(req,res,next)=>{
+    const discountProduct= await db.getDiscountItem()
+    res.send(discountProduct)
+})
 productRouter.get('/related_product/:product_id', async(req, res, next)=>{
     const relatedProduct= await db.getRelatedProduct(req.params.product_id)
     res.send(relatedProduct)

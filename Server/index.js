@@ -1,7 +1,9 @@
 const Pool= require('pg').Pool
 const bcrypt=require('bcrypt');
+const e = require('cors');
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const cron = require('node-cron');
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
@@ -30,7 +32,8 @@ const createUser = async (request, response)=>{
     const hashPassword=await  bcrypt.hash(pass, saltRound);
     if (hashPassword){
         const userId= await pool.query('insert into users(user_name, pass, email) values ($1, $2, $3) returning *', [user_name,hashPassword, email])
-        const cart= await pool.query('insert into cart (user_id) values ($1)',[userId.rows[0].user_id])   
+        const cart= await pool.query('insert into cart (user_id) values ($1) returning cart_id',[userId.rows[0].user_id])   
+        const cart_product=await pool.query('insert into cart_product(cart_id) values($1)',[cart.rows[0].cart_id])
         if (!cart){
           throw new Error('Failed to create cart');
         } 
@@ -111,12 +114,11 @@ const getAllProductFromDatabase=()=>{
 }
 const getProductFromDatabaseById=async(id)=>{
     const result = await pool.query('select * from product where product_id=$1',[id])
-    const product= result.rows
+    const product= result.rows[0]
     return product
 }
 const getProductImageFromDatabaseById=async(id)=>{
   const result= await pool.query('select cloudinary_url from product_images where product_id=$1',[id])
-  console.log(result)
   return result.rows
 }
 const getRelatedProduct=async(id)=>{
@@ -257,21 +259,39 @@ const deleteAllUser=async(id)=>{
   }
 }
 const getCartByUserId=async(id)=>{
+    console.log('mimimama')
     try{
       const cart_id = await pool.query('select cart_id from cart where user_id=$1',[id])
-      console.log(cart_id.rows[0].cart_id)
-      const cartProduct = await pool.query('select product_id, quantity, price from cart_product where cart_id=$1',[cart_id.rows[0].cart_id])
-      return cartProduct.rows
+      const cartProduct = await pool.query('select cart_product.*, product_images.cloudinary_url FROM cart_product LEFT JOIN (SELECT * FROM product_images WHERE id IN (SELECT MIN(id) FROM product_images GROUP BY product_id)) product_images ON cart_product.product_id = product_images.product_id where cart_product.cart_id=$1',[cart_id.rows[0].cart_id])
+      const productIds = cartProduct.rows.map(row => row.product_id);
+      const productResults = await Promise.all(
+        productIds.map(async (productId) => {
+          const productResult = await pool.query('select * from product where product_id=$1', [productId]);
+          return productResult.rows[0];
+        })
+      );
+      const productMap = new Map(productResults.map(p => [p.product_id, p]));
+      const combined = 
+        cartProduct.rows.map(cartItem => ({
+          ...productMap.get(cartItem.product_id), // Lấy sản phẩm chi tiết từ bản đồ
+          quantity: cartItem.quantity,
+          cloudinary_url: cartItem.cloudinary_url
+        }))
+      ;
+      return combined
     }catch(err){
       throw new Error('Error'+err.message)
     }
 }
 const insertProductIntoCart=async(userId,productId, quantity)=>{
   try{
-    console.log(productId)
-    console.log(quantity)
     const cartId=await pool.query("select cart_id from cart where user_id=$1", [userId])
-    const product = await pool.query("insert into cart_product(cart_id, product_id, quantity) values ($1, $2, $3)", [cartId.rows[0].cart_id, productId, quantity])
+    const existingItem=await pool.query('select product_id from cart_product where cart_id=$1 and product_id=$2',[cartId.rows[0].cart_id, productId])
+    if(existingItem.rows.length>0){
+      await pool.query("UPDATE cart_product SET quantity = quantity + $1 WHERE cart_id = $2 AND product_id = $3", [quantity, cartId.rows[0].cart_id, productId]);
+    } else{
+      const product = await pool.query("insert into cart_product(cart_id, product_id, quantity) values ($1, $2, $3)", [cartId.rows[0].cart_id, productId, quantity])
+    }
     return { message: 'Product added to cart' };
   }catch(error){
     throw new Error('Error'+error.message)
@@ -279,13 +299,20 @@ const insertProductIntoCart=async(userId,productId, quantity)=>{
 }
 const updateCart=async(userId, updateData)=>{
   try{
-    const { product_id, quantity } = updateData;
+    const products=updateData.map(({product_id, quantity})=>({product_id,quantity}))
+    console.log(updateData)
     const cart_id = await pool.query('select cart_id from cart where user_id=$1', [userId])
     if (cart_id.rows.length === 0) {
       throw new Error('Cart not found');
     }
     // Thực thi câu lệnh SQL với quantity, cart_id và product_id
-    const result = await pool.query("UPDATE cart_product SET quantity = quantity + $1 WHERE cart_id = $2 AND product_id = $3", [quantity, cart_id.rows[0].cart_id, product_id]);
+    const productResults = await Promise.all(
+      products.map(async (product) => {
+        const productResult = await pool.query('update cart_product set quantity = $1 where cart_id = $2 and product_id = $3', [product.quantity, cart_id.rows[0].cart_id, product.product_id]);
+        return productResult.rows[0];
+      })
+    );
+    console.log(productResults)
     return {message:`Success update with ${cart_id.rows[0].cart_id}`};
   } catch (err){
     throw new Error('Error ' + err.message);
@@ -407,6 +434,85 @@ const getRatingScore=async(id)=>{
     throw new Error('Error'+error.message)
   }
 }
+const getBestSeller=async()=>{
+  try{
+    const result=await pool.query('Select * from product order by quantity desc')
+    return result.rows
+  } catch(error){
+    throw error.message
+  }
+}
+const getDiscountItem=async()=>{
+  try{
+    const productResult=await pool.query('Select * from flash_sales')
+    return productResult.rows
+  } catch(error){
+    throw error.message
+  }
+}
+const handleFlashSale = async () => {
+  try {
+    console.log('Starting flash sale process...');
+
+    const now = new Date();
+    const endTime = new Date();
+    endTime.setDate(now.getDate() + 1);
+
+    // 1. Xóa các sản phẩm flash-sale đã hết hạn và cộng lại số lượng thừa
+    const expiredProducts = await pool.query(
+      'SELECT product_id, stock_quantity FROM flash_sales WHERE end_time < $1',
+      [now]
+    );
+
+    for (let product of expiredProducts.rows) {
+      await pool.query(
+        'UPDATE product SET quantity = quantity + $1 WHERE id = $2',
+        [product.stock_quantity, product.product_id]
+      );
+    }
+
+    await pool.query('DELETE FROM flash_sales WHERE end_time < $1', [now]);
+    console.log('Expired flash sale items cleaned and quantities restored.');
+
+    // 2. Lấy 3 sản phẩm có quantity cao nhất
+    const productResult = await pool.query(
+      'SELECT product_id, price, quantity FROM product ORDER BY quantity DESC LIMIT 3'
+    );
+
+    for (let product of productResult.rows) {
+      const saleQuantity = Math.min(20, product.quantity); // Tối đa 20 sản phẩm
+      const salePrice = product.price * 0.8;
+
+      // Giảm số lượng trong bảng product
+      await pool.query(
+        'UPDATE product SET quantity = quantity - $1 WHERE product_id = $2',
+        [saleQuantity, product.id]
+      );
+
+      // Thêm sản phẩm vào flash_sales
+      await pool.query(
+        `INSERT INTO flash_sales 
+         (product_id, sale_price, stock_quantity, start_time, end_time)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [product.product_id, salePrice, saleQuantity, now, endTime]
+      );
+    }
+
+    console.log('Flash sale items added successfully.');
+  } catch (error) {
+    console.error('Error handling flash sale:', error.message);
+  } finally {
+    await pool.end();
+  }
+};
+cron.schedule('15 0 * * *', () => {
+    console.log('Running flash sale process at 12 AM...');
+    handleFlashSale();
+  }, {
+    scheduled: true,
+    timezone: "Asia/Ho_Chi_Minh" // Múi giờ Việt Nam
+  }
+);
 module.exports={
     createUser,
     login,
@@ -438,5 +544,8 @@ module.exports={
     getProductImageFromDatabaseById,
     getReview,
     addReview, 
-    getRatingScore
+    getRatingScore,
+    getBestSeller, 
+    getDiscountItem,
+
 }

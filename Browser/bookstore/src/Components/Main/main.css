@@ -2,8 +2,15 @@
     width: 100%;
 }
 .trending-context{
-    margin: 3rem 0;
-    font-weight:600;
+    margin: 5rem auto;
+    text-align: center;
+}
+.trending-context p{
+    font-weight: 600;
+    font-size: 30px;
+}
+.trending-context span{
+    color: rgba(0, 0, 0, 0.6)
 }
 .main-context h2{
     font-weight: bold;
@@ -42,6 +49,7 @@
 }
 .trending .item-name-author{
     margin-bottom: 1rem;
+    text-align: center;
 }
 .trending .item-name{
     font-weight: bold;

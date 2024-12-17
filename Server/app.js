@@ -53,7 +53,7 @@ app.use(passport.session());
 
 app.use(cors({
   origin: 'http://localhost:3000', // Chỉ cho phép frontend từ origin này
-  methods: ['GET', 'POST','PATCH', 'UPDATE', 'DELETE'], // Chỉ cho phép các phương thức này
+  methods: ['GET', 'POST','PATCH', 'PUT', 'DELETE'], // Chỉ cho phép các phương thức này
   credentials: true, // Nếu cần gửi cookie hoặc thông tin xác thực
 }));
 
@@ -108,9 +108,8 @@ passport.use(new GoogleStrategy({
      if (!cred) { 
        const insertUserRes = await pool.query('INSERT INTO users (user_name) VALUES ($1) RETURNING user_id', [ profile.displayName ]); 
        const userId = insertUserRes.rows[0].user_id; 
-       console.log(userId)
-       console.log('facebook:', userId)
        await pool.query('INSERT INTO linked_profile (user_id, provider, subject) VALUES ($1, $2, $3)', [ userId, issuer, profile.id ]); 
+       const cart= await pool.query('insert into cart (user_id) values ($1) returning cart_id',[userId])   
        const user = { 
          user_id: userId.toString(), 
          name: profile.displayName 
@@ -136,7 +135,7 @@ passport.use(new LocalStrategy(
   db.login // Gọi hàm login để xác thực
 ));
 passport.serializeUser((user, done) => {
-    console.log(`Serilize user:`, user)
+    //console.log(`Serilize user:`, user)
     try{
       done(null, user.user_id);
     }catch(error){
@@ -145,10 +144,10 @@ passport.serializeUser((user, done) => {
 });
   
 passport.deserializeUser(async (id, done) => {
-    console.log("Deserialized user:")
+    //console.log("Deserialized user:")
     try {
         const user = await db.findById(id); // Gọi findById
-        console.log("Deserialized user:", user); // Log user
+        //console.log("Deserialized user:", user); // Log user
         done(null, user); // Hoặc done(null, false) nếu không tìm thấy user
     } catch (error) {
         done(error); // Kích hoạt lỗi nếu có lỗi
@@ -191,7 +190,8 @@ app.get('/oauth2/redirect/google',
 );
 function authorizedUser(req, res, next) {
     // Check for the authorized property within the session
-    if (req.session.authorized) {
+    console.log(`AUTHORIZE${req.session.authorized}`)
+    if (req.isAuthenticated()) {
       // next middleware function is invoked
       return next();
     }

@@ -2,6 +2,10 @@ import './bookDetail.css'
 import clevr from '../../util/clevr'
 import { useEffect, useState } from 'react'
 import { useParams, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import {useDispatch} from 'react-redux'
+import { insertCartIntoDatabase } from '../../store/cartSlice'
+import { updateItem } from '../../store/cartSlice'
 import cartImg from '../../Assets/shopping-cart-white.png'
 import star from '../../Assets/star.png'
 import pen from '../../Assets/pen.png'
@@ -21,9 +25,10 @@ export const BookDetail = ({image}) =>{
     const location=useLocation()
     const first_selected_image=location.state
     const [selectedImage, setSeletedImage]=useState(first_selected_image)
-    const [quantity, setQuantity]=useState(1)
+    const [quantityToBuy, setQuantity]=useState(1)
     const [loading, setLoading] = useState(true);
     let { id } = useParams();
+    const dispatch=useDispatch()
     console.log(id)
     function getBookDetail(id){
           return clevr.getBookDetail(id)
@@ -35,7 +40,7 @@ export const BookDetail = ({image}) =>{
         setQuantity(prev=>prev+1)
     }
     function handleMinusQuantityClick(){
-        if (quantity>1){
+        if (quantityToBuy>1){
             setQuantity(prev=>prev-1)
         }
     }
@@ -92,41 +97,40 @@ export const BookDetail = ({image}) =>{
         }
         fetchDetail()
     }, [])
-    console.log(ratingStat)
+    console.log(bookDetail)
     return (
       <> 
         <div className='book-detail'>
             {loading ? (
                 <p>Loading...</p> // Hiển thị thông báo loading trong khi dữ liệu đang được tải
             ) : (
-                bookDetail.map((item)=>
                   <>
                     <div className='book-detail-row-1'>
                         <div className='book-detail-row-1-column-1'>
                             <div className='item-name-author'>
                                 <div className='item-name'>
-                                    <span>{item.product_name}</span>
+                                    <span>{bookDetail.product_name}</span>
                                 </div>
                                 <div className='item-author'>
-                                    <span>{item.author}</span>
+                                    <span>{bookDetail.author}</span>
                                 </div>
                             </div>
                             <div className='item-desc'>
-                                <span>{item.description}</span>
+                                <span>{bookDetail.description}</span>
                             </div>
                             <div className='item-price'>
-                                <span>{item.price} đ</span>
+                                <span>{bookDetail.price} đ</span>
                             </div>
                             <div className='quantity-add-box'>
                                 <div className='item-quantity'>
                                     <button onClick={handleMinusQuantityClick}>-</button>
-                                    <span>{quantity}</span>
+                                    <span>{quantityToBuy}</span>
                                     <button onClick={handleAddQuantityClick}>+</button>
                                 </div>
-                                <div className='item-buy'>
+                                <Link className='item-buy' to={'/cart'} onClick={()=>{dispatch(insertCartIntoDatabase({id, quantityToBuy}))}}>
                                     <img src={cartImg}></img>
                                     <span>BUY</span>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                         <div className='book-detail-row-1-column-2'>
@@ -158,12 +162,12 @@ export const BookDetail = ({image}) =>{
                                     </ul>
                                 </div>
                                 <div className='book-detail-table-col-2'>
-                                    <p>{item.product_name}</p>
-                                    <p>{item.author}</p>
-                                    <p>{item.language}</p>
-                                    <p>{item.format}</p>
-                                    <p>{item.publication_year}</p>
-                                    <p>{item.publisher}</p>
+                                    <p>{bookDetail.product_name}</p>
+                                    <p>{bookDetail.author}</p>
+                                    <p>{bookDetail.language}</p>
+                                    <p>{bookDetail.format}</p>
+                                    <p>{bookDetail.publication_year}</p>
+                                    <p>{bookDetail.publisher}</p>
                                 </div>                           
                             </div>
                             <span>Review</span>
@@ -325,7 +329,6 @@ export const BookDetail = ({image}) =>{
                         </div>
                     </div>
                   </>    
-                )
             )}   
         </div>
         <div className='subscribe'>

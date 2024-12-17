@@ -1,3 +1,6 @@
+import { getBestSeller } from "../../../../Server";
+import { saveCart } from "../store/cartSlice";
+
 const baseUrl="http://localhost:4001"
 let clevr={
     sigUpAccount(userName, email, password){
@@ -197,6 +200,110 @@ let clevr={
     getRatingStat(id){
         return fetch(`http://localhost:4001/review/stat/${id}`,{
             method:'GET',
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    },
+    getCart(){
+        return fetch(`http://localhost:4001/cart`,{
+            method:'GET',
+            credentials:'include',
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    },
+    insertCart(product_id, quantity){
+        return fetch(`http://localhost:4001/cart`,{
+            method:'POST',
+            credentials:'include',
+            body:JSON.stringify({
+                product_id,
+                quantity
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    },
+    updateCart(updateData){
+        console.log(updateData)
+        return fetch(`http://localhost:4001/cart`,{
+            method:"PUT",
+            credentials:'include',
+            body:JSON.stringify({
+                updateData
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    },
+    deleteItemInCart(id){
+        return fetch(`http://localhost:4001/cart`,{
+            method:"DELETE",
+            credentials:'include',
+            body:JSON.stringify({
+                id
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    },
+    getBestSeller(){
+        return fetch(`http://localhost:4001/product/best-seller`,{
+            method:"GET",
         }).then(response=>{
             if (response.ok){
                 return response.json()

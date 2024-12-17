@@ -70,7 +70,8 @@ export const Main = () =>{
         <div className='main'>
             <Banner></Banner>
             <div className='trending-context'>
-                <h2>Trending this week</h2>
+                <p>Trending this week</p>
+                <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</span>
             </div>
             <div className='trending'>
                {arr.map((item)=>

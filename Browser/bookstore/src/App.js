@@ -4,6 +4,7 @@ import {BrowserRouter, Route, RouterProvider, Routes, createBrowserRouter, creat
 import { Header } from './Components/Header/header';
 import { Footer } from './Components/Footer/footer';
 import { Banner } from './Components/SlideBanner/Banner';
+import { Cart } from './Components/Cart/cart';
 import { Main } from './Components/Main/main';
 import { Login } from './Components/Login/login';
 import { Signup } from './Components/Sign-up/sign-up';
@@ -17,6 +18,7 @@ function App() {
           <Route index element={<Main></Main>}></Route>
           <Route path='/search' element={<SearchResult></SearchResult>}></Route>
           <Route path='/:id' element={<BookDetail></BookDetail>}></Route>
+          <Route path='/cart' element={<Cart></Cart>}></Route>
         </Route>
         <Route path='/login' element={<Login></Login>}></Route>   
         <Route path='/sign-up' element={<Signup></Signup>}></Route> 
