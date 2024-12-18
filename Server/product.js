@@ -1,6 +1,8 @@
 const express=require('express')
 const productRouter = express.Router();
 const db=require('./index.js')
+let flashSaleEndTime = new Date();
+flashSaleEndTime.setHours(0, 0, 0, 0); // Mặc định 1h sáng UTC mỗi ngày
 productRouter.get('/',async(req, res, next)=>{
     try {
         const [products] = await Promise.all([
@@ -16,10 +18,29 @@ productRouter.get('/best-seller', async(req,res,next)=>{
     const bestSellerProduct= await db.getBestSeller()
     res.send(bestSellerProduct)
 })
-productRouter.get('/disount', async(req,res,next)=>{
+productRouter.get('/discount', async(req,res,next)=>{
     const discountProduct= await db.getDiscountItem()
     res.send(discountProduct)
 })
+productRouter.get('/trending', async(req, res, next) =>{
+    const trendingProduct=await db.getTrendingItem()
+    res.send(trendingProduct)
+})
+productRouter.get('/feature-book', async(req, res, next)=>{
+    const featureProduct=await db.getFeatureBook()
+    res.send(featureProduct)
+})
+// Route lấy thời gian kết thúc flash sale
+productRouter.get('/discount/flash-sale-endtime', (req, res) => {
+  if (new Date() > flashSaleEndTime) {
+    // Reset flash sale endTime cho ngày mới
+    flashSaleEndTime = new Date();
+    flashSaleEndTime.setHours(0, 0, 0, 0);
+    flashSaleEndTime.setDate(flashSaleEndTime.getDate() + 1);
+  }
+  res.json({ endTime: flashSaleEndTime });
+});
+
 productRouter.get('/related_product/:product_id', async(req, res, next)=>{
     const relatedProduct= await db.getRelatedProduct(req.params.product_id)
     res.send(relatedProduct)

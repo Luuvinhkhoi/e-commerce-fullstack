@@ -98,6 +98,8 @@ export const BookDetail = ({image}) =>{
         fetchDetail()
     }, [])
     console.log(bookDetail)
+    console.log(productImages)
+    console.log(selectedImage)
     return (
       <> 
         <div className='book-detail'>

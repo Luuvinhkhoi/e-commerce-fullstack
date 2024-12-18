@@ -35,10 +35,10 @@
 }
 .best-seller-item-category{
     background-color: rgba(141, 40, 173,15%);
-    margin: 0.5rem;
     padding: 0.5rem;
     border-radius: 1rem;
     color: #8D28AD;
+    display: inline-block
 }
 .best-seller-item-name-author{
     margin: 1rem 0px;

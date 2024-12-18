@@ -1,0 +1,101 @@
+.feature-book{
+    width: 100%;
+    margin: 3rem auto;
+}
+.feature-book-context{
+    width: 90%;
+    margin: 0 auto;
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.feature-book-button{
+    display: flex;
+    gap: 1rem;
+}
+.feature-book-button img{
+    height: 24px;
+    width: 24px;
+}
+.feature-book-item {
+    display: flex !important;
+    align-items: center;
+    height: 100%;
+    gap: 3.5rem;
+    text-align: start;
+    background-color: #FAFAFA;
+    border-radius: 1rem;
+    padding: 2rem;
+}
+.feature-book-item-image{
+    width: 30%;
+    height: 300px;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+.feature-book-item-desc{
+    width: 70%;
+    height: 300px;
+}
+.feature-book-item-desc .feature-book-item-category p{
+    padding: 1rem;
+    background-color: rgba(141, 40, 173,15%);
+    display: inline-block;
+    border-radius: 1rem;
+}
+.feature-book-item-desc .item-name{
+    font-weight: 600;
+    font-size: 30px;
+}
+.feature-book-item-desc .item-price{
+    color: #8D28AD;
+}
+.feature-book-item-intro .item-intro span{
+    font-size: 14px;
+    margin:1rem 0;
+    font-family: 'Roboto' !important;
+}
+.feature-book .swiper-slide{
+    width: 55%;
+}
+.feature-book-item-cart{
+    display: inline-block;
+}
+.feature-book-item-cart .item-cart{
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    gap: 1rem;
+    margin-top: 1rem;
+    background-color: #8D28AD;
+    padding: 1rem;
+    border-radius: 1rem;
+    color: #FFFFFF;
+}
+.feature-book-item-cart .item-cart .cart-img{
+    height: 24px;
+    width: 24px;
+}
+.feature-book .swiper-button-prev{
+    height: 40px !important;
+    width: 40px !important;
+    background-color: #ffff;
+    border-radius: 50%;
+    font-size: 24px;
+    box-shadow: 5px 5px 20px 5px #C4C4C4;
+}
+.feature-book .swiper-button-prev:after{
+    font-size: 24px !important;
+}
+.feature-book .swiper-button-next{
+    height: 40px !important;
+    width: 40px !important;
+    background-color: #ffff;
+    border-radius: 50%;
+    font-size: 24px;
+    box-shadow: 5px 5px 20px 5px #C4C4C4;
+}
+.feature-book .swiper-button-next:after{
+    font-size: 24px !important;
+}

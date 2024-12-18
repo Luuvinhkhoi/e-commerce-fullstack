@@ -1,6 +1,33 @@
-export const Feature = () => {
+import { Swiper, SwiperSlide } from 'swiper/react';
+import './category.css'
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/scrollbar';
+
+// import required modules
+import { Navigation } from 'swiper/modules';
+import { Scrollbar } from 'swiper/modules';
+import { useEffect, useState } from 'react';
+import clevr from '../../../util/clevr';
+export const Category = () => {
+    const [category, setCategory]=useState()    
+    const [loading, setLoading] = useState(true);
+    console.log(category)
+    useEffect(()=>{
+       async function getCategory(){
+          const result= await clevr.getAllCategory()
+          setCategory(result)
+          setLoading(false)
+       }
+       getCategory()
+    },[])
     return (
         <div className='category'>
+            {loading ? (
+                <p>Loading...</p> // Hiển thị thông báo loading trong khi dữ liệu đang được tải
+          ) : (
+            <>
                 <h2>Categories</h2>
                 <div className='category-slide-container'>
                     <Swiper
@@ -12,15 +39,18 @@ export const Feature = () => {
                           modules={[Scrollbar]}
                           className="mySwiper"
                     >
-                        {arr.map(item=>
+                        {category.map(item=>
                             <SwiperSlide>
                                 <div className='category-item'>
-                                   <p>{item.category}</p>
+                                   <p>{item.category_name}</p>
+                                   <span>{item.count} item</span>
                                 </div>
                             </SwiperSlide>
                         )}
                     </Swiper>
                 </div>
+            </>    
+           )}    
         </div>
     )
 }

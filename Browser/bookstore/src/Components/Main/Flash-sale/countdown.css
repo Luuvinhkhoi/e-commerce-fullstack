@@ -1,0 +1,17 @@
+.countdown-timer{
+    margin-top: 2rem;
+    background-color: rgb(255, 255, 255, 0.2);
+    padding: 2rem 0;
+    width: 60%;
+    border-radius: 1rem;
+    font-size: 40px;
+}
+.countdown-timer span{
+    font-size: 40px;
+    font-weight: 500;
+}
+.countdown-timer >div{
+    text-align: center;
+    width: 80%;
+    margin: 0 auto;
+}

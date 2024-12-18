@@ -1,7 +1,7 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: "Poppins";
+  font-family: "poppins";
 }
 img{
   width: 100%;
@@ -27,6 +27,7 @@ input{
 .App {
   text-align: center;
 }
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 .App-logo {
   height: 40vmin;

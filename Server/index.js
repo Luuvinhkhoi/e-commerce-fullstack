@@ -80,6 +80,16 @@ const getAllCategoryFromDatabase = () => {
     });
   });
 };
+const countItemInEachCategory= async()=>{
+  try{ 
+    const result = await pool.query('select category.category_name, count(product.category_id) from product inner join category on product.category_id=category.category_id group by product.category_id, category.category_name');
+    if(result){
+      return result.rows
+    }
+  } catch (error){
+    throw error
+  }
+}
 const getProductFromDatabaseByCategoryName = async (categoryName) => {
   console.log(categoryName)
   try {
@@ -436,7 +446,22 @@ const getRatingScore=async(id)=>{
 }
 const getBestSeller=async()=>{
   try{
-    const result=await pool.query('Select * from product order by quantity desc')
+    const result = await pool.query(`SELECT 
+      product.*, 
+      product_images.cloudinary_url, 
+      category.category_name
+    FROM product
+    LEFT JOIN (
+      SELECT DISTINCT ON (product_id) product_id, cloudinary_url
+      FROM product_images
+      ORDER BY product_id, id ASC
+    ) product_images 
+    ON product.product_id = product_images.product_id
+    INNER JOIN category 
+    ON product.category_id = category.category_id
+    ORDER BY product.quantity ASC
+    LIMIT 5;`)
+    console.log(result)
     return result.rows
   } catch(error){
     throw error.message
@@ -444,9 +469,24 @@ const getBestSeller=async()=>{
 }
 const getDiscountItem=async()=>{
   try{
-    const productResult=await pool.query('Select * from flash_sales')
+    const productResult=await pool.query('Select * from flash_sales inner join product on product.product_id=flash_sales.product_id left join (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images) product_images on product_images.product_id=flash_sales.product_id inner join category on product.category_id=category.category_id')
     return productResult.rows
   } catch(error){
+    throw error.message
+  }
+}
+const getTrendingItem=async()=>{
+  try{
+    const result=await pool.query(`SELECT * FROM product
+    left join  (
+        SELECT DISTINCT ON (product_id) product_id, cloudinary_url
+        FROM product_images
+    ) product_images
+    on product.product_id=product_images.product_id
+    ORDER BY RANDOM()
+    LIMIT 5;`)
+    return result.rows
+  } catch (error){
     throw error.message
   }
 }
@@ -501,10 +541,16 @@ const handleFlashSale = async () => {
     console.log('Flash sale items added successfully.');
   } catch (error) {
     console.error('Error handling flash sale:', error.message);
-  } finally {
-    await pool.end();
   }
 };
+const getFeatureBook= async ()=>{
+  try{
+    const result=await pool.query('SELECT DISTINCT ON (category_id) product.product_id, product_name, description, price, product_images.cloudinary_url,product.category_id, category.category_name FROM product left join (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images) product_images on product.product_id=product_images.product_id inner join category on product.category_id=category.category_id')
+    return result.rows
+  } catch (error){
+    throw error.message
+  }
+}
 cron.schedule('15 0 * * *', () => {
     console.log('Running flash sale process at 12 AM...');
     handleFlashSale();
@@ -520,6 +566,7 @@ module.exports={
     getAllProductFromDatabase,
     getProductFromDatabaseById,
     getAllCategoryFromDatabase,
+    countItemInEachCategory,
     getProductFromDatabaseByCategoryName,
     createProduct,
     updateProduct,
@@ -547,5 +594,6 @@ module.exports={
     getRatingScore,
     getBestSeller, 
     getDiscountItem,
-
+    getTrendingItem,
+    getFeatureBook,
 }

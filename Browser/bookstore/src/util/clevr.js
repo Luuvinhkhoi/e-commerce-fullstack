@@ -1,5 +1,3 @@
-import { getBestSeller } from "../../../../Server";
-import { saveCart } from "../store/cartSlice";
 
 const baseUrl="http://localhost:4001"
 let clevr={
@@ -316,6 +314,83 @@ let clevr={
         }). catch(networkError=>{
             console.log(networkError.message)
         })
+    },
+    getFlashSaleItems(){
+        return fetch(`http://localhost:4001/product/discount`,{
+            method:"GET",
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    }, getAllCategory(){
+        return fetch('http://localhost:4001/category',{
+            method:"GET",
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    }, getTrendingItem(){
+        return fetch('http://localhost:4001/product/trending',{
+            method:"GET",
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    }, getFeatureItem(){
+        return fetch('http://localhost:4001/product/feature-book',{
+            method:"GET",
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
+    }, getEndtime(){
+        return fetch('http://localhost:4001/product/discount/flash-sale-endtime',{
+            method:"GET",
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        }); // API trả về endTime
+           
     }
 
 }

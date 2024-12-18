@@ -7,11 +7,11 @@ import arrow from '../../Assets/right-arrow.png'
 import cartImg from '../../Assets/shopping-cart.png'
 import mathImg from '../../Assets/maths .png'
 import whiteArrow from '../../Assets/right-arrow-white.png'
-import whiteCartImg from '../../Assets/shopping-cart-white.png'
 import store from '../../Assets/store.png'
 import customer from '../../Assets/white-group.png'
 import book from '../../Assets/book.png'
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { BestSeller } from './Best-seller/best-seller'
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -20,7 +20,10 @@ import 'swiper/css/scrollbar';
 // import required modules
 import { Navigation } from 'swiper/modules';
 import { Scrollbar } from 'swiper/modules';
-
+import { Category } from './Category/category'
+import { Trending } from './Trending/trending'
+import { FeatureBook } from './Feature-Book/feature-book'
+import { FlashSale } from './Flash-sale/flash-sale'
 
 export const Main = () =>{
     const arr = [
@@ -73,29 +76,7 @@ export const Main = () =>{
                 <p>Trending this week</p>
                 <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</span>
             </div>
-            <div className='trending'>
-               {arr.map((item)=>
-                    <div className='trending-item' tabIndex={0}>
-                        <div className='item-img'>
-                            <img src={item.img}></img>
-                        </div>
-                        <div className='item-category'>
-                            <p>{item.category}</p>
-                        </div>
-                        <div className='item-name-author'>
-                            <div className='item-name'>
-                                <p>{item.name}</p>
-                            </div>
-                            <div className='item-author'>
-                                <p>{item.author}</p>
-                            </div>
-                        </div>
-                        <div className='item-price'>
-                            <p>${item.price}</p>
-                        </div>
-                    </div>               
-               )} 
-            </div>
+            <Trending></Trending>
             <div className="advan">
                 <div className="advan-item">
                     <div className="advan-item-content">
@@ -137,184 +118,10 @@ export const Main = () =>{
                     </div>
                 </div>
             </div>
-            <div className='best-seller'>
-              <div className='best-seller-context'>
-                <h2>Best Sellers</h2>
-                <div className='best-seller-button'>
-                    <span>View more</span>
-                    <a><img src={arrow}></img></a>
-                </div>
-              </div>
-              <div className='best-seller-slide-container'>
-                    <Swiper
-                        slidesPerView={3}
-                        spaceBetween={30}
-                        navigation={true}
-                        modules={[Navigation]}
-                        className="mySwiper"
-                    >
-                        {arr.map(item=>
-                        <SwiperSlide>
-                          <div className='best-seller-item'>
-                            <div className='best-seller-item-image'>
-                                <img src={item.img}></img>
-                            </div> 
-                            <div className='best-seller-item-desc'>
-                                    <div className='best-seller-item-category'>
-                                        <p>{item.category}</p>
-                                    </div> 
-                                    <div className='best-seller-item-name-author'>
-                                            <div className='item-name'>
-                                                <p>{item.name}</p>
-                                            </div>
-                                            <div className='item-author'>
-                                                <p>{item.author}</p>
-                                            </div>
-                                    </div>
-                                    <div className='best-seller-item-price'>
-                                            <div className='item-price'>
-                                                <p>${item.price}</p>
-                                            </div>
-                                    </div>     
-                            </div>
-                          </div>
-                        </SwiperSlide>
-                        )} 
-                    </Swiper>
-                </div>
-            </div>
-            <div className='category'>
-                <h2>Categories</h2>
-                <div className='category-slide-container'>
-                    <Swiper
-                          scrollbar={{
-                            hide: true,
-                          }}
-                          spaceBetween={30}
-                          slidesPerView={3}
-                          modules={[Scrollbar]}
-                          className="mySwiper"
-                    >
-                        {arr.map(item=>
-                            <SwiperSlide>
-                                <div className='category-item'>
-                                   <p>{item.category}</p>
-                                </div>
-                                <div className='category-item-count'>
-                                    <p></p>
-                                </div>
-                            </SwiperSlide>
-                        )}
-                    </Swiper>
-                </div>
-            </div>
-            <div className='feature-book'>
-                <div className='feature-book-context'>
-                    <h2>Feature book</h2>
-                    <div className='feature-book-button'>
-                        <span>View more</span>
-                        <a><img src={arrow}></img></a>
-                    </div>
-                </div>
-                <div className='feature-book-slide-container'>
-                    <Swiper
-                          slidesPerView={"auto"}
-                          centeredSlides={true}
-                          spaceBetween={30}
-                          loop={true}
-                          navigation={true}
-                          modules={[Navigation]}
-                          className="mySwiper"
-                    >
-                        {arr.map(item=>
-                            <SwiperSlide>
-                              <div className='feature-book-item'>
-                                <div className='feature-book-item-image'>
-                                    <img src={item.img}></img>
-                                </div> 
-                                <div className='feature-book-item-desc'>
-                                    <div className='feature-book-item-category'>
-                                        <p>{item.category}</p>
-                                    </div>
-                                    <div className='feature-book-item-name-author'>
-                                        <div className='item-name'>
-                                            <p>{item.name}</p>
-                                        </div>
-                                    </div>
-                                    <div className='feature-book-item-intro'>
-                                        <div className='item-intro'>
-                                            <span>{item.desc}</span>
-                                        </div>
-                                    </div>
-                                    <div className='feature-book-item-price'>
-                                        <div className='item-price'>
-                                            <h3>${item.price}</h3>
-                                        </div>
-                                    </div>   
-                                    <div className='feature-book-item-cart'>
-                                        <div className='item-cart'>
-                                            <div className='cart-img'>
-                                                <img src={whiteCartImg}></img>
-                                            </div>
-                                            <p>Add to cart</p>
-                                        </div>
-                                    </div> 
-                                </div> 
-                              </div>
-                            </SwiperSlide>
-                        )}
-                    </Swiper>
-                </div>
-            </div>
-            <div className='flash-sale'>
-                    <div className='flash-sale-context'>
-                        <div className='flash-sale-desc'>
-                            <p>Flash Sale</p>
-                            <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
-                            <div className='flash-sale-counting'>
-
-                            </div>
-                        </div>
-                    </div>    
-                    <div className='flash-sale-slide-container'>
-                            <Swiper
-                                slidesPerView={'auto'}
-                                spaceBetween={30}
-                                loop={true}
-                                navigation={true}
-                                modules={[Navigation]}
-                                className="mySwiper"
-                            >
-                                {arr.map(item=>
-                                    <SwiperSlide>
-                                    <div className='flash-sale-item'>
-                                        <div className='flash-sale-item-image'>
-                                            <img src={item.img}></img>
-                                        </div> 
-                                        <div className='flash-sale-item-desc'>
-                                            <div className='flash-sale-item-category'>
-                                                <p>{item.category}</p>
-                                            </div>
-                                            <div className='flash-sale-item-name-author'>
-                                                <div className='item-name'>
-                                                    <p>{item.name}</p>
-                                                </div>
-                                                <div className='item-author'>
-                                                    <p>{item.author}</p>
-                                                </div>
-                                            </div>
-                                            <div className='flash-sale-item-price'>
-                                                <div className='item-price'>
-                                                    <h3>${item.price}</h3>
-                                                </div>
-                                            </div>   
-                                        </div> 
-                                    </div>
-                                    </SwiperSlide>
-                                )}
-                            </Swiper>
-                    </div>
-            </div>
+            <BestSeller></BestSeller>
+            <Category></Category>
+            <FeatureBook></FeatureBook>
+            <FlashSale></FlashSale>
             <div className='news'>
                 <div className='news-context'>
                     <h2>Lastest News</h2>
