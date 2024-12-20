@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState,  } from 'react';
+import { Link , useLocation} from 'react-router-dom';
 import clevr from '../../util/clevr';
 import arrow from '../../Assets/right-arrow.png'
 import store from '../../Assets/store.png'
@@ -14,18 +14,29 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // import required modules
 import { Navigation } from 'swiper/modules';
 import { Scrollbar } from 'swiper/modules';
+import { BestSeller } from '../Main/Best-seller/best-seller';
 export const SearchResult=()=>{
-    let [categoryOptionState, setCategoryOptionState]=useState('all genres');
-    let [formatOptionState, setFormatOptionState]=useState('all format')
-    const [minPrice, setMinPrice] = useState(2500);
-    const [maxPrice, setMaxPrice] = useState(7500);
-    
+    const location=useLocation()
+    let [categoryOptionState, setCategoryOptionState]=useState(location.state);
+    let [formatOptionState, setFormatOptionState]=useState(null)
+    const [publisher, setPublisher]=useState()
+    const [publisherOption, setPublisherOption]=useState()
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(1000000);
+    const pageSize=9
+    let pages=[]
+    const [totalPage, setTotalPage] = useState(0);
+    let count
+    const [pageNumber, setPageNumber]=useState(1)
     const [products, setProducts] = useState();
     const [loading, setLoading] = useState(true);
-    const priceGap = 1000;
-    const maxRange = 10000;
+    const priceGap = 50000;
+    const maxRange = 1000000;
     function getAllProduct(){
-        return clevr.getAllProduct()
+        const params = new URLSearchParams();
+        params.append('pageNumber',pageNumber)
+        params.append('pageSize', pageSize)
+        return clevr.getAllProduct(params.toString())
     }
     // Handle thay đổi giá trị từ input number
     const handlePriceInput = (e, type) => {
@@ -67,63 +78,77 @@ export const SearchResult=()=>{
     };
 
     function handleCategoryOption(e){
-        setCategoryOptionState(e.target.value)
+        console.log(e)
+        if (e.target.value==='all genres'){
+            setCategoryOptionState(null)
+        } else{
+            setCategoryOptionState(e.target.value)
+        }
     }
     function handleFormatOption(e){
-        setFormatOptionState(e.target.value)
+        if (e.target.value==='all format'){
+            setFormatOptionState(e.target.value)
+        } else{
+            setFormatOptionState(e.target.value)
+        }
+    }
+    function handlePublisherOption(e){
+        setPublisherOption(e.target.value)
+    }
+    const handlePageNumber = async (pageNumber) => {
+        setPageNumber(pageNumber);
+        const result=await clevr.getAllProduct(new URLSearchParams({ pageNumber, pageSize }).toString())
+        setProducts(result.products)
+    };
+    async function filterProduct(){
+        const params = new URLSearchParams();
+        params.append('pageNumber',pageNumber)
+        params.append('pageSize', pageSize)
+        if (categoryOptionState) params.append('category', categoryOptionState);
+        if (formatOptionState) params.append('format', formatOptionState);
+        if (publisherOption) params.append('publisher', publisherOption);
+        if (minPrice !== null && minPrice !== undefined) params.append('minPrice', minPrice);
+        if (maxPrice !== null && maxPrice !== undefined) params.append('maxPrice', maxPrice);
+        let result=await clevr.filterProduct(params.toString())
+        setProducts(result.filterProduct)
+        setTotalPage(Math.ceil(result.count/pageSize))
+    }
+    
+    async function resetFilter() {
+        let result=await getAllProduct()
+        setCategoryOptionState(null);
+        setFormatOptionState(null);
+        setPublisherOption(null);
+        setMinPrice(0);
+        setMaxPrice(1000000);
+        setProducts(result)
     }
     useEffect(()=>{
-        const fetchProduct= async()=>{
-           let result= await getAllProduct()
-           setProducts(result); // Cập nhật kết quả
-           setLoading(false);
-        }
-        fetchProduct()
+        async function fetchData() {
+            try {
+              const [productResult, publisherResult] = await Promise.all([
+                clevr.getAllProduct(new URLSearchParams({ pageNumber, pageSize }).toString()),
+                clevr.getPublisher()
+              ]);
+              setProducts(productResult.products);
+              setPublisher(publisherResult);
+              setTotalPage(Math.ceil(productResult.count[0].count/pageSize))
+            } catch (error) {
+              console.error('Lỗi khi tải dữ liệu:', error);
+            } finally {
+              setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
+            }
+          }
+         fetchData() 
     },[])
-    const arr = [
-        {
-            img:'https://images.unsplash.com/photo-1535398089889-dd807df1dfaa?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            category:'Biography',
-            name: 'Such a Fun Age',
-            author: 'James Sulivan',
-            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            price: 55,
-        },
-        {
-            img:'https://images.unsplash.com/photo-1539877254216-818ed7c76096?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            category:'Advanture',
-            name: 'The Adventure',
-            author: 'Margareth Mc. Lee',
-            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            price: 50,
-        },
-        {
-            img:'https://images.unsplash.com/photo-1511108690759-009324a90311?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            category:'Fiction',
-            name: 'Emily and the Backbone',
-            author: 'Cloe Mamora',
-            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            price: 51,
-        },
-        {
-            img:'https://images.unsplash.com/photo-1551300317-58b878a9ff6e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            category:'Fairy tails',
-            name: 'Luster: a Novel',
-            author: 'Raven Jaelani',
-            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            price: 58,
-        },
-        {
-            img:'https://images.unsplash.com/photo-1551300329-dc0a750a7483?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            category:'Fiction',
-            name: 'Real Life',
-            author: 'David Johanson',
-            desc:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-            price: 57,
-        }
-
-    ]
+    useEffect(() => {
+        window.scrollTo(0, 0); // Cuộn lên đầu trang mỗi khi pageNumber thay đổi
+    }, [pageNumber]);
     console.log(products)
+    console.log(publisher)
+    console.log(pages)
+    console.log(totalPage)
+    console.log(count)
     return (
       <>
         <div className='searchResult'>
@@ -134,28 +159,28 @@ export const SearchResult=()=>{
                         <span>Categories</span>
                         <div className='option'>
                             <div>
-                                <input type='radio' id='all genres' value='all genres' name='category' checked={categoryOptionState==='all genres'} onChange={handleCategoryOption}></input>
+                                <input type='radio' id='all genres' value='all genres' name='category' checked={categoryOptionState===null} onChange={handleCategoryOption}></input>
                                 <label for='all genres' >All genres</label>
                             </div>
                             <div>
-                                <input type='radio' id='fiction' value='fiction' name='category' checked={categoryOptionState==='fiction'} onChange={handleCategoryOption}></input>
-                                <label for='fiction' >Fiction</label>
+                                <input type='radio' id='Fiction' value='Fiction' name='category' checked={categoryOptionState==='fiction'} onChange={handleCategoryOption}></input>
+                                <label for='Fiction' >Fiction</label>
                             </div>
                             <div>
-                                <input type='radio' id='horror' value='horror' name='category' checked={categoryOptionState==='horror'} onChange={handleCategoryOption}></input>
-                                <label for='horror' >Horror</label>
+                                <input type='radio' id='Horror' value='Horror' name='category' checked={categoryOptionState==='horror'} onChange={handleCategoryOption}></input>
+                                <label for='Horror' >Horror</label>
                             </div>
                             <div>
-                                <input type='radio' id='romance' value='romance' name='category' checked={categoryOptionState==='romance'} onChange={handleCategoryOption}></input>
-                                <label for='romance' >Romance</label>
+                                <input type='radio' id='Romance' value='Romance' name='category' checked={categoryOptionState==='romance'} onChange={handleCategoryOption}></input>
+                                <label for='Romance' >Romance</label>
                             </div>
                             <div>
-                                <input type='radio' id='classic literature' value='classic literature' name='category' checked={categoryOptionState==='classic litterature'} onChange={handleCategoryOption}></input>
-                                <label for='classic literature' >Classic Literature</label>
+                                <input type='radio' id='Classic literature' value='Classic literature' name='category' checked={categoryOptionState==='classic literature'} onChange={handleCategoryOption}></input>
+                                <label for='Classic literature' >Classic literature</label>
                             </div>
                             <div>
-                                <input type='radio' id='mystery' value='mystery' name='category' checked={categoryOptionState==='mystery'} onChange={handleCategoryOption}></input>
-                                <label for='mystery' >Mystery</label>
+                                <input type='radio' id='Mystery' value='Mystery' name='category' checked={categoryOptionState==='mystery'} onChange={handleCategoryOption}></input>
+                                <label for='Mystery' >Mystery</label>
                             </div>
                         </div>
                     </div>
@@ -163,28 +188,37 @@ export const SearchResult=()=>{
                         <span>Book Format</span>
                         <div className='option'>
                             <div>
-                                <input type='radio' id='all format' value='all format' name='format' checked={formatOptionState==='all format'} onChange={handleFormatOption}></input>
+                                <input type='radio' id='all format' value='all format' name='format' checked={formatOptionState===null} onChange={handleFormatOption}></input>
                                 <label for='all format' >All format</label>
                             </div>
                             <div>
-                                <input type='radio' id='hard cover' value='hard cover' name='format' checked={formatOptionState==='hard cover'} onChange={handleFormatOption}></input>
-                                <label for='hard cover' >Hard Cover</label>
+                                <input type='radio' id='Hard cover' value='Hard cover' name='format' checked={formatOptionState==='Hard cover'} onChange={handleFormatOption}></input>
+                                <label for='Hard cover' >Hard cover</label>
                             </div>
                             <div>
-                                <input type='radio' id='paper back' value='paper back' name='format' checked={formatOptionState==='paper back'} onChange={handleFormatOption}></input>
-                                <label for='paper back' >Paper Back</label>
+                                <input type='radio' id='Paper back' value='Paper back' name='format' checked={formatOptionState==='Paper back'} onChange={handleFormatOption}></input>
+                                <label for='Paper back' >Paper back</label>
                             </div>
                             <div>
-                                <input type='radio' id='large print' value='large print' name='format' checked={formatOptionState==='large print'} onChange={handleFormatOption}></input>
-                                <label for='large print' >Large Print</label>
+                                <input type='radio' id='Large print' value='Large print' name='format' checked={formatOptionState==='Large print'} onChange={handleFormatOption}></input>
+                                <label for='Large print' >Large Print</label>
                             </div>                        
                         </div>
                     </div>
                     <div className='publisher'>
                         <span>Publisher</span>
-                    </div>
-                    <div className='year'>
-                        <span>Years</span>
+                        {loading ? (
+                        <p>Loading...</p> // Hiển thị thông báo loading trong khi dữ liệu đang được tải
+                        ) : (
+                            <div className='option'>
+                            {publisher.map(item=>
+                                <div>
+                                <input type='radio' id={item.publisher} value={item.publisher} name='publisher' checked={publisherOption===item.publisher} onChange={handlePublisherOption}></input>
+                                <label for={item.publisher} >{item.publisher}</label>
+                            </div>     
+                            )}
+                            </div>
+                        )}    
                     </div>
                     <div className='price-range'>
                         <span className='price-range-row-1'>Price Range</span>
@@ -200,10 +234,10 @@ export const SearchResult=()=>{
                             <input type='number' className='input-max' value={maxPrice} onChange={(e) => handlePriceInput(e, "max")}></input>
                         </div>
                     </div>
-                    <div className='search-button'>
+                    <div className='search-button' onClick={filterProduct}>
                         <button> Refine Search</button>
                     </div>
-                    <div className='reset-button'>
+                    <div className='reset-button'  onClick={resetFilter}>
                         <button> Reset Filter</button>
                     </div>
                 </div>
@@ -238,55 +272,19 @@ export const SearchResult=()=>{
                             </div></Link>
                         )}
                     </div>
-                )}   
+                )} 
+                <div className='pagination'>
+                    {[...Array(totalPage)].map((_, index) => (
+                        <div key={index} onClick={() => handlePageNumber(index + 1)} className={pageNumber === index + 1 ? 'active-page-number' : 'unactive-page-number'}>
+                            <button >
+                            {index + 1}
+                            </button>
+                        </div>
+                    ))}
+                </div>  
             </div>
         </div>
-        <div className='best-seller'>
-              <div className='best-seller-context'>
-                <h2>Best Sellers</h2>
-                <div className='best-seller-button'>
-                    <span>View more</span>
-                    <a><img src={arrow}></img></a>
-                </div>
-              </div>
-              <div className='best-seller-slide-container'>
-                    <Swiper
-                        slidesPerView={3}
-                        spaceBetween={30}
-                        navigation={true}
-                        modules={[Navigation]}
-                        className="mySwiper"
-                    >
-                        {arr.map(item=>
-                        <SwiperSlide>
-                          <div className='best-seller-item'>
-                            <div className='best-seller-item-image'>
-                                <img src={item.img}></img>
-                            </div> 
-                            <div className='best-seller-item-desc'>
-                                    <div className='best-seller-item-category'>
-                                        <p>{item.category}</p>
-                                    </div> 
-                                    <div className='best-seller-item-name-author'>
-                                            <div className='item-name'>
-                                                <p>{item.name}</p>
-                                            </div>
-                                            <div className='item-author'>
-                                                <p>{item.author}</p>
-                                            </div>
-                                    </div>
-                                    <div className='best-seller-item-price'>
-                                            <div className='item-price'>
-                                                <p>${item.price}</p>
-                                            </div>
-                                    </div>     
-                            </div>
-                          </div>
-                        </SwiperSlide>
-                        )} 
-                    </Swiper>
-                </div>
-        </div>
+        <BestSeller></BestSeller>
         <div className='our-desc'>
                 <div className='desc-item'>
                    <div className='desc-item-flex'>

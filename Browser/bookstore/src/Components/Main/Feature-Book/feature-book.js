@@ -69,7 +69,7 @@ export const FeatureBook=()=>{
                                     </div>
                                     <div className='feature-book-item-price'>
                                         <div className='item-price'>
-                                            <h3>${item.price}</h3>
+                                            <h3>{item.price}đ</h3>
                                         </div>
                                     </div>   
                                     <div className='feature-book-item-cart'>

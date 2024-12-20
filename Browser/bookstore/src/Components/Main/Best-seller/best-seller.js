@@ -64,7 +64,7 @@ export const BestSeller = () =>{
                                     </div>
                                     <div className='best-seller-item-price'>
                                             <div className='item-price'>
-                                                <p>${item.price}</p>
+                                                <p>{item.price}đ</p>
                                             </div>
                                     </div>     
                                 </div>

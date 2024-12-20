@@ -4,8 +4,6 @@ import './countdown.css'
 const FlashSaleCountdown = () => {
   const [timeLeft, setTimeLeft] = useState({});
   const [endTime, setEndTime] = useState(null); // Thời gian kết thúc flash sale từ backend
-  console.log(timeLeft)
-  console.log(endTime)
   // Hàm gọi API để lấy endTime từ backend
 
   // Hàm tính thời gian còn lại

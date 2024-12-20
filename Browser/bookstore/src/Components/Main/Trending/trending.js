@@ -35,7 +35,7 @@ export const Trending=()=>{
                             </div>
                         </div>
                         <div className='item-price'>
-                            <p>${item.price}</p>
+                            <p>{item.price}đ</p>
                         </div>
                     </div>               
                )} 

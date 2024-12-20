@@ -88,8 +88,8 @@ let clevr={
         });
 
     },
-    getAllProduct(){
-        return fetch('http://localhost:4001/product', {
+    getAllProduct(query){
+        return fetch(`http://localhost:4001/product?${query}`, {
             method:"GET",
         }).then(response=>{
             if (response.ok){
@@ -389,8 +389,53 @@ let clevr={
             } return jsonResponse
         }). catch(networkError=>{
             console.log(networkError.message)
-        }); // API trả về endTime
+        });
            
+    }, getPublisher(){
+        return fetch('http://localhost:4001/publisher',{
+            method:"GET",
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        }); 
+    }, filterProduct(query){
+        return fetch(`http://localhost:4001/product/filter?${query}`,{
+            method:"GET",
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        }); 
+    }, getProductByName(query){
+        return fetch(`http://localhost:4001/product/search?${query}`,{
+            method:"GET",
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        }); 
     }
 
 }

@@ -70,7 +70,7 @@ export const FlashSale=()=>{
                                         <div className='flash-sale-item-price'>
                                             <div className='item-price'>
                                                 <h3>{item.sale_price}</h3>
-                                                <h5>{item.price}</h5>
+                                                <h5>{item.price}đ</h5>
                                             </div>
                                         </div>   
                                     </div> 

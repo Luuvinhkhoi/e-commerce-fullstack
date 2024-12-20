@@ -111,9 +111,21 @@ const getProductFromDatabaseByCategoryName = async (categoryName) => {
   }
 };
 
-const getAllProductFromDatabase=()=>{
+const getAllProductFromDatabase = (offset, limit) => {
   return new Promise((resolve, reject) => {
-    pool.query('SELECT * FROM product left join product_images on product.product_id=product_images.product_id inner join category on product.category_id=category.category_id', (error, results) => {
+    const query = `
+      SELECT *
+      FROM product
+      LEFT JOIN (
+        SELECT DISTINCT ON (product_id) product_id, cloudinary_url
+        FROM product_images
+      ) AS product_images
+      ON product.product_id = product_images.product_id
+      INNER JOIN category
+      ON product.category_id = category.category_id
+      LIMIT $1 OFFSET $2
+    `;
+    pool.query(query, [limit, offset], (error, results) => {
       if (error) {
         reject(error);
       } else {
@@ -121,6 +133,15 @@ const getAllProductFromDatabase=()=>{
       }
     });
   });
+};
+const countTotalProduct= async()=>{
+  const result=await pool.query('select count(product_id) from product')
+  return result.rows
+}
+const getPublisher=async()=>{
+  const result = await pool.query('select publisher from product')
+  const product= result.rows
+  return product
 }
 const getProductFromDatabaseById=async(id)=>{
     const result = await pool.query('select * from product where product_id=$1',[id])
@@ -140,6 +161,26 @@ const getSameAuthorProduct=async(id)=>{
   const author = await pool.query('select author from product where product_id=$1',[id])
   const result=await pool.query('select * from product left join product_images on product.product_id=product_images.product_id where product.author=$1',[author])
   return result.rows
+}
+const filterProduct=async(category, publisher, format, min, max, pageSize, offset)=>{
+  try{
+    console.log(category, publisher, format, min, max, pageSize, offset)
+    let result=await pool.query(`SELECT *
+      FROM product
+      left join (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images) product_images
+      on product.product_id=product_images.product_id
+      INNER JOIN category 
+      ON product.category_id = category.category_id
+      WHERE (category.category_name = COALESCE($1, category_name))
+      AND (publisher = COALESCE($2, publisher))
+      AND (format = COALESCE($3, format))
+      AND price between $4 and $5
+      limit $6 offset $7;`,[category, publisher, format, min, max, pageSize, offset])
+    console.log(result)
+    return result.rows
+  } catch (error){
+    throw new Error('Error: ' + error.message);
+  }
 }
 const createProduct=async(product_name, description, price, quantity, category_id)=>{
   try {
@@ -506,7 +547,7 @@ const handleFlashSale = async () => {
 
     for (let product of expiredProducts.rows) {
       await pool.query(
-        'UPDATE product SET quantity = quantity + $1 WHERE id = $2',
+        'UPDATE product SET quantity = quantity + $1 WHERE product_id = $2',
         [product.stock_quantity, product.product_id]
       );
     }
@@ -551,7 +592,22 @@ const getFeatureBook= async ()=>{
     throw error.message
   }
 }
-cron.schedule('15 0 * * *', () => {
+const findBookByName=async(name)=>{
+  try{
+    const result=await pool.query(`SELECT *
+      FROM product
+      left join (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images) product_images
+      on product.product_id=product_images.product_id
+      INNER JOIN category 
+      ON product.category_id = category.category_id
+      where product.product_name ilike $1`,[`%${name}%`]
+    )
+    return result.rows
+  } catch (error){
+    throw error.message
+  }
+}
+cron.schedule('19 0 * * *', () => {
     console.log('Running flash sale process at 12 AM...');
     handleFlashSale();
   }, {
@@ -596,4 +652,8 @@ module.exports={
     getDiscountItem,
     getTrendingItem,
     getFeatureBook,
+    getPublisher,
+    filterProduct,
+    countTotalProduct,
+    findBookByName
 }

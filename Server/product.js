@@ -2,13 +2,26 @@ const express=require('express')
 const productRouter = express.Router();
 const db=require('./index.js')
 let flashSaleEndTime = new Date();
-flashSaleEndTime.setHours(0, 0, 0, 0); // Mặc định 1h sáng UTC mỗi ngày
-productRouter.get('/',async(req, res, next)=>{
+flashSaleEndTime.setHours(0, 0, 0, 0); // Mặc định 0h sáng UTC mỗi ngày
+const pagination = (req, res, next) => {
+    const { pageNumber, pageSize } = req.query;
+    console.log(pageNumber, pageSize)
+    req.pagination = {
+        pageNumber: Number(pageNumber),
+        pageSize: Number(pageSize),
+        offset: (pageNumber - 1) * pageSize,
+    };
+
+    next();
+};
+productRouter.get('/',pagination,async(req, res, next)=>{
     try {
-        const [products] = await Promise.all([
-            db.getAllProductFromDatabase(), 
+        const { offset, pageSize } = req.pagination;
+        const [products, count] = await Promise.all([
+            db.getAllProductFromDatabase(offset, pageSize), 
+            db.countTotalProduct()
         ]);
-        res.status(200).send(products);
+        res.status(200).send({products:products,count:count });
     } catch (error) {
         console.error("Error fetching products and categories:", error);
         res.status(500).send("Error fetching data");
@@ -30,6 +43,16 @@ productRouter.get('/feature-book', async(req, res, next)=>{
     const featureProduct=await db.getFeatureBook()
     res.send(featureProduct)
 })
+productRouter.get('/search', async(req, res, next) =>{
+  try{  
+    const {name}=req.query
+    console.log(name)
+    const product=await db.findBookByName(name)
+    res.status(200).send(product)
+  } catch(error){
+    res.status(500).send(err)
+  }  
+})
 // Route lấy thời gian kết thúc flash sale
 productRouter.get('/discount/flash-sale-endtime', (req, res) => {
   if (new Date() > flashSaleEndTime) {
@@ -40,7 +63,18 @@ productRouter.get('/discount/flash-sale-endtime', (req, res) => {
   }
   res.json({ endTime: flashSaleEndTime });
 });
+productRouter.get('/filter',pagination ,async(req, res, next)=>{
+    const { category, publisher, format, minPrice, maxPrice } = req.query;
+    const { offset, pageSize } = req.pagination;
+    const min=parseFloat(minPrice)
+    const max=parseFloat(maxPrice)
+    console.log(category,publisher, format, offset, pageSize)
+    const filterProduct= await db.filterProduct(category, publisher, format, min, max, pageSize, offset)            
+    const count=filterProduct.length
 
+    res.send({filterProduct: filterProduct, count: count})
+}
+)
 productRouter.get('/related_product/:product_id', async(req, res, next)=>{
     const relatedProduct= await db.getRelatedProduct(req.params.product_id)
     res.send(relatedProduct)

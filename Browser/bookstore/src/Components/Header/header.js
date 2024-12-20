@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './header.css'
 import clevr from '../../util/clevr'
 import {Link, useNavigate} from 'react-router-dom'
@@ -9,8 +9,19 @@ import profileUser from '../../Assets/profile-user.png'
 export const Header = () => {
     const [userName, setUserName] = useState(null)
     const [isOpen, setIsOpen]= useState('closeToogle')
+    const [active, setActive]=useState(false)
+    const [timeoutId, setTimeoutId] = useState(null);
+    const [products, setProducts] = useState();
+    const [loading, setLoading] = useState(true);
+    const searchRef = useRef(null)
     console.log(userName)
     const navigate = useNavigate()
+    function handleActive(event){
+        const newQuery = event.target.value;
+        setLoading(true)
+        setActive(!active)
+        search(newQuery);
+    }
     useEffect(() => {
         const fetchUserProfile = async () => {
           try {
@@ -46,6 +57,61 @@ export const Header = () => {
             setIsOpen('closeToogle')
         }
     }
+    function handleToogleBarClick(){
+        setIsOpen('closeToogle')
+    }
+    async function search(parameter){
+        const name=parameter
+        const result=await clevr.getProductByName(new URLSearchParams({name}).toString())
+        console.log('search')
+        setProducts(result)
+        setLoading(false)
+    }
+
+    function handleInputChange(event) {
+        const newQuery = event.target.value;
+        // Clear trước đó nếu có
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        // Thiết lập timeout mới
+        const id = setTimeout(() => {
+            search(newQuery);
+            setActive(true)
+        }, 1000); // Đặt thời gian chờ 300ms (thời gian trễ)
+
+        setTimeoutId(id);
+    }
+    function handleOverlayClick(){
+        setActive(false);
+        setProducts(false)
+        console.log('close')
+    }
+    function handleInputClick(event) {
+        event.stopPropagation(); // Ngăn sự kiện onClick bị truyền ra ngoài
+    }
+    useEffect(() => {
+        const handleScroll = () => {
+          setActive(false);
+          setProducts(false)
+          setLoading(true)
+        };
+        window.addEventListener("scroll", handleScroll);
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+              setActive(false); // Đóng thanh tìm kiếm
+              setProducts(false)
+            }
+        };
+      
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+          window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+    console.log(active, products)
     return (
         <div className='header'>
             <Link to='/'><div className='brand'>
@@ -60,20 +126,63 @@ export const Header = () => {
                 <button className='toogle-bar-button' onClick={handleToogleBar}>Menu</button>
                 <div className={isOpen}>
                     <ul className='navigation-list'>
-                        <li><Link to='/search'>All books</Link></li>
-                        <li><Link>Fiction</Link></li>
-                        <li><Link>Romance</Link></li>
-                        <li><Link>Horror</Link></li>
-                        <li><Link>Classic litterature</Link></li>
-                        <li><Link>Mystery</Link></li>
+                        <li><Link to='/search' onClick={handleToogleBarClick} state='all genres'>All books</Link></li>
+                        <li><Link to='/search' onClick={handleToogleBarClick} state='fiction'>Fiction</Link></li>
+                        <li><Link to='/search' onClick={handleToogleBarClick} state='romance'>Romance</Link></li>
+                        <li><Link to='/search' onClick={handleToogleBarClick} state='horror'>Horror</Link></li>
+                        <li><Link to='/search' onClick={handleToogleBarClick} state='classic litterature'>Classic litterature</Link></li>
+                        <li><Link to='/search' onClick={handleToogleBarClick} state='mystery'>Mystery</Link></li>
                     </ul>
                 </div>
             </div>
-            <div className='search-bar'>
-                <input placeholder='Find books here'></input>
+            <div className='search-bar' onClick={handleActive} ref={searchRef}  >
+                <input placeholder='Find books here' onChange={handleInputChange}></input>
                 <div className='search-bar-img'>
                     <img src={searchImg}></img>
                 </div>
+                {active?(
+                    <div className='mini-search-bar'>
+                      {loading?(
+                        <div>
+                            <span className='recommend'>Maybe you will like</span>
+                        </div>
+                      ):(
+                        <div className='search-bar-result'>
+                            <span className='recommend'>Maybe you will like</span>
+                            {products.slice(0,2).map(item=>
+                                <Link to={`/${item.product_id}`} state={item.cloudinary_url}className='search-item'>
+                                    <div className='search-item-image'>
+                                        <img src={item.cloudinary_url}></img>
+                                    </div> 
+                                    <div className='search-item-desc'>
+                                        <div className='search-item-item-category'>
+                                            <p>{item.category_name}</p>
+                                        </div> 
+                                        <div className='search-item-name-author'>
+                                                <div className='item-name'>
+                                                    <p>{item.product_name.length>40 ? item.product_name.substring(0,40)+('...'):item.product_name}</p>
+                                                </div>
+                                                <div className='item-author'>
+                                                    <p>{item.author}</p>
+                                                </div>
+                                        </div>
+                                        <div className='search-item-price'>
+                                                <div className='item-price'>
+                                                    <p>{item.price}đ</p>
+                                                </div>
+                                        </div>     
+                                    </div>
+                                </Link>
+                            )}
+                        </div>
+                      )}
+                    </div>
+                ):(
+                    <div></div>
+                )}
+                
+            </div>
+            <div className={active?'header-overlay-active':'header-overlay-unactive'} onClick={handleOverlayClick}>
             </div>
             <div className='cart-img'>
                 <img src={cartImg}></img>
