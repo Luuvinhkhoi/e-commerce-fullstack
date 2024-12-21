@@ -98,3 +98,16 @@
 .flash-sale .swiper-button-next:after{
     font-size: 24px !important;
 }
+.flash-sale-item-quantity{
+    color: #636363;
+}
+.flash-sale-progress{
+    margin-top: 1rem;
+    background-color: #C4C4C4;
+    border-radius: 1rem;
+    height: 5px;
+}
+.flash-sale-item-quantity span{
+    font-size: 16px;
+    font-weight: 500;
+}

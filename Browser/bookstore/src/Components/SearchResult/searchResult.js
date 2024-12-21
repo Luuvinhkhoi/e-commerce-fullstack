@@ -1,5 +1,5 @@
 import { useEffect, useState,  } from 'react';
-import { Link , useLocation} from 'react-router-dom';
+import { Link , useLocation, useSearchParams} from 'react-router-dom';
 import clevr from '../../util/clevr';
 import arrow from '../../Assets/right-arrow.png'
 import store from '../../Assets/store.png'
@@ -16,17 +16,16 @@ import { Navigation } from 'swiper/modules';
 import { Scrollbar } from 'swiper/modules';
 import { BestSeller } from '../Main/Best-seller/best-seller';
 export const SearchResult=()=>{
-    const location=useLocation()
-    let [categoryOptionState, setCategoryOptionState]=useState(location.state);
+    const [searchParams] = useSearchParams();
+    const genre = searchParams.get('genre') || 'All genres';
+    let [categoryOptionState, setCategoryOptionState]=useState(genre);
     let [formatOptionState, setFormatOptionState]=useState(null)
     const [publisher, setPublisher]=useState()
     const [publisherOption, setPublisherOption]=useState()
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(1000000);
     const pageSize=9
-    let pages=[]
     const [totalPage, setTotalPage] = useState(0);
-    let count
     const [pageNumber, setPageNumber]=useState(1)
     const [products, setProducts] = useState();
     const [loading, setLoading] = useState(true);
@@ -78,16 +77,15 @@ export const SearchResult=()=>{
     };
 
     function handleCategoryOption(e){
-        console.log(e)
         if (e.target.value==='all genres'){
-            setCategoryOptionState(null)
+            setCategoryOptionState('All genres')
         } else{
             setCategoryOptionState(e.target.value)
         }
     }
     function handleFormatOption(e){
         if (e.target.value==='all format'){
-            setFormatOptionState(e.target.value)
+            setFormatOptionState(null)
         } else{
             setFormatOptionState(e.target.value)
         }
@@ -104,7 +102,9 @@ export const SearchResult=()=>{
         const params = new URLSearchParams();
         params.append('pageNumber',pageNumber)
         params.append('pageSize', pageSize)
-        if (categoryOptionState) params.append('category', categoryOptionState);
+        if (categoryOptionState!=='All genres') {
+            params.append('category', categoryOptionState);
+        }
         if (formatOptionState) params.append('format', formatOptionState);
         if (publisherOption) params.append('publisher', publisherOption);
         if (minPrice !== null && minPrice !== undefined) params.append('minPrice', minPrice);
@@ -116,39 +116,62 @@ export const SearchResult=()=>{
     
     async function resetFilter() {
         let result=await getAllProduct()
-        setCategoryOptionState(null);
+        setCategoryOptionState('All genres');
         setFormatOptionState(null);
         setPublisherOption(null);
         setMinPrice(0);
         setMaxPrice(1000000);
-        setProducts(result)
+        setProducts(result.products)
     }
     useEffect(()=>{
         async function fetchData() {
-            try {
-              const [productResult, publisherResult] = await Promise.all([
-                clevr.getAllProduct(new URLSearchParams({ pageNumber, pageSize }).toString()),
-                clevr.getPublisher()
-              ]);
-              setProducts(productResult.products);
-              setPublisher(publisherResult);
-              setTotalPage(Math.ceil(productResult.count[0].count/pageSize))
-            } catch (error) {
-              console.error('Lỗi khi tải dữ liệu:', error);
-            } finally {
-              setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
+            setCategoryOptionState(genre)
+            console.log(`fetch data ${categoryOptionState}`)
+            if(genre==='All genres'){
+                try {
+                    const [productResult, publisherResult] = await Promise.all([
+                      clevr.getAllProduct(new URLSearchParams({ pageNumber, pageSize }).toString()),
+                      clevr.getPublisher()
+                    ]);
+                    setProducts(productResult.products);
+                    setPublisher(publisherResult);
+                    setTotalPage(Math.ceil(productResult.count[0].count/pageSize))
+                } catch (error) {
+                    console.error('Lỗi khi tải dữ liệu:', error);
+                } finally {
+                    setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
+                }
+            } else{
+                try {
+                    const category=genre
+                    const [productResult, publisherResult] = await Promise.all([
+                      clevr.getProductByCategory(new URLSearchParams({ pageNumber, pageSize, category }).toString()),
+                      clevr.getPublisher()
+                    ]);
+                    setProducts(productResult.filterProduct);
+                    setPublisher(publisherResult);
+                    setTotalPage(Math.ceil(Number(productResult.count.find(item=>item.category_name===categoryOptionState).count)/pageSize))
+                } catch (error) {
+                    console.error('Lỗi khi tải dữ liệu:', error);
+                } finally {
+                    setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
+                }
             }
+            
           }
          fetchData() 
-    },[])
+    },[genre])
     useEffect(() => {
         window.scrollTo(0, 0); // Cuộn lên đầu trang mỗi khi pageNumber thay đổi
     }, [pageNumber]);
+    useEffect(()=>{
+       setCategoryOptionState(genre)
+    },[genre])
+    console.log(categoryOptionState)
     console.log(products)
     console.log(publisher)
-    console.log(pages)
     console.log(totalPage)
-    console.log(count)
+    console.log(genre)
     return (
       <>
         <div className='searchResult'>
@@ -159,27 +182,27 @@ export const SearchResult=()=>{
                         <span>Categories</span>
                         <div className='option'>
                             <div>
-                                <input type='radio' id='all genres' value='all genres' name='category' checked={categoryOptionState===null} onChange={handleCategoryOption}></input>
+                                <input type='radio' id='all genres' value='all genres' name='category' checked={categoryOptionState==='All genres'} onChange={handleCategoryOption}></input>
                                 <label for='all genres' >All genres</label>
                             </div>
                             <div>
-                                <input type='radio' id='Fiction' value='Fiction' name='category' checked={categoryOptionState==='fiction'} onChange={handleCategoryOption}></input>
+                                <input type='radio' id='Fiction' value='Fiction' name='category' checked={categoryOptionState==='Fiction'} onChange={handleCategoryOption}></input>
                                 <label for='Fiction' >Fiction</label>
                             </div>
                             <div>
-                                <input type='radio' id='Horror' value='Horror' name='category' checked={categoryOptionState==='horror'} onChange={handleCategoryOption}></input>
+                                <input type='radio' id='Horror' value='Horror' name='category' checked={categoryOptionState==='Horror'} onChange={handleCategoryOption}></input>
                                 <label for='Horror' >Horror</label>
                             </div>
                             <div>
-                                <input type='radio' id='Romance' value='Romance' name='category' checked={categoryOptionState==='romance'} onChange={handleCategoryOption}></input>
+                                <input type='radio' id='Romance' value='Romance' name='category' checked={categoryOptionState==='Romance'} onChange={handleCategoryOption}></input>
                                 <label for='Romance' >Romance</label>
                             </div>
                             <div>
-                                <input type='radio' id='Classic literature' value='Classic literature' name='category' checked={categoryOptionState==='classic literature'} onChange={handleCategoryOption}></input>
+                                <input type='radio' id='Classic literature' value='Classic literature' name='category' checked={categoryOptionState==='Classic literature'} onChange={handleCategoryOption}></input>
                                 <label for='Classic literature' >Classic literature</label>
                             </div>
                             <div>
-                                <input type='radio' id='Mystery' value='Mystery' name='category' checked={categoryOptionState==='mystery'} onChange={handleCategoryOption}></input>
+                                <input type='radio' id='Mystery' value='Mystery' name='category' checked={categoryOptionState==='Mystery'} onChange={handleCategoryOption}></input>
                                 <label for='Mystery' >Mystery</label>
                             </div>
                         </div>

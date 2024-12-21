@@ -13,6 +13,7 @@ import 'swiper/css/scrollbar';
 import { Navigation } from 'swiper/modules';
 import { Scrollbar } from 'swiper/modules';
 import FlashSaleCountdown from './countdown';
+import { Link } from 'react-router-dom';
 export const FlashSale=()=>{
     const [flashSaleItem, setFlashSaleItem]=useState()
     const [loading, setLoading]=useState(true)
@@ -51,7 +52,7 @@ export const FlashSale=()=>{
                         >
                             {flashSaleItem.map(item=>
                                 <SwiperSlide>
-                                <div className='flash-sale-item'>
+                                <Link to={`/${item.product_id}`} state={item.cloudinary_url} className='flash-sale-item'>
                                     <div className='flash-sale-item-image'>
                                         <img src={item.cloudinary_url}></img>
                                     </div> 
@@ -69,12 +70,18 @@ export const FlashSale=()=>{
                                         </div>
                                         <div className='flash-sale-item-price'>
                                             <div className='item-price'>
-                                                <h3>{item.sale_price}</h3>
+                                                <h3>{item.sale_price}đ</h3>
                                                 <h5>{item.price}đ</h5>
                                             </div>
-                                        </div>   
+                                        </div> 
+                                        <div className='flash-sale-progress'>
+                                            <div></div>
+                                        </div>  
+                                        <div className='flash-sale-item-quantity'>
+                                            <span>{item.stock_quantity} book in stock</span>
+                                        </div>
                                     </div> 
-                                </div>
+                                </Link>
                                 </SwiperSlide>
                             )}
                         </Swiper>

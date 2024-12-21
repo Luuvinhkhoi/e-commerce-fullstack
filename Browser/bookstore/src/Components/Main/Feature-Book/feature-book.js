@@ -3,6 +3,7 @@ import './feature-book.css'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import arrow from '../../../Assets/right-arrow.png'
 import whiteCartImg from '../../../Assets/shopping-cart-white.png'
+import { Link } from 'react-router-dom';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -49,7 +50,7 @@ export const FeatureBook=()=>{
                     >
                         {featureBook.map(item=>
                             <SwiperSlide>
-                              <div className='feature-book-item'>
+                              <Link to={`/${item.product_id}`} state={item.cloudinary_url}  className='feature-book-item'>
                                 <div className='feature-book-item-image'>
                                     <img src={item.cloudinary_url}></img>
                                 </div> 
@@ -81,7 +82,7 @@ export const FeatureBook=()=>{
                                         </div>
                                     </div> 
                                 </div> 
-                              </div>
+                              </Link>
                             </SwiperSlide>
                         )}
                     </Swiper>

@@ -90,7 +90,7 @@ const countItemInEachCategory= async()=>{
     throw error
   }
 }
-const getProductFromDatabaseByCategoryName = async (categoryName) => {
+const getProductFromDatabaseByCategoryName = async (offset, pageSize,categoryName) => {
   console.log(categoryName)
   try {
       const categoryResult = await pool.query('SELECT category_id FROM category WHERE category_name=$1', [categoryName]);
@@ -100,7 +100,17 @@ const getProductFromDatabaseByCategoryName = async (categoryName) => {
       }
       console.log(categoryResult)
       const categoryId = categoryResult.rows[0].category_id;
-      const productResult = await pool.query('SELECT * FROM product WHERE category_id = $1', [categoryId]);
+      const productResult = await pool.query(`SELECT *
+        FROM product
+        LEFT JOIN (
+          SELECT DISTINCT ON (product_id) product_id, cloudinary_url
+          FROM product_images
+        ) AS product_images
+        ON product.product_id = product_images.product_id
+        INNER JOIN category
+        ON product.category_id = category.category_id
+        where category.category
+        LIMIT $1 OFFSET $2`, [categoryId]);
       if (productResult.rows.length === 0) {
           return { message: 'No products found for this category' };
       }
@@ -164,19 +174,23 @@ const getSameAuthorProduct=async(id)=>{
 }
 const filterProduct=async(category, publisher, format, min, max, pageSize, offset)=>{
   try{
-    console.log(category, publisher, format, min, max, pageSize, offset)
-    let result=await pool.query(`SELECT *
-      FROM product
-      left join (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images) product_images
-      on product.product_id=product_images.product_id
-      INNER JOIN category 
-      ON product.category_id = category.category_id
-      WHERE (category.category_name = COALESCE($1, category_name))
-      AND (publisher = COALESCE($2, publisher))
-      AND (format = COALESCE($3, format))
-      AND price between $4 and $5
-      limit $6 offset $7;`,[category, publisher, format, min, max, pageSize, offset])
-    console.log(result)
+    let result = await pool.query(
+      `SELECT *
+       FROM product
+       LEFT JOIN (
+           SELECT DISTINCT ON (product_id) product_id, cloudinary_url 
+           FROM product_images
+       ) product_images
+       ON product.product_id = product_images.product_id
+       INNER JOIN category 
+       ON product.category_id = category.category_id
+       WHERE (category.category_name = COALESCE($1, category_name))
+         AND (publisher = COALESCE($2, publisher))
+         AND (format = COALESCE($3, format))
+         AND (price >= COALESCE($4, price) AND price <= COALESCE($5, price))
+       LIMIT $6 OFFSET $7;`,
+      [category, publisher, format, min, max, pageSize, offset]
+    );
     return result.rows
   } catch (error){
     throw new Error('Error: ' + error.message);

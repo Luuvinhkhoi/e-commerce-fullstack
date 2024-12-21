@@ -10,10 +10,16 @@ import { Navigation } from 'swiper/modules';
 import { Scrollbar } from 'swiper/modules';
 import { useEffect, useState } from 'react';
 import clevr from '../../../util/clevr';
+import { useNavigate } from 'react-router-dom';
 export const Category = () => {
     const [category, setCategory]=useState()    
     const [loading, setLoading] = useState(true);
+    const navigate=useNavigate()
     console.log(category)
+    const handleCategoryClick = (categoryName) => {
+        // Chuyển hướng đến URL với params dựa trên category_name
+        navigate(`/search?genre=${encodeURIComponent(categoryName)}`);
+    };
     useEffect(()=>{
        async function getCategory(){
           const result= await clevr.getAllCategory()
@@ -41,7 +47,7 @@ export const Category = () => {
                     >
                         {category.map(item=>
                             <SwiperSlide>
-                                <div className='category-item'>
+                                <div className='category-item' onClick={()=>handleCategoryClick(item.category_name)}>
                                    <p>{item.category_name}</p>
                                    <span>{item.count} item</span>
                                 </div>

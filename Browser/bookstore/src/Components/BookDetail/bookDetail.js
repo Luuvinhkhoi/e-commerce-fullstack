@@ -80,7 +80,9 @@ export const BookDetail = ({image}) =>{
     function handleSubmitReview(){
         return clevr.submitReview(activeStar, reviewContent, id)
     }
-    
+    useEffect(() => {
+        window.scrollTo(0, 0); // Cuộn lên đầu trang mỗi khi pageNumber thay đổi
+    }, []);
     useEffect(()=>{
         async function fetchDetail(){
           let result = await getBookDetail(id)
@@ -317,7 +319,7 @@ export const BookDetail = ({image}) =>{
                         <div className='book-detail-row-2-col-2'>
                             <span>Related book</span>
                             {relatedBook.map(item=>
-                               <div className='related-book'>
+                               <Link to={`/${item.product_id}`} state={item.cloudinary_url} className='related-book'>
                                    <div className='related-book-image'>
                                        <img src={item.cloudinary_url}></img>
                                    </div>
@@ -326,7 +328,7 @@ export const BookDetail = ({image}) =>{
                                        <br></br>
                                        <span className='item-price'>{item.price} đ</span>
                                    </div>
-                               </div>
+                               </Link>
                             )}
                         </div>
                     </div>

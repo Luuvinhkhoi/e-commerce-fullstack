@@ -14,7 +14,6 @@ export const BestSeller = () =>{
     const [item, setItem]=useState()    
     const [loading, setLoading] = useState(true);
 
-    console.log(item)
     useEffect(()=>{
         async function getBestSeller(){
             const result=await clevr.getBestSeller()

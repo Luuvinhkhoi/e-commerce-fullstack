@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import './header.css'
 import clevr from '../../util/clevr'
-import {Link, useNavigate} from 'react-router-dom'
+import {Link, useNavigate, useLocation} from 'react-router-dom'
 import mathImg from '../../Assets/maths .png'
 import cartImg from '../../Assets/shopping-cart.png'
 import searchImg from '../../Assets/search.png'
@@ -14,7 +14,7 @@ export const Header = () => {
     const [products, setProducts] = useState();
     const [loading, setLoading] = useState(true);
     const searchRef = useRef(null)
-    console.log(userName)
+    const location=useLocation()
     const navigate = useNavigate()
     function handleActive(event){
         const newQuery = event.target.value;
@@ -41,7 +41,6 @@ export const Header = () => {
         try{
             const response = await clevr.logOut()
             if (response.ok) {
-                console.log('Logged out successfully');
                 navigate('/login');  // Redirect đến trang login sử dụng React Router
             } else {
                 console.error('Logout failed');
@@ -63,7 +62,6 @@ export const Header = () => {
     async function search(parameter){
         const name=parameter
         const result=await clevr.getProductByName(new URLSearchParams({name}).toString())
-        console.log('search')
         setProducts(result)
         setLoading(false)
     }
@@ -85,7 +83,6 @@ export const Header = () => {
     function handleOverlayClick(){
         setActive(false);
         setProducts(false)
-        console.log('close')
     }
     function handleInputClick(event) {
         event.stopPropagation(); // Ngăn sự kiện onClick bị truyền ra ngoài
@@ -111,7 +108,9 @@ export const Header = () => {
           window.removeEventListener("scroll", handleScroll);
         };
     }, []);
-    console.log(active, products)
+    useEffect(() => {
+        setIsOpen('closeToogle');
+    }, [location]);
     return (
         <div className='header'>
             <Link to='/'><div className='brand'>
@@ -126,12 +125,12 @@ export const Header = () => {
                 <button className='toogle-bar-button' onClick={handleToogleBar}>Menu</button>
                 <div className={isOpen}>
                     <ul className='navigation-list'>
-                        <li><Link to='/search' onClick={handleToogleBarClick} state='all genres'>All books</Link></li>
-                        <li><Link to='/search' onClick={handleToogleBarClick} state='fiction'>Fiction</Link></li>
-                        <li><Link to='/search' onClick={handleToogleBarClick} state='romance'>Romance</Link></li>
-                        <li><Link to='/search' onClick={handleToogleBarClick} state='horror'>Horror</Link></li>
-                        <li><Link to='/search' onClick={handleToogleBarClick} state='classic litterature'>Classic litterature</Link></li>
-                        <li><Link to='/search' onClick={handleToogleBarClick} state='mystery'>Mystery</Link></li>
+                        <li><Link to='/search?genre=All%20genres' onClick={handleToogleBarClick} state='All genres'>All books</Link></li>
+                        <li><Link to='/search?genre=Fiction' onClick={handleToogleBarClick} state='Fiction'>Fiction</Link></li>
+                        <li><Link to='/search?genre=Romance' onClick={handleToogleBarClick} state='Romance'>Romance</Link></li>
+                        <li><Link to='/search?genre=Horror' onClick={handleToogleBarClick} state='Horror'>Horror</Link></li>
+                        <li><Link to='/search?genre=Classic%20literature' onClick={handleToogleBarClick} state='Classic litterature'>Classic litterature</Link></li>
+                        <li><Link to='/search?genre=Mystery' onClick={handleToogleBarClick} state='ystery'>Mystery</Link></li>
                     </ul>
                 </div>
             </div>

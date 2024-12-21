@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import clevr from "../../../util/clevr"
 export const Trending=()=>{
     const [trendingItem, setTrendingItem]=useState()
@@ -19,7 +20,7 @@ export const Trending=()=>{
              ) : (
               <>
                {trendingItem.map((item)=>
-                    <div className='trending-item' tabIndex={0}>
+                    <Link to={`/${item.product_id}`} state={item.cloudinary_url} className='trending-item' tabIndex={0}>
                         <div className='item-img'>
                             <img src={item.cloudinary_url}></img>
                         </div>
@@ -37,7 +38,7 @@ export const Trending=()=>{
                         <div className='item-price'>
                             <p>{item.price}đ</p>
                         </div>
-                    </div>               
+                    </Link>               
                )} 
               </>   
              )}

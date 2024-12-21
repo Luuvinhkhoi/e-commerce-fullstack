@@ -92,6 +92,8 @@
     margin-top: 8rem;
 }
 .news-context {
+    width: 85%;
+    margin: 0 auto;
     margin-bottom: 3rem;
 }
 .news-context h2{

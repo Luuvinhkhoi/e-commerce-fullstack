@@ -1,6 +1,7 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import './Banner.css'
 export const Banner = () =>{
+    const [isFocus, setIsFocus]=useState()
     useEffect(()=>{
         document.getElementById('theme-option-1').focus()
     })

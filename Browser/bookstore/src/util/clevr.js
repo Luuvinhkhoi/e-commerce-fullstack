@@ -436,6 +436,21 @@ let clevr={
         }). catch(networkError=>{
             console.log(networkError.message)
         }); 
+    }, getProductByCategory(category){
+        return fetch(`http://localhost:4001/category/category-filter?${category}`,{
+            method:"GET",
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        }); 
     }
 
 }
