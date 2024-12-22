@@ -16,6 +16,7 @@ export const Header = () => {
     const searchRef = useRef(null)
     const location=useLocation()
     const navigate = useNavigate()
+    const currentPath = window.location.pathname + window.location.search;
     function handleActive(event){
         const newQuery = event.target.value;
         setLoading(true)
@@ -111,6 +112,7 @@ export const Header = () => {
     useEffect(() => {
         setIsOpen('closeToogle');
     }, [location]);
+    console.log(currentPath)
     return (
         <div className='header'>
             <Link to='/'><div className='brand'>
@@ -198,7 +200,7 @@ export const Header = () => {
                 </div>
             : <div className='link'>
                 <div className='sign-in'>
-                    <Link to='/login' className='sign-in-anchor'>Sign in</Link>
+                    <Link to='/login' state={{ previousUrl: currentPath }} className='sign-in-anchor'>Sign in</Link>
                 </div>
                 <div className='sign-up'>
                     <Link to='/sign-up' className='sign-up-button'>Create account</Link>

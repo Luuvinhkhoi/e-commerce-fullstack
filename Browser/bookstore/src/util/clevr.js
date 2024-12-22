@@ -88,6 +88,44 @@ let clevr={
         });
 
     },
+    facebookLogin(){
+        return fetch('http://localhost:4001/login/facebook',{
+            method:'GET',
+            credentials:'include',
+        }).then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+            console.log(response);
+            throw new Error(`Request failed with ${response.status}`);
+        }).then(jsonResponse => {
+            if (!jsonResponse) {
+              console.error('Response error');
+            }
+            return jsonResponse;
+        }).catch(networkError => {
+            console.log(networkError.message);
+        });
+    },
+    emailLogin(){
+        return fetch('http://localhost:4001/login/google',{
+            method:'GET',
+            credentials:'include',
+        }).then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+            console.log(response);
+            throw new Error(`Request failed with ${response.status}`);
+        }).then(jsonResponse => {
+            if (!jsonResponse) {
+              console.error('Response error');
+            }
+            return jsonResponse;
+        }).catch(networkError => {
+            console.log(networkError.message);
+        });
+    },
     getAllProduct(query){
         return fetch(`http://localhost:4001/product?${query}`, {
             method:"GET",

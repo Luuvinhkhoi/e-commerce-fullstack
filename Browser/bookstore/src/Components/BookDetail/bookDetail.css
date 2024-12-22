@@ -343,6 +343,22 @@
 .open-book-detail-review-row-4 .button-flex{
     justify-content: center;
 }
+.open-book-detail-review-row-4 .recommend-login{
+    margin-top: 3rem;
+    text-align: center;
+}
+.open-book-detail-review-row-4 .recommend-login >div{
+    display: flex;
+    justify-content: end;
+}
+
+.open-book-detail-review-row-4 .recommend-login >div >div{
+    margin: 3rem;
+    padding: 1rem;
+    border-radius: 2rem;
+    border: 1px #F0E4F4 solid;
+    width: 100px;
+}
 .book-detail-row-2-col-2 .related-book{
     display: flex;
     align-items: center;

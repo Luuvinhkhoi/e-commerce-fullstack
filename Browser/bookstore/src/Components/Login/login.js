@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import './login.css'
 import clevr from '../../util/clevr'
-import {Link, useNavigate} from 'react-router-dom'
+import {Link, useNavigate, useLocation} from 'react-router-dom'
 import facebookImg from '../../Assets/facebook.png'
 import gmailImg from '../../Assets/gmail.png'
 export const Login = ()=>{
     const [emailState, setEmailState]=useState('')
     const [passwordState, setPasswordState]=useState('')
+    const location=useLocation()
     const navigate=useNavigate()
     function handleEmailInput(e){
         setEmailState(prev=>prev=e.target.value)    
@@ -20,7 +21,7 @@ export const Login = ()=>{
         if (!result){
             console.error('fail');
         } else{
-            navigate('/')
+            navigate(location.state?.previousUrl || '/')
         }
     }
     function handleSubmit(e) {

@@ -12,6 +12,7 @@ import pen from '../../Assets/pen.png'
 import downArrow from '../../Assets/arrow-down.png'
 import upArrow from '../../Assets/top.png'
 export const BookDetail = ({image}) =>{
+    const [userName, setUserName] = useState(null)
     const [bookDetail, setBookDetail]=useState()
     const [relatedBook, setRelatedBook]=useState()
     const [productImages, setProductImages]=useState([])
@@ -24,6 +25,7 @@ export const BookDetail = ({image}) =>{
     const [ratingStat, setRatingStat]=useState()
     const location=useLocation()
     const first_selected_image=location.state
+    console.log(first_selected_image)
     const [selectedImage, setSeletedImage]=useState(first_selected_image)
     const [quantityToBuy, setQuantity]=useState(1)
     const [loading, setLoading] = useState(true);
@@ -51,7 +53,11 @@ export const BookDetail = ({image}) =>{
         setIsActive('open')
     }
     function handAddReview(){
-        setIsOpenAddReview(prev=>!prev)
+        setIsOpenAddReview(true)
+    }
+    function handleViewReview(){
+        setIsOpenAddReview(false)
+        openReview()
     }
     function handleAddReviewButton(){
         handAddReview();
@@ -81,8 +87,9 @@ export const BookDetail = ({image}) =>{
         return clevr.submitReview(activeStar, reviewContent, id)
     }
     useEffect(() => {
-        window.scrollTo(0, 0); // Cuộn lên đầu trang mỗi khi pageNumber thay đổi
-    }, []);
+        window.scrollTo(0, 0);
+        setSeletedImage(first_selected_image)
+    }, [id]);
     useEffect(()=>{
         async function fetchDetail(){
           let result = await getBookDetail(id)
@@ -98,10 +105,23 @@ export const BookDetail = ({image}) =>{
           setRatingStat(result5)
         }
         fetchDetail()
-    }, [])
-    console.log(bookDetail)
-    console.log(productImages)
-    console.log(selectedImage)
+    }, [id])
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+          try {
+            const result = await clevr.getUserProfile();
+    
+            if (result && result.user_name) {
+              setUserName(result.user_name); 
+            }
+          } catch (error) {
+            console.error('Error fetching user profile:', error);
+          }
+        };
+    
+        fetchUserProfile();
+    }, []);
+    console.log(isOpenAddReview)
     return (
       <> 
         <div className='book-detail'>
@@ -226,7 +246,7 @@ export const BookDetail = ({image}) =>{
                                         <img src={pen}></img>
                                         <button>Add review</button>
                                     </div>
-                                    <div onClick={openReview} className={`${isActive}-button`}>
+                                    <div onClick={handleViewReview} className={`${isActive}-button`}>
                                         <img src={downArrow}></img>
                                         <button>View reviews</button>
                                     </div>
@@ -234,6 +254,7 @@ export const BookDetail = ({image}) =>{
                                 <div className={`${isActive}-book-detail-review-row-4`}>
                                     {isOpenAddReview ?
                                         (
+                                          userName ? (
                                             <div className='add-review-box'>
                                                 <div className='rating-score'>
                                                     <div className='star-score'>
@@ -282,6 +303,16 @@ export const BookDetail = ({image}) =>{
                                                     <button onClick={handleSubmitReview}>Submit</button>
                                                 </div>
                                             </div>
+                                            ) : (
+                                            <div className='recommend-login'>
+                                                <span>Please <Link to={'/login'}>login</Link> or <Link to={'/sign-up'}>sign-up</Link> to review</span>
+                                                <div onClick={closeReview}>
+                                                   <div>
+                                                        <button>Close</button>
+                                                   </div>
+                                                </div>
+                                            </div>
+                                            )
                                         ) : 
                                         (
                                             <div className='list-review'>

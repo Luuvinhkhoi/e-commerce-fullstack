@@ -164,7 +164,7 @@ const getProductImageFromDatabaseById=async(id)=>{
 }
 const getRelatedProduct=async(id)=>{
   const categoryId = await pool.query('select category_id from product where product_id=$1',[id])
-  const result=await pool.query('select * from product left join product_images on product.product_id=product_images.product_id where product.category_id=$1 and product.product_id != $2 limit 3',[categoryId.rows[0].category_id, id])
+  const result=await pool.query('select * from product left join (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images) product_images on product.product_id=product_images.product_id where product.category_id=$1 and product.product_id != $2 limit 3',[categoryId.rows[0].category_id, id])
   return result.rows
 }
 const getSameAuthorProduct=async(id)=>{

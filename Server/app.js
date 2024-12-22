@@ -177,7 +177,6 @@ app.post('/login', passport.authenticate('local'), (req, res) => {
 app.get('/oauth2/redirect/facebook',
   passport.authenticate('facebook', { failureRedirect: 'http://localhost:3000/login', failureMessage: true }),
   function(req, res) {
-    console.log('oauth facebook', req.user)
     res.redirect('http://localhost:3000/')
   }
 );
@@ -186,7 +185,7 @@ app.get('/login/google', passport.authenticate('google'));
 app.get('/oauth2/redirect/google',
   passport.authenticate('google', { failureRedirect: 'http://localhost:3000/login', failureMessage: true }),
   function(req, res) {
-    res.redirect('http://localhost:3000/');
+    res.redirect('http://localhost:3000/')
   }
 );
 function authorizedUser(req, res, next) {

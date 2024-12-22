@@ -167,7 +167,7 @@ export const SearchResult=()=>{
     useEffect(()=>{
        setCategoryOptionState(genre)
     },[genre])
-    console.log(categoryOptionState)
+    console.log(window.location.pathname)
     console.log(products)
     console.log(publisher)
     console.log(totalPage)
