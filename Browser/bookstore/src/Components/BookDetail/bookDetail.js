@@ -86,6 +86,21 @@ export const BookDetail = ({image}) =>{
     function handleSubmitReview(){
         return clevr.submitReview(activeStar, reviewContent, id)
     }
+    const showLoginPopup = () => {
+        alert('Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.');
+    };
+
+    // Xử lý thêm sản phẩm vào giỏ hàng
+    const handleAddToCart = (productId) => {
+        if (!userName) {
+            showLoginPopup(); // Hiển thị pop-up nếu chưa đăng nhập
+            return;
+        }
+
+        // Logic thêm sản phẩm vào giỏ hàng nếu đã đăng nhập
+        console.log(`Sản phẩm ${productId} đã được thêm vào giỏ hàng bởi ${userName}`);
+    };
+
     useEffect(() => {
         window.scrollTo(0, 0);
         setSeletedImage(first_selected_image)
@@ -151,10 +166,25 @@ export const BookDetail = ({image}) =>{
                                     <span>{quantityToBuy}</span>
                                     <button onClick={handleAddQuantityClick}>+</button>
                                 </div>
-                                <Link className='item-buy' to={'/cart'} onClick={()=>{dispatch(insertCartIntoDatabase({id, quantityToBuy}))}}>
+                                <Link className='item-buy' to={userName ? '/cart' : '#'}  onClick={(event) => {
+                                    if (!userName) {
+                                        event.preventDefault(); // Ngăn chặn chuyển hướng nếu chưa đăng nhập
+                                        showLoginPopup(); // Hiển thị pop-up yêu cầu đăng nhập
+                                        return;
+                                    }
+                                    dispatch(insertCartIntoDatabase({ id, quantityToBuy })); // Thực hiện dispatch nếu đã đăng nhập
+                                }}>
                                     <img src={cartImg}></img>
                                     <span>BUY</span>
                                 </Link>
+                                <div id="login-popup" class="overlay">
+                                    <div class="modal">
+                                        <h2>Yêu cầu đăng nhập</h2>
+                                        <p>Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.</p>
+                                        <button id="loginButton">Đăng nhập</button>
+                                        <button id="closeButton">Đóng</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div className='book-detail-row-1-column-2'>
