@@ -100,10 +100,10 @@ export const Cart = () =>{
                             <button onClick={() => handleQuantityChange(item.product_id, 1)}>+</button>
                         </div>
                         <div className='item-price'>
-                            <span>{item.price}</span>
+                            <span>{item.price}đ</span>
                         </div>
                         <div className='item-total-price'>
-                            <span>{(item.price * item.quantity)}</span>
+                            <span>{(item.price * item.quantity)}đ</span>
                         </div>
                     </div>
                   )}
@@ -121,15 +121,15 @@ export const Cart = () =>{
                             <span>Tax</span>
                         </div>
                         <div>
-                            <p>{totalPrice}</p>
-                            <p>{tax}</p>
+                            <p>{totalPrice}đ</p>
+                            <p>{tax}đ</p>
                         </div>
                     </div>
                     <div className='cart-row-3-col-2-row-2'>
                         <span>Total</span>
-                        <p>{(totalPrice+tax)}</p>
+                        <p>{(totalPrice+tax)}đ</p>
                     </div>
-                    <div className='checkout-button'>Check out</div>
+                    <div className='checkout-button' onClick={()=>navigate('/checkout')}>Check out</div>
                     <div className='continue' onClick={() => navigate('/')}>Continue Shoping</div>
                 </div>
             </div>

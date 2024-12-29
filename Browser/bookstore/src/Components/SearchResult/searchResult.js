@@ -271,29 +271,31 @@ export const SearchResult=()=>{
                 <p>Loading...</p> // Hiển thị thông báo loading trong khi dữ liệu đang được tải
                 ) : (
                     <div className='book-list-row-1'>
-                        {products.map(item=>
-                            <Link to={`/${item.product_id}`} state={item.cloudinary_url}><div className='book-list-item'>
-                                <div className='book-list-item-image'>
-                                    <img src={item.cloudinary_url}></img>
-                                </div>
-                                <div className='book-list-item-desc'>
-                                    <div className='item-category'>
-                                        <span>{item.category_name}</span>
+                        {products.length>0 ? (
+                            products.map(item=>
+                                <Link to={`/${item.product_id}`} state={item.cloudinary_url}><div className='book-list-item'>
+                                    <div className='book-list-item-image'>
+                                        <img src={item.cloudinary_url}></img>
                                     </div>
-                                    <div className='item-name-author'>
-                                        <div className='item-name'>
-                                            <span>{item.product_name.length>20 ? item.product_name.substring(0, 20)+('...') : item.product_name}</span>
+                                    <div className='book-list-item-desc'>
+                                        <div className='item-category'>
+                                            <span>{item.category_name}</span>
                                         </div>
-                                        <div className='item-author'>
-                                            <span>{item.author}</span>
+                                        <div className='item-name-author'>
+                                            <div className='item-name'>
+                                                <span>{item.product_name.length>20 ? item.product_name.substring(0, 20)+('...') : item.product_name}</span>
+                                            </div>
+                                            <div className='item-author'>
+                                                <span>{item.author}</span>
+                                            </div>
+                                        </div>
+                                        <div className='item-price'>
+                                            <span>${item.price}</span>
                                         </div>
                                     </div>
-                                    <div className='item-price'>
-                                        <span>${item.price}</span>
-                                    </div>
-                                </div>
-                            </div></Link>
-                        )}
+                                </div></Link>
+                            )
+                        ):(<div>Sorry, we don't find any item</div>)}
                     </div>
                 )} 
                 <div className='pagination'>

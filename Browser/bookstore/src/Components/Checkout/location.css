@@ -1,0 +1,18 @@
+.css_select_div{
+    display: flex;
+    gap: 1rem;
+    font-size: 16px;
+    font-family: "Roboto" !important;
+    flex-shrink: 1;
+}
+.css_select{
+    font-family: 'Roboto';
+    border-radius: 0.5rem;
+    flex: 1 1 0;
+}
+option{
+    font-family: 'Roboto';
+}
+.css-1jqq78o-placeholder{
+    font-family: 'Roboto' !important;
+}

@@ -19,17 +19,20 @@ cartRouter.post('/', async(req,res,next)=>{
         res.status(500).send(err)
     }
 })
-checkoutRouter.post('/', async(req, res, next)=>{
+
+cartRouter.use('/checkout', checkoutRouter)
+checkoutRouter.post('/',async(req, res, next)=>{
     try{
-        console.log('hihi')
-        const {address}=req.body
-        const result = await db.checkout(req.user.user_id, address)
-        res.status(200).send(result)
-    } catch(err){
-        res.status(500).send(err)
+        console.log(req.body)
+        const {name,phone_number,province, city, ward , address, payment_method, fee}=req.body
+        const result=await db.checkout(req.user.user_id,province, city, ward, address,phone_number, payment_method, name, fee)
+        if (result){
+            res.status(200).send('Checkout success')
+        }
+    } catch(error){
+        res.status(500).send({message: error.message})
     }
 })
-cartRouter.use('/checkout', checkoutRouter)
 cartRouter.put('/', async(req, res, next)=>{
     try{
         const result=await db.updateCart(req.user.user_id, req.body.updateData)

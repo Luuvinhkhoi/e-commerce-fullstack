@@ -324,7 +324,6 @@ const deleteAllUser=async(id)=>{
   }
 }
 const getCartByUserId=async(id)=>{
-    console.log('mimimama')
     try{
       const cart_id = await pool.query('select cart_id from cart where user_id=$1',[id])
       const cartProduct = await pool.query('select cart_product.*, product_images.cloudinary_url FROM cart_product LEFT JOIN (SELECT * FROM product_images WHERE id IN (SELECT MIN(id) FROM product_images GROUP BY product_id)) product_images ON cart_product.product_id = product_images.product_id where cart_product.cart_id=$1',[cart_id.rows[0].cart_id])
@@ -404,7 +403,7 @@ const deleteAllProductInCart=async(userId)=>{
     throw new Error('Error'+err.message)
   }
 }
-const checkout=async(user_id, address)=>{
+const checkout=async(user_id,province, city, ward , address,phone_number, payment_method, name, fee)=>{
   try{
     console.log(address)
     const cartProduct=await getCartByUserId(user_id)
@@ -413,11 +412,10 @@ const checkout=async(user_id, address)=>{
       return ({message:'Failed'})
     }
     const totalPrice = cartProduct.reduce((total, product)=>{
-      const price = parseFloat(product.price.replace('$', ''))
-      return total + (product.quantity * price)
+      return total + (product.quantity * product.price)
     }, 0)
     console.log(totalPrice)
-    const order = pool.query('insert into orders (fee, address, user_id) values($1, $2, $3)',[totalPrice, address, user_id])
+    const order = await pool.query('insert into orders (name, province, city, ward ,address, payment_method, price, shipping_fee, user_id, phone_number) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',[name,province , city , ward,address,payment_method,totalPrice, fee,user_id, phone_number])
     const deleteCart = await deleteAllProductInCart(user_id)
     return ({ message: 'Checkout success'});
   } catch(error){
@@ -620,7 +618,8 @@ const findBookByName=async(name)=>{
   } catch (error){
     throw error.message
   }
-}
+} 
+
 cron.schedule('19 0 * * *', () => {
     console.log('Running flash sale process at 12 AM...');
     handleFlashSale();
@@ -669,5 +668,5 @@ module.exports={
     getPublisher,
     filterProduct,
     countTotalProduct,
-    findBookByName
+    findBookByName, 
 }

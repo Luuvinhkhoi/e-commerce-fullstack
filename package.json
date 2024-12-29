@@ -30,6 +30,7 @@
     "passport-local": "^1.0.0",
     "pg": "^8.13.0",
     "react-router-dom": "^6.28.0",
+    "react-select": "^5.9.0",
     "react-slick": "^0.30.2",
     "redis": "^4.7.0",
     "session": "^0.1.0",

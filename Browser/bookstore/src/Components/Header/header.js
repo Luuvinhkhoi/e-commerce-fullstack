@@ -8,6 +8,7 @@ import searchImg from '../../Assets/search.png'
 import profileUser from '../../Assets/profile-user.png'
 export const Header = () => {
     const [userName, setUserName] = useState(null)
+    const [activeOverlay, setActiveOverlay]=useState('close')
     const [isOpen, setIsOpen]= useState('closeToogle')
     const [active, setActive]=useState(false)
     const [timeoutId, setTimeoutId] = useState(null);
@@ -49,6 +50,9 @@ export const Header = () => {
         } catch(error) {
             console.log(error);
         };
+    }
+    function handleCloseOverlay(){
+        setActiveOverlay('close')
     }
     function handleToogleBar(){
         if(isOpen==='closeToogle'){
@@ -112,8 +116,76 @@ export const Header = () => {
     useEffect(() => {
         setIsOpen('closeToogle');
     }, [location]);
-    console.log(currentPath)
+    function toggleScroll(enable) {
+        if (enable) {
+            window.removeEventListener('wheel', preventScroll);
+            window.removeEventListener('touchmove', preventScroll);
+            window.removeEventListener('keydown', disableScrollKeys);
+        } else {
+            window.addEventListener('wheel', preventScroll, { passive: false });
+            window.addEventListener('touchmove', preventScroll, { passive: false });
+            window.addEventListener('keydown', disableScrollKeys);
+        }
+    }
+    
+    function preventScroll(e) {
+        e.preventDefault();
+    }
+    
+    function disableScrollKeys(e) {
+        const keys = ['ArrowUp', 'ArrowDown', 'Space', 'PageUp', 'PageDown'];
+        if (keys.includes(e.code)) {
+            e.preventDefault();
+        }
+    }
+    const handleAddToCart = async ()=> {
+        console.log('cartttttt')
+            if (!userName) {
+                setActiveOverlay('open'); // Hiển thị pop-up nếu chưa đăng nhập
+                return;
+            } else{
+                navigate('/cart')
+            }
+            // Logic thêm sản phẩm vào giỏ hàng nếu đã đăng nhập
+    };
+    
+    // Sử dụng useEffect để theo dõi thay đổi của activeOverlay
+    useEffect(() => {
+        toggleScroll(activeOverlay === 'close'); // Ngăn cuộn nếu overlay bật, cho phép cuộn nếu overlay tắt
+        return () => toggleScroll(true); // Dọn dẹp sự kiện khi component unmount
+    }, [activeOverlay]);
+    useEffect(() => {
+        if (activeOverlay==='open') {
+            document.body.classList.add('no-scroll'); // Thêm lớp CSS
+        } else {
+            document.body.classList.remove('no-scroll'); // Xóa lớp CSS
+        }
+
+        // Dọn dẹp khi component unmount
+        return () => document.body.classList.remove('no-scroll');
+    }, [activeOverlay]);
+    console.log(userName)
     return (
+      <>
+        <div className={`${activeOverlay}-overlay`}>
+                {userName?(
+                    <></>
+                ):(
+                <>
+                    <div className="login-pop-up">
+                        <p>Please login to continue shopping</p>
+                        <div>
+                            <Link id="loginButton"to='/login'>Login</Link>
+                            <Link id="closeButton" onClick={handleCloseOverlay}>Close</Link>
+                        </div>
+                    </div>
+                    <div className='bookdetail-overlay'>
+
+                    </div>
+                </>  
+
+                )}  
+        </div>
         <div className='header'>
             <Link to='/'><div className='brand'>
                 <div className='brand-img'>
@@ -185,7 +257,7 @@ export const Header = () => {
             </div>
             <div className={active?'header-overlay-active':'header-overlay-unactive'} onClick={handleOverlayClick}>
             </div>
-            <div className='cart-img'>
+            <div className='cart-img' onClick={handleAddToCart}>
                 <img src={cartImg}></img>
             </div>
             {userName ? 
@@ -209,5 +281,6 @@ export const Header = () => {
             }
 
         </div>
+      </>  
     )
 }

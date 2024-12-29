@@ -1,7 +1,7 @@
 import './bookDetail.css'
 import clevr from '../../util/clevr'
 import { useEffect, useState } from 'react'
-import { useParams, useLocation } from 'react-router-dom'
+import { useParams, useLocation, useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import {useDispatch} from 'react-redux'
 import { insertCartIntoDatabase } from '../../store/cartSlice'
@@ -12,7 +12,9 @@ import pen from '../../Assets/pen.png'
 import downArrow from '../../Assets/arrow-down.png'
 import upArrow from '../../Assets/top.png'
 export const BookDetail = ({image}) =>{
-    const [userName, setUserName] = useState(null)
+    const navigate=useNavigate()
+    const [userName, setUserName] = useState(false)
+    const [activeOverlay, setActiveOverlay]=useState('close')
     const [bookDetail, setBookDetail]=useState()
     const [relatedBook, setRelatedBook]=useState()
     const [productImages, setProductImages]=useState([])
@@ -91,16 +93,58 @@ export const BookDetail = ({image}) =>{
     };
 
     // Xử lý thêm sản phẩm vào giỏ hàng
-    const handleAddToCart = (productId) => {
+    const handleAddToCart = async ()=> {
         if (!userName) {
-            showLoginPopup(); // Hiển thị pop-up nếu chưa đăng nhập
+            setActiveOverlay('open'); // Hiển thị pop-up nếu chưa đăng nhập
             return;
+        } else{
+            await dispatch(insertCartIntoDatabase({id, quantityToBuy}))
+            navigate('/cart')
+        }
+        // Logic thêm sản phẩm vào giỏ hàng nếu đã đăng nhập
+    };
+    function handleCloseOverlay(){
+        setActiveOverlay('close')
+    }
+
+    function toggleScroll(enable) {
+        if (enable) {
+            window.removeEventListener('wheel', preventScroll);
+            window.removeEventListener('touchmove', preventScroll);
+            window.removeEventListener('keydown', disableScrollKeys);
+        } else {
+            window.addEventListener('wheel', preventScroll, { passive: false });
+            window.addEventListener('touchmove', preventScroll, { passive: false });
+            window.addEventListener('keydown', disableScrollKeys);
+        }
+    }
+    
+    function preventScroll(e) {
+        e.preventDefault();
+    }
+    
+    function disableScrollKeys(e) {
+        const keys = ['ArrowUp', 'ArrowDown', 'Space', 'PageUp', 'PageDown'];
+        if (keys.includes(e.code)) {
+            e.preventDefault();
+        }
+    }
+    
+    // Sử dụng useEffect để theo dõi thay đổi của activeOverlay
+    useEffect(() => {
+        toggleScroll(activeOverlay === 'close'); // Ngăn cuộn nếu overlay bật, cho phép cuộn nếu overlay tắt
+        return () => toggleScroll(true); // Dọn dẹp sự kiện khi component unmount
+    }, [activeOverlay]);
+    useEffect(() => {
+        if (activeOverlay==='open') {
+            document.body.classList.add('no-scroll'); // Thêm lớp CSS
+        } else {
+            document.body.classList.remove('no-scroll'); // Xóa lớp CSS
         }
 
-        // Logic thêm sản phẩm vào giỏ hàng nếu đã đăng nhập
-        console.log(`Sản phẩm ${productId} đã được thêm vào giỏ hàng bởi ${userName}`);
-    };
-
+        // Dọn dẹp khi component unmount
+        return () => document.body.classList.remove('no-scroll');
+    }, [activeOverlay]);
     useEffect(() => {
         window.scrollTo(0, 0);
         setSeletedImage(first_selected_image)
@@ -127,7 +171,7 @@ export const BookDetail = ({image}) =>{
             const result = await clevr.getUserProfile();
     
             if (result && result.user_name) {
-              setUserName(result.user_name); 
+              setUserName(true); 
             }
           } catch (error) {
             console.error('Error fetching user profile:', error);
@@ -139,6 +183,25 @@ export const BookDetail = ({image}) =>{
     console.log(isOpenAddReview)
     return (
       <> 
+        <div className={`${activeOverlay}-overlay`}>
+            {userName?(
+                <></>
+            ):(
+              <>
+                <div className="login-pop-up">
+                    <p>Please login to continue shopping</p>
+                    <div>
+                        <Link id="loginButton"to='/login'>Login</Link>
+                        <Link id="closeButton" onClick={handleCloseOverlay}>Close</Link>
+                    </div>
+                </div>
+                <div className='bookdetail-overlay'>
+
+                </div>
+              </>  
+
+            )}  
+        </div>
         <div className='book-detail'>
             {loading ? (
                 <p>Loading...</p> // Hiển thị thông báo loading trong khi dữ liệu đang được tải
@@ -166,30 +229,15 @@ export const BookDetail = ({image}) =>{
                                     <span>{quantityToBuy}</span>
                                     <button onClick={handleAddQuantityClick}>+</button>
                                 </div>
-                                <Link className='item-buy' to={userName ? '/cart' : '#'}  onClick={(event) => {
-                                    if (!userName) {
-                                        event.preventDefault(); // Ngăn chặn chuyển hướng nếu chưa đăng nhập
-                                        showLoginPopup(); // Hiển thị pop-up yêu cầu đăng nhập
-                                        return;
-                                    }
-                                    dispatch(insertCartIntoDatabase({ id, quantityToBuy })); // Thực hiện dispatch nếu đã đăng nhập
-                                }}>
+                                <Link className='item-buy' onClick={handleAddToCart}>
                                     <img src={cartImg}></img>
                                     <span>BUY</span>
                                 </Link>
-                                <div id="login-popup" class="overlay">
-                                    <div class="modal">
-                                        <h2>Yêu cầu đăng nhập</h2>
-                                        <p>Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.</p>
-                                        <button id="loginButton">Đăng nhập</button>
-                                        <button id="closeButton">Đóng</button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div className='book-detail-row-1-column-2'>
                             <div className='item-image'>
-                                <img src={selectedImage}></img>
+                                <img src={productImages[0].cloudinary_url}></img>
                             </div>  
                             <div className='item-list-image'>
                                 {productImages.map(image=>

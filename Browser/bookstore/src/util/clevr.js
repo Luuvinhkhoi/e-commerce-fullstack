@@ -489,6 +489,36 @@ let clevr={
         }). catch(networkError=>{
             console.log(networkError.message)
         }); 
+    }, checkout(name, province, city, ward ,address, payment_method, fee, phone_number){
+        console.log(name,province, city, ward ,address, payment_method, fee, phone_number)
+        return fetch(`http://localhost:4001/cart/checkout`,{
+            method:"POST",
+            headers: {
+                "Content-Type": "application/json" 
+            },
+            credentials:'include',
+            body:JSON.stringify({
+                name,
+                province,
+                city,
+                ward,
+                address,
+                payment_method,
+                fee,
+                phone_number
+            })
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Request failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        }); 
     }
 
 }
