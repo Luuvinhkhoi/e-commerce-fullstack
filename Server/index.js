@@ -91,14 +91,11 @@ const countItemInEachCategory= async()=>{
   }
 }
 const getProductFromDatabaseByCategoryName = async (offset, pageSize,categoryName) => {
-  console.log(categoryName)
   try {
       const categoryResult = await pool.query('SELECT category_id FROM category WHERE category_name=$1', [categoryName]);
-      console.log(categoryResult)
       if (categoryResult.rows.length === 0) {
           return { message: 'Category not found' };
       }
-      console.log(categoryResult)
       const categoryId = categoryResult.rows[0].category_id;
       const productResult = await pool.query(`SELECT *
         FROM product
@@ -328,6 +325,7 @@ const getCartByUserId=async(id)=>{
       const cart_id = await pool.query('select cart_id from cart where user_id=$1',[id])
       const cartProduct = await pool.query('select cart_product.*, product_images.cloudinary_url FROM cart_product LEFT JOIN (SELECT * FROM product_images WHERE id IN (SELECT MIN(id) FROM product_images GROUP BY product_id)) product_images ON cart_product.product_id = product_images.product_id where cart_product.cart_id=$1',[cart_id.rows[0].cart_id])
       const productIds = cartProduct.rows.map(row => row.product_id);
+      console.log(productIds)
       const productResults = await Promise.all(
         productIds.map(async (productId) => {
           const productResult = await pool.query('select * from product where product_id=$1', [productId]);
@@ -405,19 +403,25 @@ const deleteAllProductInCart=async(userId)=>{
 }
 const checkout=async(user_id,province, city, ward , address,phone_number, payment_method, name, fee)=>{
   try{
-    console.log(address)
     const cartProduct=await getCartByUserId(user_id)
-    console.log(cartProduct)
     if (!cartProduct || cartProduct.length===0){
       return ({message:'Failed'})
     }
     const totalPrice = cartProduct.reduce((total, product)=>{
       return total + (product.quantity * product.price)
     }, 0)
-    console.log(totalPrice)
-    const order = await pool.query('insert into orders (name, province, city, ward ,address, payment_method, price, shipping_fee, user_id, phone_number) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',[name,province , city , ward,address,payment_method,totalPrice, fee,user_id, phone_number])
+    const order = await pool.query('insert into orders (name, province, city, ward ,address, payment_method, price, shipping_fee, user_id, phone_number) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning *',[name,province , city , ward,address,payment_method,totalPrice, fee,user_id, phone_number])
+    const cart_id = await pool.query('select cart_id from cart where user_id=$1',[user_id])
+    const cart_product = await pool.query('select product_id from cart_product where cart_id=$1',[cart_id.rows[0].cart_id])
+    const order_product=await Promise.all(
+      cart_product.rows.map(async (product)=>{
+        const productResult=await pool.query('insert into order_product (order_id, product_id) values ($1, $2)',[order.rows[0].order_id,product.product_id])
+        return productResult.rows[0]
+      })
+    )
+    console.log(order_product)
     const deleteCart = await deleteAllProductInCart(user_id)
-    return ({ message: 'Checkout success'});
+    return ({ message: 'Checkout success'});  
   } catch(error){
     throw new Error('Error'+error.message)
   }
@@ -514,7 +518,6 @@ const getBestSeller=async()=>{
     ON product.category_id = category.category_id
     ORDER BY product.quantity ASC
     LIMIT 5;`)
-    console.log(result)
     return result.rows
   } catch(error){
     throw error.message
