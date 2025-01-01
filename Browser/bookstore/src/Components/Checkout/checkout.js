@@ -2,16 +2,25 @@ import { useSelector, useDispatch } from "react-redux";
 import { getCart} from '../../store/cartSlice'
 import { updateName, updatePhoneNumber, updateAddress, updatePaymentMethod } from "../../store/checkoutSlice";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { LocationSelector } from "./location";
 import './checkout.css'
 import clevr from "../../util/clevr";
 export const Checkout = ()=>{
     const dispatch=useDispatch()
+    const userName=useSelector((state)=>state.profile.userName)
+    const [activeOverlay, setActiveOverlay]=useState('close')
     const items=useSelector((state)=>state.cart.items)
     const { name, phoneNumber, province, city, ward, address, payment_method } = useSelector((state) => state.checkout)
-    const totalPrice = items.reduce((total, item) => {
-        return total + item.price * item.quantity;
-    }, 0);
+    let totalPrice=0
+    if(items){
+        totalPrice = items.reduce((total, item) => {
+            return total + item.price * item.quantity;
+        }, 0);
+    }
+    function handleCloseOverlay(){
+        setActiveOverlay('close')
+    }
     const tax = totalPrice * 0.02
     const [error, setError] = useState("");
     const handleLocationChange = (data) => {
@@ -61,10 +70,35 @@ export const Checkout = ()=>{
             }
             getCartItems();
     }, [dispatch]);
+    useEffect(() => {
+        if (!userName) {
+            setActiveOverlay('open');
+        } else {
+            setActiveOverlay('close');
+        }
+    }, [userName]);
     console.log(name,province.label, city.label, ward.label ,address, payment_method, tax, phoneNumber)
     return(
       <>
         <div className="space"></div>
+        <div className={`${activeOverlay}-overlay`}>
+                {userName?(
+                    <></>
+                    ):(
+                        <>
+                            <div className="login-pop-up">
+                                <p>Please login to continue shopping</p>
+                                <div>
+                                    <Link id="loginButton"to='/login'>Login</Link>
+                                    <Link id="closeButton" onClick={handleCloseOverlay} to='/'>Home</Link>
+                                </div>
+                            </div>
+                            <div className='bookdetail-overlay'>
+                    
+                            </div>
+                        </>  
+                    )}  
+        </div> 
         <div className="checkout">
             <h1>Checkout</h1>
             <div className="checkout-row-1">

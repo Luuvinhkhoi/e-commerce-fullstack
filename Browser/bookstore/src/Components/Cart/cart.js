@@ -1,20 +1,29 @@
 import './cart.css'
-import {useNavigate, useLocation} from 'react-router-dom'
+import {useNavigate, useLocation, Link} from 'react-router-dom'
 import {store} from '../../store/store.js'
 import { useSelector, useDispatch } from 'react-redux'
 import { getCart, updateCart, deleteCart } from '../../store/cartSlice'
 import { minusQuantityToBuy, addQuantityToBuy } from '../../store/cartSlice'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { getProfile } from '../../store/profileSlice.js'
 export const Cart = () =>{
+    const userName=useSelector((state)=>state.profile.userName)
     const items=useSelector((state)=>state.cart.items)
+    const [activeOverlay, setActiveOverlay]=useState('close')
     const dispatch=useDispatch()
     const location=useLocation()
     const navigate=useNavigate()
-    const totalPrice = items.reduce((total, item) => {
-        return total + item.price * item.quantity;
-    }, 0);
+    let totalPrice=0
+    if(items){
+        totalPrice = items.reduce((total, item) => {
+            return total + item.price * item.quantity;
+        }, 0);
+    }
     const tax = totalPrice * 0.02
     const hasUnsavedChanges = useSelector(state => state.cart.hasUnsavedChanges);
+    function handleCloseOverlay(){
+        setActiveOverlay('close')
+    }
     const handleQuantityChange = async (product_id, change) => {
         if (change === -1) {
             // Decrease quantity
@@ -31,6 +40,13 @@ export const Cart = () =>{
             dispatch(addQuantityToBuy(product_id));
         }
     };
+    useEffect(() => {
+        if (!userName) {
+            setActiveOverlay('open');
+        } else {
+            setActiveOverlay('close');
+        }
+    }, [userName]);
     useEffect(() => {
         async function getCartItems() {
             await dispatch(getCart());
@@ -78,6 +94,24 @@ export const Cart = () =>{
     
     return(
         <div className='cart'>
+            <div className={`${activeOverlay}-overlay`}>
+                    {userName?(
+                        <></>
+                        ):(
+                        <>
+                            <div className="login-pop-up">
+                                <p>Please login to continue shopping</p>
+                                <div>
+                                    <Link id="loginButton"to='/login'>Login</Link>
+                                    <Link id="closeButton" onClick={handleCloseOverlay} to='/'>Home</Link>
+                                </div>
+                            </div>
+                            <div className='bookdetail-overlay'>
+            
+                            </div>
+                        </>  
+                        )}  
+            </div> 
             <div className='cart-row-1'>
                 <div>Item</div>
                 <div>Quantity</div>
@@ -85,7 +119,7 @@ export const Cart = () =>{
                 <div>Total Price</div>
             </div>
             <div className='cart-row-2'>
-                  {items.map(item=>
+                {userName?(items.map(item=>
                     <div className='cart-row-2-item' key={item.product_id}>
                         <div className='item-image-name-author'>
                             <img src={item.cloudinary_url}></img>
@@ -106,7 +140,7 @@ export const Cart = () =>{
                             <span>{(item.price * item.quantity)}đ</span>
                         </div>
                     </div>
-                  )}
+                  )):(<></>)}
             </div>
             <div className='cart-row-3'>
                 <div className='cart-row-3-col-1'>

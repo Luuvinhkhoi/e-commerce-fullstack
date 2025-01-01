@@ -428,3 +428,13 @@ body.no-scroll {
     font-weight: 400;
     margin-top: 2rem;
 }
+.login-pop-up >div button{
+    padding: .5rem;
+    border-radius: 0.5rem;
+    background-color: #8D28AD;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 400;
+    margin-top: 2rem;
+}
+

@@ -2,12 +2,14 @@ import { useEffect, useState, useRef } from 'react'
 import './header.css'
 import clevr from '../../util/clevr'
 import {Link, useNavigate, useLocation} from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import mathImg from '../../Assets/maths .png'
 import cartImg from '../../Assets/shopping-cart.png'
 import searchImg from '../../Assets/search.png'
 import profileUser from '../../Assets/profile-user.png'
+import { getProfile } from '../../store/profileSlice'
 export const Header = () => {
-    const [userName, setUserName] = useState(null)
+    const userName=useSelector((state)=>state.profile.userName)
     const [activeOverlay, setActiveOverlay]=useState('close')
     const [isOpen, setIsOpen]= useState('closeToogle')
     const [active, setActive]=useState(false)
@@ -17,6 +19,7 @@ export const Header = () => {
     const searchRef = useRef(null)
     const location=useLocation()
     const navigate = useNavigate()
+    const dispatch=useDispatch()
     const currentPath = window.location.pathname + window.location.search;
     function handleActive(event){
         const newQuery = event.target.value;
@@ -27,11 +30,7 @@ export const Header = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
           try {
-            const result = await clevr.getUserProfile();
-    
-            if (result && result.user_name) {
-              setUserName(result.user_name); 
-            }
+            await dispatch(getProfile());            
           } catch (error) {
             console.error('Error fetching user profile:', error);
           }
@@ -116,6 +115,12 @@ export const Header = () => {
     useEffect(() => {
         setIsOpen('closeToogle');
     }, [location]);
+    useEffect(()=>{
+        async function Profile() {
+            await dispatch(getProfile())
+        }
+        Profile()
+    },[])
     function toggleScroll(enable) {
         if (enable) {
             window.removeEventListener('wheel', preventScroll);
@@ -176,7 +181,7 @@ export const Header = () => {
                         <p>Please login to continue shopping</p>
                         <div>
                             <Link id="loginButton"to='/login'>Login</Link>
-                            <Link id="closeButton" onClick={handleCloseOverlay}>Close</Link>
+                            <div><button id="closeButton" onClick={handleCloseOverlay}>Close</button></div>
                         </div>
                     </div>
                     <div className='bookdetail-overlay'>
