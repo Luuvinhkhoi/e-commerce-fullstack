@@ -93,11 +93,11 @@ input[type='range']::-moz-range-thumb{
 .filter-row-1 .price-range-row-4{
     display: flex;
     justify-content: space-between;
-    width: 70%;
+    width: 80%;
     margin: 1rem auto;
 }
 .filter-row-1 .price-range-row-4 input{
-    width: 70px;
+    width: 80px;
     height: 40px;
     margin : 0;
     border: none;
@@ -154,12 +154,23 @@ input[type='range']::-moz-range-thumb{
 }
 .book-list .item-name{
     font-weight: 600;
-    font-size: 24px;
+    font-size: 22px;
 }
 .book-list .item-price{
     font-size: 20px;
     font-weight: bold;
     padding: 0.5rem 0;
+}
+.book-list .item-price .sale-price{
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+}
+.book-list .item-price .sale-price span{
+    font-size: 16px;
+    text-decoration: line-through;
+    color: #636363;
+    font-weight: 400;
 }
 .book-list .pagination {
     margin-top: 4rem;

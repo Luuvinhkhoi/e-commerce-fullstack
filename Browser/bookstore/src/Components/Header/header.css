@@ -42,7 +42,7 @@
 .openToogle{
     position: absolute;
     list-style: none;
-    top: 100px;
+    top: 120px;
     left: 0;
     right: 0;
     width: 100%;
@@ -103,14 +103,18 @@
 }
 .sign-in a{
     text-decoration: none;
+    color: #636363;
+    font-weight: 500    ;
 }
 .sign-up-button{
     padding: 1rem;
     border-radius: 0.5rem;
     border: 1px solid #cdcdcd;
     background-color: #8D28AD;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
+    font-weight: 500;
 }
+
 .user-name{
     display: flex;
     gap: 2rem;

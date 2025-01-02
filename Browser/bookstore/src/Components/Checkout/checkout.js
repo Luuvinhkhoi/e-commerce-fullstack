@@ -80,7 +80,6 @@ export const Checkout = ()=>{
     console.log(name,province.label, city.label, ward.label ,address, payment_method, tax, phoneNumber)
     return(
       <>
-        <div className="space"></div>
         <div className={`${activeOverlay}-overlay`}>
                 {userName?(
                     <></>

@@ -112,6 +112,7 @@ export const SearchResult=()=>{
         let result=await clevr.filterProduct(params.toString())
         setProducts(result.filterProduct)
         setTotalPage(Math.ceil(result.count/pageSize))
+        window.scrollTo(0, 0);
     }
     
     async function resetFilter() {
@@ -290,7 +291,14 @@ export const SearchResult=()=>{
                                             </div>
                                         </div>
                                         <div className='item-price'>
-                                            <span>${item.price}</span>
+                                            {item.sale_price?(
+                                                <div className='sale-price'>
+                                                    <p>{item.sale_price}đ</p>
+                                                    <span>{item.price}đ</span>
+                                                </div>
+                                            ):(
+                                                <span>{item.price}đ</span>
+                                            )}
                                         </div>
                                     </div>
                                 </div></Link>

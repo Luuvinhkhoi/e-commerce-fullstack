@@ -73,4 +73,6 @@ html, body{
 }
 .sign-up-link a{
     text-decoration: none;
+    color: #8D28AD;
+    font-weight: 500;
 }

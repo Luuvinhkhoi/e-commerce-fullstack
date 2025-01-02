@@ -67,3 +67,7 @@ html, body{
     font-weight: 600;
     font-size: 18px;
 }
+.sign-up a{
+    color: #8D28AD;
+    font-weight: 500;
+}

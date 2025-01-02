@@ -130,6 +130,8 @@ const getAllProductFromDatabase = (offset, limit) => {
       ON product.product_id = product_images.product_id
       INNER JOIN category
       ON product.category_id = category.category_id
+      left join(select product_id,sale_price from flash_sales) flash_sales
+      on product.product_id=flash_sales.product_id
       LIMIT $1 OFFSET $2
     `;
     pool.query(query, [limit, offset], (error, results) => {
@@ -623,7 +625,7 @@ const findBookByName=async(name)=>{
   }
 } 
 
-cron.schedule('19 0 * * *', () => {
+cron.schedule('05 0 * * *', () => {
     console.log('Running flash sale process at 12 AM...');
     handleFlashSale();
   }, {
