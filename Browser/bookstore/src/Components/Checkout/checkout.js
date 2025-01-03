@@ -63,7 +63,26 @@ export const Checkout = ()=>{
         const value=e.target.value
         dispatch(updatePaymentMethod(value))
     }
-
+    function disableScrollKeys(e) {
+        const keys = ['ArrowUp', 'ArrowDown', 'Space', 'PageUp', 'PageDown'];
+        if (keys.includes(e.code)) {
+            e.preventDefault();
+        }
+    }
+    function preventScroll(e) {
+        e.preventDefault();
+    }
+    function toggleScroll(enable) {
+        if (enable) {
+            window.removeEventListener('wheel', preventScroll);
+            window.removeEventListener('touchmove', preventScroll);
+            window.removeEventListener('keydown', disableScrollKeys);
+        } else {
+            window.addEventListener('wheel', preventScroll, { passive: false });
+            window.addEventListener('touchmove', preventScroll, { passive: false });
+            window.addEventListener('keydown', disableScrollKeys);
+        }
+    }
     useEffect(() => {
             async function getCartItems() {
                 await dispatch(getCart());
@@ -77,6 +96,20 @@ export const Checkout = ()=>{
             setActiveOverlay('close');
         }
     }, [userName]);
+    useEffect(() => {
+        toggleScroll(activeOverlay === 'close'); // Ngăn cuộn nếu overlay bật, cho phép cuộn nếu overlay tắt
+        return () => toggleScroll(true); // Dọn dẹp sự kiện khi component unmount
+    }, [activeOverlay]);
+    useEffect(() => {
+        if (activeOverlay==='open') {
+            document.body.classList.add('no-scroll'); // Thêm lớp CSS
+        } else {
+            document.body.classList.remove('no-scroll'); // Xóa lớp CSS
+        }
+
+        // Dọn dẹp khi component unmount
+        return () => document.body.classList.remove('no-scroll');
+    }, [activeOverlay]);
     console.log(name,province.label, city.label, ward.label ,address, payment_method, tax, phoneNumber)
     return(
       <>

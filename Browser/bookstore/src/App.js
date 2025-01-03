@@ -12,6 +12,7 @@ import { Root } from './Components/Homepage/homepage';
 import { BookDetail } from './Components/BookDetail/bookDetail';
 import { SearchResult } from './Components/SearchResult/searchResult';
 import { Checkout } from './Components/Checkout/checkout';
+import { Profile } from './Components/Profile/profile';
 function App() {
   const router=createBrowserRouter(createRoutesFromElements(
       <>
@@ -20,6 +21,7 @@ function App() {
           <Route path='/search' element={<SearchResult></SearchResult>}></Route>
           <Route path='/:id' element={<BookDetail></BookDetail>}></Route>
           <Route path='/cart' element={<Cart></Cart>}></Route>
+          <Route path='/profile' element={<Profile></Profile>}></Route>
           <Route path='/checkout' element={<Checkout></Checkout>}></Route>
         </Route>
         <Route path='/login' element={<Login></Login>}></Route>   

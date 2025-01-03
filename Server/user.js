@@ -17,11 +17,11 @@ userRouter.get('/:user_id', async (req, res, next)=>{
     }
 })
 userRouter.post('/',db.createUser)
-userRouter.patch("/:user_id", async(req, res, next)=>{
-    const id=req.params.user_id;
+userRouter.patch("/", async(req, res, next)=>{
+    const id=req.user.user_id;
     console.log(id)
     try{
-      const result=await db.updateUser(id, req.body);
+      const result=await db.updateUser(id, req.body.updateData);
       res.status(200).send(result)
     } catch(err){
       res.status(500).send(err)

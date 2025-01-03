@@ -1,0 +1,58 @@
+.profile{
+    margin:6rem 10rem;
+}
+.profile .profile-image{
+    width: 128px;
+    height: 128px;
+    margin: 0 auto;
+}
+.profile .profile-tab-list{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 1rem auto;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #cdcdcd;
+    background-color: #ebeaea;
+}
+.profile .profile-tab-list div{
+    text-align: center;
+}
+.profile .profile-tab-list div p{
+    width: 100%;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 0.2rem 0;
+}
+.profile .profile-tab-list .tab-item-active{
+    background-color: #fff;
+}
+.profile .profile-form{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+}
+.profile .profile-form div{
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+}
+.profile .profile-form div input{
+    width: 100%;
+}
+.profile .profile-form button{
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    background-color: black;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    align-self: flex-start;
+}
+.profile .profile-form .profile-email{
+    cursor: not-allowed;
+}

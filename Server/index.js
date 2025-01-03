@@ -286,7 +286,6 @@ const getUserById=async(id)=>{
 const updateUser=async(id, updateData)=>{
   try{
     const fieldsToUpdate = updateData;
-    console.log(fieldsToUpdate)
     if (!id || Object.keys(fieldsToUpdate).length === 0) {
       return res.status(400).send('Failed');
     }
@@ -298,6 +297,9 @@ const updateUser=async(id, updateData)=>{
       .join(', ');
     const query = `UPDATE users SET ${setClause} WHERE user_id = $${columnNames.length + 1}`;
     console.log(query)
+    console.log(columnNames)
+    console.log(columnValues)
+    console.log(setClause)
     console.log([...columnValues, id])
     await pool.query(query, [...columnValues, parseInt(id, 10)]);
     return {message:`Success update with ${id}`};

@@ -7,7 +7,7 @@ import mathImg from '../../Assets/maths .png'
 import cartImg from '../../Assets/shopping-cart.png'
 import searchImg from '../../Assets/search.png'
 import profileUser from '../../Assets/profile-user.png'
-import { getProfile } from '../../store/profileSlice'
+import { getProfile , getEmail, getPhoneNumber} from '../../store/profileSlice'
 export const Header = () => {
     const userName=useSelector((state)=>state.profile.userName)
     const [activeOverlay, setActiveOverlay]=useState('close')
@@ -30,7 +30,9 @@ export const Header = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
           try {
-            await dispatch(getProfile());            
+            await dispatch(getProfile());    
+            await dispatch(getEmail())  
+            await dispatch(getPhoneNumber())      
           } catch (error) {
             console.error('Error fetching user profile:', error);
           }
@@ -115,12 +117,7 @@ export const Header = () => {
     useEffect(() => {
         setIsOpen('closeToogle');
     }, [location]);
-    useEffect(()=>{
-        async function Profile() {
-            await dispatch(getProfile())
-        }
-        Profile()
-    },[])
+    
     function toggleScroll(enable) {
         if (enable) {
             window.removeEventListener('wheel', preventScroll);
@@ -267,10 +264,10 @@ export const Header = () => {
             </div>
             {userName ? 
                 <div className='user-name'>
-                    <div className='user-name-col-1'>
+                    <Link className='user-name-col-1' to='/profile'>
                         <img src={profileUser}></img>
                         <span>{userName}</span>
-                    </div>
+                    </Link>
                     <div className='user-name-col-2'>
                         <button onClick={handleLogout}>Logout</button>
                     </div>

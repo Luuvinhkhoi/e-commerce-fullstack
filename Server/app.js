@@ -107,7 +107,7 @@ passport.use(new GoogleStrategy({
      const result = await pool.query('SELECT * FROM linked_profile WHERE provider = $1 AND subject = $2', [  issuer, profile.id ]); 
      let cred = result.rows[0]; 
      if (!cred) { 
-       const insertUserRes = await pool.query('INSERT INTO users (user_name) VALUES ($1) RETURNING user_id', [ profile.displayName ]); 
+       const insertUserRes = await pool.query('INSERT INTO users (user_name, email) VALUES ($1, $2) RETURNING user_id', [ profile.displayName, profile.emails[0].value ]); 
        const userId = insertUserRes.rows[0].user_id; 
        await pool.query('INSERT INTO linked_profile (user_id, provider, subject) VALUES ($1, $2, $3)', [ userId, issuer, profile.id ]); 
        const cart= await pool.query('insert into cart (user_id) values ($1) returning cart_id',[userId])   
@@ -120,7 +120,7 @@ passport.use(new GoogleStrategy({
      else { 
        const userRes = await pool.query('SELECT * FROM users WHERE user_id = $1', [cred.user_id]); 
        const user = userRes.rows[0]; 
-       console.log('facebook:', user)
+       console.log('gmail:', user)
        if (!user) { 
          return done(null, false); 
        } 
@@ -157,7 +157,7 @@ passport.deserializeUser(async (id, done) => {
 
 app.get('/profile', (req, res) => { 
   if (req.isAuthenticated()) { 
-    res.json({ user_name: req.user.user_name }); 
+    res.json({ user_name: req.user.user_name, email: req.user.email, phoneNumber:req.user.phone_number }); 
   } else { 
     res.status(401).json({ message: 'Not authenticated' }); 
   } 
