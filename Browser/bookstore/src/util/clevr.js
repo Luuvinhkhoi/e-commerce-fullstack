@@ -540,6 +540,23 @@ let clevr={
         }). catch(networkError=>{
             console.log(networkError.message)
         });
+    }, getOrderHistory(){
+        return fetch(`http://localhost:4001/order`,{
+            method:"GET",
+            credentials:'include'
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Request failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        });
     }
+
 }
 export default clevr

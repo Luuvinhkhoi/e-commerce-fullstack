@@ -28,7 +28,6 @@ export const Checkout = ()=>{
     };
     const handleSubmit=(e)=>{
          try{
-           e.preventDefault()
            if (!name) {
             alert("Vui lòng chọn đầy đủ thông tin vị trí.");
            }

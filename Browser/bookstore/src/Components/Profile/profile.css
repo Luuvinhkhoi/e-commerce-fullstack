@@ -56,3 +56,41 @@
 .profile .profile-form .profile-email{
     cursor: not-allowed;
 }
+.profile .order-history-form{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+}
+.profile .order-invoice >div{
+    padding: 2rem;
+    border-radius: 0.5rem;
+    border: 1px solid #c3c5c8;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin: 2rem;
+}
+.profile .order-invoice >div .item{
+    display: flex;
+    gap: 2rem;
+}
+.profile .order-invoice div .item-image{
+    height: 150px;
+    width: 120px;
+}
+.profile .order-invoice div .item-name-quantity-price{
+    display: flex;
+    justify-content:space-between;
+    width: 80%;
+}
+.profile .order-invoice div .item-name-quantity-price >div{
+    font-size: 18px;
+    font-weight: 400;
+}
+.profile .order-invoice div .item-price{
+    font-size: 18px;
+    font-weight: 500 !important;
+}

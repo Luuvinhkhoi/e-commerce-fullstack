@@ -1,14 +1,16 @@
 import './profile.css'
 import profileUser from '../../Assets/large-profile-user.png'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import clevr from '../../util/clevr'
-import e from 'cors'
+import { getOrderHistory } from '../../store/profileSlice'
 export const Profile= ()=>{
-    const [activeTab, setActiveTab] = useState(1); // Mặc định tab đầu tiên được chọn
+    const [activeTab, setActiveTab] = useState(1);
+    const dispatch=useDispatch() // Mặc định tab đầu tiên được chọn
     const userName=useSelector((state)=>state.profile.userName)
     const email=useSelector((state)=>state.profile.email)
     const phoneNumber=useSelector((state)=>state.profile.phoneNumber)
+    const orderHistory=useSelector((state)=>state.profile.orderHistory)
     const [userNameChange, setUserNameChange]=useState(userName)
     const [phoneNumberChange, setPhoneNumberChange]=useState(phoneNumber)
     const handleTabClick = (tabIndex) => {
@@ -24,6 +26,9 @@ export const Profile= ()=>{
     function handlePhoneNumberChange(e){
         setPhoneNumberChange(e.target.value)
     }
+    useEffect(()=>{
+        dispatch(getOrderHistory())
+    }, [])
     useEffect(()=>{
         setUserNameChange(userName)
     }, [userName])
@@ -51,7 +56,31 @@ export const Profile= ()=>{
                     <button type='submit'>Save change</button>
                 </form>
             ):(
-                <form className='profile-form'></form>
+                <form className='order-history-form'>
+                    <h2>Order history</h2>
+                    <div className='order-invoice'>
+                        {orderHistory.map(order=>
+                          <div>
+                            {order.map(item=>
+                                <div className='item'>
+                                    <div className='item-image'>
+                                        <img src={item.cloudinary_url}></img>
+                                    </div>
+                                    <div className='item-name-quantity-price'>
+                                        <div>
+                                            <p>{item.product_name}</p>
+                                            <p>Quantity: {item.quantity}</p>
+                                        </div>
+                                        <div className='item-price'>
+                                            <p>{item.price}đ</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                          </div>
+                        )}
+                    </div>
+                </form>
             )}
         </div>
     )
