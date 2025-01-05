@@ -6,7 +6,10 @@ const profileSlice=createSlice({
         userName:'',
         email:'',
         phoneNumber:'',
-        orderHistory:[]
+        orderHistory:{
+            item:[],
+            time:[]
+        }
     },
     reducers:{
         updateUserName:(state,action)=>{
@@ -18,8 +21,11 @@ const profileSlice=createSlice({
         updatePhoneNumber:(state,action)=>{
             state.phoneNumber=action.payload
         },
-        updateOrderHistory:(state, action)=>{
-            state.orderHistory=action.payload
+        updateOrderHistoryItem:(state, action)=>{
+            state.orderHistory.item=action.payload
+        },
+        updateOrderHistoryTime:(state, action)=>{
+            state.orderHistory.time=action.payload
         }
     }
 })
@@ -27,7 +33,8 @@ export const getOrderHistory=createAsyncThunk(
     'profile/getOrderHistory',
     async(_,thunkAPI)=>{
         const result=await clevr.getOrderHistory()
-        thunkAPI.dispatch(updateOrderHistory(result))
+        thunkAPI.dispatch(updateOrderHistoryItem(result.orderDetail))
+        thunkAPI.dispatch(updateOrderHistoryTime(result.orderTime))
     }
 )
 export const getProfile=createAsyncThunk(
@@ -51,5 +58,5 @@ export const getPhoneNumber=createAsyncThunk(
         thunkAPI.dispatch(updatePhoneNumber(result.phoneNumber))
     }
 )
-export const {updateUserName, updateEmail, updatePhoneNumber, updateOrderHistory}=profileSlice.actions
+export const {updateUserName, updateEmail, updatePhoneNumber, updateOrderHistoryItem, updateOrderHistoryTime}=profileSlice.actions
 export default profileSlice.reducer

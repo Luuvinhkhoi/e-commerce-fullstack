@@ -432,8 +432,8 @@ const checkout=async(user_id,province, city, ward , address,phone_number, paymen
 }
 const getOrderByUserId=async(user_id)=>{
   try{
-    const orderId= await pool.query('select * from orders where user_id=$1',[user_id])
-    console.log(orderId.rows)
+    const orderId= await pool.query(`select order_id,total_price,TO_CHAR(order_time, 'YYYY-MM-DD') AS formatted_date from orders where user_id=$1`,[user_id])
+    const orderTime=orderId.rows
     const orderDetail= await Promise.all(
       orderId.rows.map(async(order)=>{
         const result= await pool.query(
@@ -444,7 +444,7 @@ const getOrderByUserId=async(user_id)=>{
         return result.rows
       })
     )
-    return (orderDetail)
+    return ({orderDetail, orderTime})
   } catch(error){
     throw new Error('Error'+error.message)
   }

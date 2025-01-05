@@ -2,8 +2,10 @@ import './profile.css'
 import profileUser from '../../Assets/large-profile-user.png'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import calendar from '../../Assets/calendar.png'
 import clevr from '../../util/clevr'
 import { getOrderHistory } from '../../store/profileSlice'
+import { Link } from 'react-router-dom'
 export const Profile= ()=>{
     const [activeTab, setActiveTab] = useState(1);
     const dispatch=useDispatch() // Mặc định tab đầu tiên được chọn
@@ -11,6 +13,8 @@ export const Profile= ()=>{
     const email=useSelector((state)=>state.profile.email)
     const phoneNumber=useSelector((state)=>state.profile.phoneNumber)
     const orderHistory=useSelector((state)=>state.profile.orderHistory)
+    const orderHistoryTime=useSelector((state)=>state.profile.orderHistory.time)
+    const orderHistoryItem=useSelector((state)=>state.profile.orderHistory.item)
     const [userNameChange, setUserNameChange]=useState(userName)
     const [phoneNumberChange, setPhoneNumberChange]=useState(phoneNumber)
     const handleTabClick = (tabIndex) => {
@@ -36,7 +40,7 @@ export const Profile= ()=>{
         setPhoneNumberChange(phoneNumber)
     }, [phoneNumber])
     console.log(userNameChange)
-    console.log(userName)
+    console.log(orderHistory)
     return(
         <div className="profile">
             <div className='profile-image'>
@@ -59,26 +63,41 @@ export const Profile= ()=>{
                 <form className='order-history-form'>
                     <h2>Order history</h2>
                     <div className='order-invoice'>
-                        {orderHistory.map(order=>
-                          <div>
-                            {order.map(item=>
-                                <div className='item'>
+                        {orderHistory.time.map((time, index) => (
+                        <div key={time.order_id} className='order-item'>
+                            {/* Thông tin đơn hàng */}
+                            <div>
+                                <div>
+                                    <p>Order: ORD{time.order_id}</p>
+                                </div>
+                                <div className='calendar-price'>
+                                    <p>{time.total_price}đ</p>
+                                    <div>
+                                        <img src={calendar}></img>
+                                        <span>{time.formatted_date}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {orderHistory.item[index]?.map((item) => (
+                            <div key={item.product_id} className='item-detail'>
+                                <Link to={`/${item.product_id}`} className='item'>
                                     <div className='item-image'>
-                                        <img src={item.cloudinary_url}></img>
+                                        <img src={item.cloudinary_url} alt={item.product_name} />
                                     </div>
                                     <div className='item-name-quantity-price'>
                                         <div>
                                             <p>{item.product_name}</p>
-                                            <p>Quantity: {item.quantity}</p>
+                                            <span>Quantity: {item.quantity}</span>
                                         </div>
                                         <div className='item-price'>
                                             <p>{item.price}đ</p>
                                         </div>
                                     </div>
-                                </div>
-                            )}
-                          </div>
-                        )}
+                                </Link>
+                            </div>
+                            ))}
+                        </div>
+                        ))}
                     </div>
                 </form>
             )}
