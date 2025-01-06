@@ -28,6 +28,7 @@ export const Checkout = ()=>{
     };
     const handleSubmit=(e)=>{
          try{
+           e.preventDefault()
            if (!name) {
             alert("Vui lòng chọn đầy đủ thông tin vị trí.");
            }
@@ -180,19 +181,6 @@ export const Checkout = ()=>{
                 </div>
               </form>
             </div>
-        </div>
-        <div className='subscribe'>
-                <div className='subscribe-context'>
-                    <span>Subscribe our newsletter for newest books updates</span>
-                </div>
-                <div className='subscribe-email'>
-                    <div className='subscribe-email-input'>
-                       <input type='email' placeholder='Type your email here'></input>
-                    </div>
-                    <div className='subscribe-email-button'>
-                        <button>SUBSCRIBE</button>
-                    </div>
-                </div>
         </div>
       </>
     )

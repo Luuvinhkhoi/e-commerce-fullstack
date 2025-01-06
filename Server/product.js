@@ -17,6 +17,7 @@ const pagination = (req, res, next) => {
 productRouter.get('/',pagination,async(req, res, next)=>{
     try {
         const { offset, pageSize } = req.pagination;
+        console.log('getALLL')
         const [products, count] = await Promise.all([
             db.getAllProductFromDatabase(offset, pageSize), 
             db.countTotalProduct()

@@ -13,8 +13,9 @@
 .banner-description-child{
     margin:1rem
 }
-.banner button{
+.banner a{
     padding: 1rem;
+    margin-top: 1rem;
     border-radius: 0.5rem;
     border: none;
     background-color: #8D28AD;
@@ -27,7 +28,15 @@
     border: none;
     border-radius: 1rem;
 }
-.theme-option{
+.theme-option-{
+    padding: 0.5rem;
+}
+.theme-option-active{
+    background-color: #D9176C;
+    border-radius: 1rem;
+    text-transform: uppercase;
+    border: none;
+    outline: none;
     padding: 0.5rem;
 }
 .theme-option:focus{

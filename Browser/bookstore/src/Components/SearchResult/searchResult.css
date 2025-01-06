@@ -139,9 +139,10 @@ input[type='range']::-moz-range-thumb{
     gap: 3.5rem
 }   
 .book-list .book-list-row-1 .book-list-item .book-list-item-image{
-    height: 350px;
+    height: 400px;
     border-radius: 0.5rem;
     overflow: hidden;
+    width: 250px;
 }
 
 .book-list .item-category{

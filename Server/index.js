@@ -130,8 +130,8 @@ const getAllProductFromDatabase = (offset, limit) => {
       ON product.product_id = product_images.product_id
       INNER JOIN category
       ON product.category_id = category.category_id
-      left join(select product_id,sale_price from flash_sales) flash_sales
-      on product.product_id=flash_sales.product_id
+      left join(select product_id as flashSale_productId,sale_price from flash_sales) flash_sales
+      on product.product_id=flash_sales.flashSale_productId
       LIMIT $1 OFFSET $2
     `;
     pool.query(query, [limit, offset], (error, results) => {
@@ -153,6 +153,7 @@ const getPublisher=async()=>{
   return product
 }
 const getProductFromDatabaseById=async(id)=>{
+    console.log(id)
     const result = await pool.query('select * from product where product_id=$1',[id])
     const product= result.rows[0]
     return product
@@ -414,7 +415,7 @@ const checkout=async(user_id,province, city, ward , address,phone_number, paymen
     const totalPrice = cartProduct.reduce((total, product)=>{
       return total + (product.quantity * product.price)
     }, 0)
-    const order = await pool.query('insert into orders (name, province, city, ward ,address, payment_method, price, shipping_fee, user_id, phone_number) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning *',[name,province , city , ward,address,payment_method,totalPrice, fee,user_id, phone_number])
+    const order = await pool.query('insert into orders (name, province, city, ward ,address, payment_method, total_price, shipping_fee, user_id, phone_number) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning *',[name,province , city , ward,address,payment_method,totalPrice, fee,user_id, phone_number])
     const cart_id = await pool.query('select cart_id from cart where user_id=$1',[user_id])
     const cart_product = await pool.query('select product_id, quantity from cart_product where cart_id=$1',[cart_id.rows[0].cart_id])
     const order_product=await Promise.all(

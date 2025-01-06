@@ -1,6 +1,20 @@
 import mathImg from '../../Assets/maths .png'
 export const Footer = () =>{
     return (
+      <>  
+        <div className='subscribe'>
+                <div className='subscribe-context'>
+                        <span>Subscribe our newsletter for newest books updates</span>
+                </div>
+                <div className='subscribe-email'>
+                    <div className='subscribe-email-input'>
+                        <input type='email' placeholder='Type your email here'></input>
+                    </div>
+                    <div className='subscribe-email-button'>
+                            <button>SUBSCRIBE</button>
+                    </div>
+                </div>
+        </div>
         <div className='footer'>
                 <div className='footer-col-1'>
                     <div className='footer-col-1-row-1'>
@@ -53,5 +67,6 @@ export const Footer = () =>{
                     </div>
                 </div>
         </div>
+      </>
     )
 }

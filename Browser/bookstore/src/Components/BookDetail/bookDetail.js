@@ -237,7 +237,7 @@ export const BookDetail = ({image}) =>{
                         </div>
                         <div className='book-detail-row-1-column-2'>
                             <div className='item-image'>
-                                <img src={productImages[0].cloudinary_url}></img>
+                                <img src={selectedImage}></img>
                             </div>  
                             <div className='item-list-image'>
                                 {productImages.map(image=>
@@ -443,19 +443,6 @@ export const BookDetail = ({image}) =>{
                     </div>
                   </>    
             )}   
-        </div>
-        <div className='subscribe'>
-                <div className='subscribe-context'>
-                    <span>Subscribe our newsletter for newest books updates</span>
-                </div>
-                <div className='subscribe-email'>
-                    <div className='subscribe-email-input'>
-                       <input type='email' placeholder='Type your email here'></input>
-                    </div>
-                    <div className='subscribe-email-button'>
-                        <button>SUBSCRIBE</button>
-                    </div>
-                </div>
         </div>
       </>  
     )

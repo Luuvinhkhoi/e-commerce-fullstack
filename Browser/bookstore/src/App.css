@@ -9,6 +9,9 @@ img{
 }
 a{
   text-decoration: none;
+  -webkit-appearance: none !important;
+  appearance: none;
+  color: black;
 }
 li{
   list-style: none;

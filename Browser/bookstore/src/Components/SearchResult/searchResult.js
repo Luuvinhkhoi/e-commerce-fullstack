@@ -168,11 +168,7 @@ export const SearchResult=()=>{
     useEffect(()=>{
        setCategoryOptionState(genre)
     },[genre])
-    console.log(window.location.pathname)
     console.log(products)
-    console.log(publisher)
-    console.log(totalPage)
-    console.log(genre)
     return (
       <>
         <div className='searchResult'>
@@ -341,19 +337,7 @@ export const SearchResult=()=>{
                    <span>Book Collections</span>
                 </div>
         </div>
-        <div className='subscribe'>
-                <div className='subscribe-context'>
-                    <span>Subscribe our newsletter for newest books updates</span>
-                </div>
-                <div className='subscribe-email'>
-                    <div className='subscribe-email-input'>
-                       <input type='email' placeholder='Type your email here'></input>
-                    </div>
-                    <div className='subscribe-email-button'>
-                        <button>SUBSCRIBE</button>
-                    </div>
-                </div>
-        </div>
+        
         
       </>    
     )
