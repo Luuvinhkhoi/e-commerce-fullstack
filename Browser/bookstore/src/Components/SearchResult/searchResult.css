@@ -143,8 +143,17 @@ input[type='range']::-moz-range-thumb{
     border-radius: 0.5rem;
     overflow: hidden;
     width: 250px;
+    position: relative;
 }
-
+.best-seller-tag{
+    position: absolute;
+    top: 2rem;
+    padding: 1rem;
+    background-color: #FF7A00;
+    border-radius: 0 2rem 2rem 0;
+    color: #fff;
+    font-weight: 600;
+}
 .book-list .item-category{
     margin-top: 1rem;
     color: #8D28AD;

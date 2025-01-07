@@ -121,18 +121,43 @@ const getProductFromDatabaseByCategoryName = async (offset, pageSize,categoryNam
 const getAllProductFromDatabase = (offset, limit) => {
   return new Promise((resolve, reject) => {
     const query = `
-      SELECT *
-      FROM product
-      LEFT JOIN (
-        SELECT DISTINCT ON (product_id) product_id, cloudinary_url
-        FROM product_images
-      ) AS product_images
-      ON product.product_id = product_images.product_id
-      INNER JOIN category
-      ON product.category_id = category.category_id
+      WITH BestSeller AS (
+          SELECT 
+              product.product_id,
+              product.product_name,
+              product.quantity,
+              product.category_id,
+              product_images.cloudinary_url
+          FROM 
+              product
+          JOIN (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images order by product_id)
+              product_images ON product.product_id = product_images.product_id
+          order by product.quantity asc
+          limit 5
+      )
+      SELECT 
+          product.product_id,
+          product.product_name,
+          product.quantity,
+          product.price,
+          category.category_name,
+          product_images.cloudinary_url,
+          flash_sales.sale_price,
+          CASE 
+              WHEN BestSeller.product_id IS NOT NULL THEN 'Best Seller'
+              ELSE 'Normal'
+          END AS product_status
+      FROM 
+          product
+      LEFT JOIN (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images)
+          product_images ON product.product_id = product_images.product_id
+      LEFT JOIN 
+          category ON product.category_id = category.category_id
+      LEFT JOIN 
+          BestSeller ON product.product_id = BestSeller.product_id
       left join(select product_id as flashSale_productId,sale_price from flash_sales) flash_sales
-      on product.product_id=flash_sales.flashSale_productId
-      LIMIT $1 OFFSET $2
+            on product.product_id=flash_sales.flashSale_productId
+      limit $1 offset $2
     `;
     pool.query(query, [limit, offset], (error, results) => {
       if (error) {
@@ -175,15 +200,42 @@ const getSameAuthorProduct=async(id)=>{
 const filterProduct=async(category, publisher, format, min, max, pageSize, offset)=>{
   try{
     let result = await pool.query(
-      `SELECT *
-       FROM product
-       LEFT JOIN (
-           SELECT DISTINCT ON (product_id) product_id, cloudinary_url 
-           FROM product_images
-       ) product_images
-       ON product.product_id = product_images.product_id
-       INNER JOIN category 
-       ON product.category_id = category.category_id
+      `WITH BestSeller AS (
+          SELECT 
+              product.product_id,
+              product.product_name,
+              product.quantity,
+              product.category_id,
+              product_images.cloudinary_url
+          FROM 
+              product
+          JOIN (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images order by product_id)
+              product_images ON product.product_id = product_images.product_id
+          order by product.quantity asc
+          limit 5
+      )
+      SELECT 
+          product.product_id,
+          product.product_name,
+          product.quantity,
+          product.price,
+          category.category_name,
+          product_images.cloudinary_url,
+          flash_sales.sale_price,
+          CASE 
+              WHEN BestSeller.product_id IS NOT NULL THEN 'Best Seller'
+              ELSE 'Normal'
+          END AS product_status
+      FROM 
+          product
+      LEFT JOIN (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images)
+          product_images ON product.product_id = product_images.product_id
+      LEFT JOIN 
+          category ON product.category_id = category.category_id
+      LEFT JOIN 
+          BestSeller ON product.product_id = BestSeller.product_id
+      left join(select product_id as flashSale_productId,sale_price from flash_sales) flash_sales
+      on product.product_id=flash_sales.flashSale_productId
        WHERE (category.category_name = COALESCE($1, category_name))
          AND (publisher = COALESCE($2, publisher))
          AND (format = COALESCE($3, format))

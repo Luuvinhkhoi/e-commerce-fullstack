@@ -5,15 +5,12 @@ import arrow from '../../Assets/right-arrow.png'
 import store from '../../Assets/store.png'
 import customer from '../../Assets/white-group.png'
 import book from '../../Assets/book.png'
-import mathImg from '../../Assets/maths .png'
 import './searchResult.css'
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/scrollbar';
 import { Swiper, SwiperSlide } from 'swiper/react';
 // import required modules
-import { Navigation } from 'swiper/modules';
-import { Scrollbar } from 'swiper/modules';
 import { BestSeller } from '../Main/Best-seller/best-seller';
 export const SearchResult=()=>{
     const [searchParams] = useSearchParams();
@@ -116,14 +113,21 @@ export const SearchResult=()=>{
     }
     
     async function resetFilter() {
-        let result=await getAllProduct()
+        setPageNumber(1)
         setCategoryOptionState('All genres');
         setFormatOptionState(null);
         setPublisherOption(null);
         setMinPrice(0);
         setMaxPrice(1000000);
-        setProducts(result.products)
     }
+    useEffect(() => {
+        async function fetchData() {
+            const result = await getAllProduct();
+            setProducts(result.products);
+        }
+    
+        fetchData();
+    }, [pageNumber]);
     useEffect(()=>{
         async function fetchData() {
             setCategoryOptionState(genre)
@@ -272,7 +276,16 @@ export const SearchResult=()=>{
                             products.map(item=>
                                 <Link to={`/${item.product_id}`} state={item.cloudinary_url}><div className='book-list-item'>
                                     <div className='book-list-item-image'>
-                                        <img src={item.cloudinary_url}></img>
+                                        {item.product_status==='Normal'?(
+                                            <img src={item.cloudinary_url}></img>
+                                        ):(
+                                            <div className='best-seller-item'>
+                                                <div className='best-seller-tag'>
+                                                    <p>Best Seller</p>
+                                                </div>
+                                                <img src={item.cloudinary_url}></img>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className='book-list-item-desc'>
                                         <div className='item-category'>
