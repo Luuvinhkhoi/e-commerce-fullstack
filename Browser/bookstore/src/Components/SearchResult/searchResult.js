@@ -1,5 +1,5 @@
 import { useEffect, useState,  } from 'react';
-import { Link , useLocation, useSearchParams} from 'react-router-dom';
+import { Link , useLocation, useSearchParams, useNavigate} from 'react-router-dom';
 import clevr from '../../util/clevr';
 import arrow from '../../Assets/right-arrow.png'
 import store from '../../Assets/store.png'
@@ -14,6 +14,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { BestSeller } from '../Main/Best-seller/best-seller';
 export const SearchResult=()=>{
     const [searchParams] = useSearchParams();
+    const navigate=useNavigate()
     const genre = searchParams.get('genre') || 'All genres';
     let [categoryOptionState, setCategoryOptionState]=useState(genre);
     let [formatOptionState, setFormatOptionState]=useState(null)
@@ -113,19 +114,19 @@ export const SearchResult=()=>{
     }
     
     async function resetFilter() {
-        setPageNumber(1)
         setCategoryOptionState('All genres');
         setFormatOptionState(null);
         setPublisherOption(null);
         setMinPrice(0);
         setMaxPrice(1000000);
+        navigate('/search?genre=All%20genres')
     }
     useEffect(() => {
         async function fetchData() {
+            console.log('reset filter')
             const result = await getAllProduct();
             setProducts(result.products);
         }
-    
         fetchData();
     }, [pageNumber]);
     useEffect(()=>{
@@ -166,13 +167,15 @@ export const SearchResult=()=>{
           }
          fetchData() 
     },[genre])
+    
     useEffect(() => {
         window.scrollTo(0, 0); // Cuộn lên đầu trang mỗi khi pageNumber thay đổi
-    }, [pageNumber]);
+    }, [products]);
     useEffect(()=>{
        setCategoryOptionState(genre)
     },[genre])
-    console.log(products)
+    console.log(totalPage)
+    console.log(categoryOptionState)
     return (
       <>
         <div className='searchResult'>

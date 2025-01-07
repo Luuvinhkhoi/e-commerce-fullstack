@@ -172,6 +172,24 @@ const countTotalProduct= async()=>{
   const result=await pool.query('select count(product_id) from product')
   return result.rows
 }
+const countFilterProduct=async(category, publisher, format, min, max)=>{
+  const result = await pool.query(
+      `SELECT *
+       FROM product
+       LEFT JOIN (
+           SELECT DISTINCT ON (product_id) product_id, cloudinary_url 
+           FROM product_images
+       ) product_images
+       ON product.product_id = product_images.product_id
+       INNER JOIN category 
+       ON product.category_id = category.category_id
+       WHERE (category.category_name = COALESCE($1, category_name))
+         AND (publisher = COALESCE($2, publisher))
+         AND (format = COALESCE($3, format))
+         AND (price >= COALESCE($4, price) AND price <= COALESCE($5, price))`
+  ,[category, publisher, format, min, max])
+  return result.rows.length
+}
 const getPublisher=async()=>{
   const result = await pool.query('select publisher from product')
   const product= result.rows
@@ -739,5 +757,6 @@ module.exports={
     getPublisher,
     filterProduct,
     countTotalProduct,
+    countFilterProduct,
     findBookByName, 
 }
