@@ -220,6 +220,7 @@ let clevr={
     getReview(id){
         return fetch(`http://localhost:4001/review/${id}`,{
             method:'GET',
+            credentials:'include'
         }).then(response=>{
             if (response.ok){
                 return response.json()
@@ -556,6 +557,28 @@ let clevr={
         }). catch(networkError=>{
             console.log(networkError.message)
         });
+    },updateReview(updateData, id){
+        return fetch(`http://localhost:4001/review/${id}`,{
+            method:"PATCH",
+            headers: {
+                "Content-Type": "application/json" 
+            },
+            credentials:'include',
+            body:JSON.stringify({
+                updateData
+            })
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Request failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        })
     }
 
 }

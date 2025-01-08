@@ -29,11 +29,39 @@ export const SearchResult=()=>{
     const [loading, setLoading] = useState(true);
     const priceGap = 50000;
     const maxRange = 1000000;
-    function getAllProduct(){
-        const params = new URLSearchParams();
-        params.append('pageNumber',pageNumber)
-        params.append('pageSize', pageSize)
-        return clevr.getAllProduct(params.toString())
+    
+    async function fetchProductData() {
+        if(genre==='All genres'){
+            try {
+                const [productResult, publisherResult] = await Promise.all([
+                  clevr.getAllProduct(new URLSearchParams({ pageNumber, pageSize }).toString()),
+                  clevr.getPublisher()
+                ]);
+                setProducts(productResult.products);
+                setPublisher(publisherResult);
+                setTotalPage(Math.ceil(productResult.count[0].count/pageSize))
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu:', error);
+            } finally {
+                setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
+            }
+        } else{
+            try {
+                const category=genre
+                const [productResult, publisherResult] = await Promise.all([
+                  clevr.getProductByCategory(new URLSearchParams({ pageNumber, pageSize, category }).toString()),
+                  clevr.getPublisher()
+                ]);
+                setProducts(productResult.filterProduct);
+                setPublisher(publisherResult);
+                setTotalPage(Math.ceil(Number(productResult.count.find(item=>item.category_name===categoryOptionState).count)/pageSize))
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu:', error);
+            } finally {
+                setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
+            }
+        }
+        
     }
     // Handle thay đổi giá trị từ input number
     const handlePriceInput = (e, type) => {
@@ -98,7 +126,7 @@ export const SearchResult=()=>{
     };
     async function filterProduct(){
         const params = new URLSearchParams();
-        params.append('pageNumber',pageNumber)
+        params.append('pageNumber',1)
         params.append('pageSize', pageSize)
         if (categoryOptionState!=='All genres') {
             params.append('category', categoryOptionState);
@@ -109,30 +137,21 @@ export const SearchResult=()=>{
         if (maxPrice !== null && maxPrice !== undefined) params.append('maxPrice', maxPrice);
         let result=await clevr.filterProduct(params.toString())
         setProducts(result.filterProduct)
+        setPageNumber(1)
         setTotalPage(Math.ceil(result.count/pageSize))
         window.scrollTo(0, 0);
     }
     
     async function resetFilter() {
-        setCategoryOptionState('All genres');
         setFormatOptionState(null);
         setPublisherOption(null);
         setMinPrice(0);
         setMaxPrice(1000000);
-        navigate('/search?genre=All%20genres')
+        const result = await fetchProductData();
     }
-    useEffect(() => {
-        async function fetchData() {
-            console.log('reset filter')
-            const result = await getAllProduct();
-            setProducts(result.products);
-        }
-        fetchData();
-    }, [pageNumber]);
+    
     useEffect(()=>{
         async function fetchData() {
-            setCategoryOptionState(genre)
-            console.log(`fetch data ${categoryOptionState}`)
             if(genre==='All genres'){
                 try {
                     const [productResult, publisherResult] = await Promise.all([
@@ -171,9 +190,6 @@ export const SearchResult=()=>{
     useEffect(() => {
         window.scrollTo(0, 0); // Cuộn lên đầu trang mỗi khi pageNumber thay đổi
     }, [products]);
-    useEffect(()=>{
-       setCategoryOptionState(genre)
-    },[genre])
     console.log(totalPage)
     console.log(categoryOptionState)
     return (
@@ -182,35 +198,6 @@ export const SearchResult=()=>{
             <div className='filter'>
                 <h2>Filter</h2>
                 <div className='filter-row-1'>
-                    <div className='category'>
-                        <span>Categories</span>
-                        <div className='option'>
-                            <div>
-                                <input type='radio' id='all genres' value='all genres' name='category' checked={categoryOptionState==='All genres'} onChange={handleCategoryOption}></input>
-                                <label for='all genres' >All genres</label>
-                            </div>
-                            <div>
-                                <input type='radio' id='Fiction' value='Fiction' name='category' checked={categoryOptionState==='Fiction'} onChange={handleCategoryOption}></input>
-                                <label for='Fiction' >Fiction</label>
-                            </div>
-                            <div>
-                                <input type='radio' id='Horror' value='Horror' name='category' checked={categoryOptionState==='Horror'} onChange={handleCategoryOption}></input>
-                                <label for='Horror' >Horror</label>
-                            </div>
-                            <div>
-                                <input type='radio' id='Romance' value='Romance' name='category' checked={categoryOptionState==='Romance'} onChange={handleCategoryOption}></input>
-                                <label for='Romance' >Romance</label>
-                            </div>
-                            <div>
-                                <input type='radio' id='Classic literature' value='Classic literature' name='category' checked={categoryOptionState==='Classic literature'} onChange={handleCategoryOption}></input>
-                                <label for='Classic literature' >Classic literature</label>
-                            </div>
-                            <div>
-                                <input type='radio' id='Mystery' value='Mystery' name='category' checked={categoryOptionState==='Mystery'} onChange={handleCategoryOption}></input>
-                                <label for='Mystery' >Mystery</label>
-                            </div>
-                        </div>
-                    </div>
                     <div className='book-format'>
                         <span>Book Format</span>
                         <div className='option'>

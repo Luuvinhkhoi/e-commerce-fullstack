@@ -537,10 +537,13 @@ const getAllImage=async()=>{
     throw new Error('Error'+error.message)
   }
 }
-const getReview=async(id)=>{
+const getReview=async(id, userId)=>{
   try{
     const result=await pool.query('Select * from product_review left join users on product_review.user_id=users.user_id where product_id=$1',[id])
-    return result.rows
+    const productReview=result.rows
+    const isReview=await pool.query('Select * from product_review where user_id=$1 and product_id=$2',[userId, id])
+    const isReviewResult=isReview.rows
+    return ({productReview, isReviewResult})
   } catch(error){
     throw new Error('Error'+error.message)
   }
@@ -585,6 +588,25 @@ const getRatingScore=async(id)=>{
     };
   } catch(error){
     throw new Error('Error'+error.message)
+  }
+}
+const updateReview=async(id,userId , updateData)=>{
+  try{
+    const fieldsToUpdate = updateData;
+    if (!id || Object.keys(fieldsToUpdate).length === 0) {
+      return res.status(400).send('Failed');
+    }
+    const columnNames = Object.keys(fieldsToUpdate);
+    const columnValues = Object.values(fieldsToUpdate);
+  
+    const setClause = columnNames
+      .map((columnName, index) => `${columnName} = $${index + 1}`)
+      .join(', ');
+    const query = `UPDATE product_review SET ${setClause} WHERE user_id = $${columnNames.length + 1} AND product_id = $${columnNames.length + 2}`;
+    await pool.query(query, [...columnValues, parseInt(userId, 10), parseInt(id, 10)]);
+    return {message:`Success update with ${id}`};
+  } catch(error){
+    return error.message
   }
 }
 const getBestSeller=async()=>{
@@ -750,6 +772,7 @@ module.exports={
     getReview,
     addReview, 
     getRatingScore,
+    updateReview,
     getBestSeller, 
     getDiscountItem,
     getTrendingItem,

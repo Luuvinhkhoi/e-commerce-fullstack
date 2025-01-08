@@ -19,10 +19,11 @@ export const BookDetail = ({image}) =>{
     const [relatedBook, setRelatedBook]=useState()
     const [productImages, setProductImages]=useState([])
     const [isActive, setIsActive]=useState('close')
-    const [activeStar, setActiveStar] = useState(0)
+    const [activeStar, setActiveStar] = useState(1)
     const [selectedStar, setSelectedStar] = useState(0)
     const [reviewContent, setReviewContent]=useState('')
     const [listReview, setListReview]=useState([])
+    const [isReview, setIsReview]=useState()
     const [isOpenAddReview, setIsOpenAddReview]=useState(false)
     const [ratingStat, setRatingStat]=useState()
     const location=useLocation()
@@ -68,6 +69,9 @@ export const BookDetail = ({image}) =>{
     function handleCloseAddReviewButton(){
         handAddReview();
         closeReview()
+        if(isReview.length>0){
+            setActiveStar(isReview[0].score)
+        }
     }
     function handleMouseOverStar(e) {
         const starValue = e.target.getAttribute('data')
@@ -85,8 +89,26 @@ export const BookDetail = ({image}) =>{
     function handleReviewContent(e){
         setReviewContent(e.target.value)
     }
-    function handleSubmitReview(){
-        return clevr.submitReview(activeStar, reviewContent, id)
+    async function handleSubmitReview(){
+        await clevr.submitReview(activeStar, reviewContent, id)
+        let result4=await clevr.getReview(id)
+        setListReview(result4.productReview)
+        let result5=await clevr.getRatingStat(id)
+        setRatingStat(result5)
+        handAddReview();
+        closeReview()
+        handleViewReview()
+    }
+    async function changeReview() {
+        const updateData={score: activeStar, content:reviewContent}
+        await clevr.updateReview(updateData, id)
+        let result4=await clevr.getReview(id)
+        setListReview(result4.productReview)
+        let result5=await clevr.getRatingStat(id)
+        setRatingStat(result5)
+        handAddReview();
+        closeReview()
+        handleViewReview()
     }
     const showLoginPopup = () => {
         alert('Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.');
@@ -156,10 +178,15 @@ export const BookDetail = ({image}) =>{
           let result3=await clevr.getProductImages(id)
           let result4=await clevr.getReview(id)
           let result5=await clevr.getRatingStat(id)
+          if(result4.isReviewResult.length>0){
+            setActiveStar(result4.isReviewResult[0].score)
+            setReviewContent(result4.isReviewResult[0].content)
+          }
           setBookDetail(result)
           setRelatedBook(result2)
           setProductImages(result3)
-          setListReview(result4)
+          setListReview(result4.productReview)
+          setIsReview(result4.isReviewResult)
           setLoading(false)
           setRatingStat(result5)
         }
@@ -180,7 +207,7 @@ export const BookDetail = ({image}) =>{
     
         fetchUserProfile();
     }, []);
-    console.log(isOpenAddReview)
+    console.log(isReview)
     return (
       <> 
         <div className={`${activeOverlay}-overlay`}>
@@ -322,7 +349,7 @@ export const BookDetail = ({image}) =>{
                                 <div className={`${isActive}-book-detail-review-row-2`}>
                                     <div className={`${isActive}-add-review-button`} onClick={handleAddReviewButton}>
                                         <img src={pen}></img>
-                                        <button>Add review</button>
+                                        {isReview.length>0?(<button>Change review</button>):(<button>Add review</button>)}
                                     </div>
                                     <div onClick={handleViewReview} className={`${isActive}-button`}>
                                         <img src={downArrow}></img>
@@ -333,54 +360,105 @@ export const BookDetail = ({image}) =>{
                                     {isOpenAddReview ?
                                         (
                                           userName ? (
-                                            <div className='add-review-box'>
-                                                <div className='rating-score'>
-                                                    <div className='star-score'>
-                                                        <div
-                                                            className={`${activeStar >=1 || (!activeStar && selectedStar >=1) ? 'active' : 'unActive'}-star-item`}
-                                                            onMouseOver={handleMouseOverStar}
-                                                            onMouseOut={handleMouseOutStar}
-                                                            onClick={handleStarClick}
-                                                            data="1"
-                                                        ></div>
-                                                        <div
-                                                            className={`${activeStar >=2 || (!activeStar && selectedStar >=2) ? 'active' : 'unActive'}-star-item`}
-                                                            onMouseOver={handleMouseOverStar}
-                                                            onMouseOut={handleMouseOutStar}
-                                                            onClick={handleStarClick}
-                                                            data="2"
-                                                        ></div>
-                                                        <div
-                                                            className={`${activeStar >=3 || (!activeStar && selectedStar >=3) ? 'active' : 'unActive'}-star-item`}
-                                                            onMouseOver={handleMouseOverStar}
-                                                            onMouseOut={handleMouseOutStar}
-                                                            onClick={handleStarClick}
-                                                            data="3"
-                                                        ></div>
-                                                        <div
-                                                            className={`${activeStar >=4 || (!activeStar && selectedStar >=4) ? 'active' : 'unActive'}-star-item`}
-                                                            onMouseOver={handleMouseOverStar}
-                                                            onMouseOut={handleMouseOutStar}
-                                                            onClick={handleStarClick}
-                                                            data="4"
-                                                        ></div>
-                                                        <div
-                                                            className={`${activeStar >=5 || (!activeStar && selectedStar >=5) ? 'active' : 'unActive'}-star-item`}
-                                                            onMouseOver={handleMouseOverStar}
-                                                            onMouseOut={handleMouseOutStar}
-                                                            onClick={handleStarClick}
-                                                            data="5"
-                                                        ></div>
+                                            isReview.length>0?(
+                                                <div className='add-review-box'>
+                                                    <div className='rating-score'>
+                                                        <div className='star-score'>
+                                                            <div
+                                                                className={`${activeStar >=1 || (!activeStar && selectedStar >=1) ? 'active' : 'unActive'}-star-item`}
+                                                                onMouseOver={handleMouseOverStar}
+                                                                onMouseOut={handleMouseOutStar}
+                                                                onClick={handleStarClick}
+                                                                data="1"
+                                                            ></div>
+                                                            <div
+                                                                className={`${activeStar >=2 || (!activeStar && selectedStar >=2) ? 'active' : 'unActive'}-star-item`}
+                                                                onMouseOver={handleMouseOverStar}
+                                                                onMouseOut={handleMouseOutStar}
+                                                                onClick={handleStarClick}
+                                                                data="2"
+                                                            ></div>
+                                                            <div
+                                                                className={`${activeStar >=3 || (!activeStar && selectedStar >=3) ? 'active' : 'unActive'}-star-item`}
+                                                                onMouseOver={handleMouseOverStar}
+                                                                onMouseOut={handleMouseOutStar}
+                                                                onClick={handleStarClick}
+                                                                data="3"
+                                                            ></div>
+                                                            <div
+                                                                className={`${activeStar >=4 || (!activeStar && selectedStar >=4) ? 'active' : 'unActive'}-star-item`}
+                                                                onMouseOver={handleMouseOverStar}
+                                                                onMouseOut={handleMouseOutStar}
+                                                                onClick={handleStarClick}
+                                                                data="4"
+                                                            ></div>
+                                                            <div
+                                                                className={`${activeStar >=5 || (!activeStar && selectedStar >=5) ? 'active' : 'unActive'}-star-item`}
+                                                                onMouseOver={handleMouseOverStar}
+                                                                onMouseOut={handleMouseOutStar}
+                                                                onClick={handleStarClick}
+                                                                data="5"
+                                                            ></div>
+                                                        </div>
+                                                    </div>
+                                                    <div className='review-input'>
+                                                        <input onChange={handleReviewContent} value={reviewContent}></input>
+                                                    </div>
+                                                    <div className='review-button'>
+                                                        <button onClick={handleCloseAddReviewButton}>Cancel</button>
+                                                        <button onClick={changeReview}>Change review</button>
                                                     </div>
                                                 </div>
-                                                <div className='review-input'>
-                                                    <input onChange={handleReviewContent}></input>
+                                            ):(
+                                                <div className='add-review-box'>
+                                                    <div className='rating-score'>
+                                                        <div className='star-score'>
+                                                            <div
+                                                                className={`${activeStar >=1 || (!activeStar && selectedStar >=1) ? 'active' : 'unActive'}-star-item`}
+                                                                onMouseOver={handleMouseOverStar}
+                                                                onMouseOut={handleMouseOutStar}
+                                                                onClick={handleStarClick}
+                                                                data="1"
+                                                            ></div>
+                                                            <div
+                                                                className={`${activeStar >=2 || (!activeStar && selectedStar >=2) ? 'active' : 'unActive'}-star-item`}
+                                                                onMouseOver={handleMouseOverStar}
+                                                                onMouseOut={handleMouseOutStar}
+                                                                onClick={handleStarClick}
+                                                                data="2"
+                                                            ></div>
+                                                            <div
+                                                                className={`${activeStar >=3 || (!activeStar && selectedStar >=3) ? 'active' : 'unActive'}-star-item`}
+                                                                onMouseOver={handleMouseOverStar}
+                                                                onMouseOut={handleMouseOutStar}
+                                                                onClick={handleStarClick}
+                                                                data="3"
+                                                            ></div>
+                                                            <div
+                                                                className={`${activeStar >=4 || (!activeStar && selectedStar >=4) ? 'active' : 'unActive'}-star-item`}
+                                                                onMouseOver={handleMouseOverStar}
+                                                                onMouseOut={handleMouseOutStar}
+                                                                onClick={handleStarClick}
+                                                                data="4"
+                                                            ></div>
+                                                            <div
+                                                                className={`${activeStar >=5 || (!activeStar && selectedStar >=5) ? 'active' : 'unActive'}-star-item`}
+                                                                onMouseOver={handleMouseOverStar}
+                                                                onMouseOut={handleMouseOutStar}
+                                                                onClick={handleStarClick}
+                                                                data="5"
+                                                            ></div>
+                                                        </div>
+                                                    </div>
+                                                    <div className='review-input'>
+                                                        <input onChange={handleReviewContent}></input>
+                                                    </div>
+                                                    <div className='review-button'>
+                                                        <button onClick={handleCloseAddReviewButton}>Cancel</button>
+                                                        <button onClick={handleSubmitReview}>Submit</button>
+                                                    </div>
                                                 </div>
-                                                <div className='review-button'>
-                                                    <button onClick={handleCloseAddReviewButton}>Cancel</button>
-                                                    <button onClick={handleSubmitReview}>Submit</button>
-                                                </div>
-                                            </div>
+                                            )
                                             ) : (
                                             <div className='recommend-login'>
                                                 <span>Please <Link to={'/login'}>login</Link> or <Link to={'/sign-up'}>sign-up</Link> to review</span>
