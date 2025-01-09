@@ -75,7 +75,7 @@ export const FlashSale=()=>{
                                             </div>
                                         </div> 
                                         <div className='flash-sale-progress'>
-                                            <div></div>
+                                            <div style={{width: `${item.initial_quantity!==item.stock_quantity ? `${((item.initial_quantity - item.stock_quantity) / item.initial_quantity) * 100}%` : '0%'}`, backgroundColor:'#FF7020', height:'10px', borderRadius:'1rem'}}></div>
                                         </div>  
                                         <div className='flash-sale-item-quantity'>
                                             <span>{item.stock_quantity} book in stock</span>

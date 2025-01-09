@@ -494,7 +494,27 @@ const checkout=async(user_id,province, city, ward , address,phone_number, paymen
         return productResult.rows[0]
       })
     )
-    console.log(order_product)
+    const isFlashSale=await Promise.all(
+      cart_product.rows.map(async (product)=>{
+        const productResult=await pool.query('select * from flash_sales where product_id=$1',[product.product_id])
+        return productResult.rows[0]
+      })
+    )
+    console.log(isFlashSale)
+    if(isFlashSale.length>0){
+      const minus_quantity=await Promise.all(
+        cart_product.rows.map(async (product)=>{
+          const productResult=await pool.query('update flash_sales set stock_quantity= stock_quantity-$1 where product_id=$2',[product.quantity, product.product_id])
+          return productResult.rows[0]
+        })
+      )
+    }
+    const minus_quantity=await Promise.all(
+      cart_product.rows.map(async (product)=>{
+        const productResult=await pool.query('update product set quantity= quantity-$1 where product_id=$2',[product.quantity, product.product_id])
+        return productResult.rows[0]
+      })
+    )
     const deleteCart = await deleteAllProductInCart(user_id)
     return ({ message: 'Checkout success'});  
   } catch(error){
@@ -688,11 +708,11 @@ const handleFlashSale = async () => {
       const salePrice = product.price * 0.8;
 
       // Giảm số lượng trong bảng product
-      await pool.query(
+      const result= await pool.query(
         'UPDATE product SET quantity = quantity - $1 WHERE product_id = $2',
-        [saleQuantity, product.id]
+        [saleQuantity, product.product_id]
       );
-
+      console.log(result.rows)
       // Thêm sản phẩm vào flash_sales
       await pool.query(
         `INSERT INTO flash_sales 
@@ -731,7 +751,7 @@ const findBookByName=async(name)=>{
   }
 } 
 
-cron.schedule('05 0 * * *', () => {
+cron.schedule('13 0 * * *', () => {
     console.log('Running flash sale process at 12 AM...');
     handleFlashSale();
   }, {
