@@ -191,13 +191,13 @@ const countFilterProduct=async(category, publisher, format, min, max)=>{
   return result.rows.length
 }
 const getPublisher=async()=>{
-  const result = await pool.query('select publisher from product')
+  const result = await pool.query('select distinct on(publisher)publisher from product')
   const product= result.rows
   return product
 }
 const getProductFromDatabaseById=async(id)=>{
     console.log(id)
-    const result = await pool.query('select * from product where product_id=$1',[id])
+    const result = await pool.query('select * from product left join(select product_id as flashSale_productId,sale_price from flash_sales) flash_sales on product.product_id=flash_sales.flashSale_productId where product_id=$1',[id])
     const product= result.rows[0]
     return product
 }
@@ -216,6 +216,7 @@ const getSameAuthorProduct=async(id)=>{
   return result.rows
 }
 const filterProduct=async(category, publisher, format, min, max, pageSize, offset)=>{
+  
   try{
     let result = await pool.query(
       `WITH BestSeller AS (
@@ -716,9 +717,9 @@ const handleFlashSale = async () => {
       // Thêm sản phẩm vào flash_sales
       await pool.query(
         `INSERT INTO flash_sales 
-         (product_id, sale_price, stock_quantity, start_time, end_time)
+         (product_id, sale_price, stock_quantity, start_time, end_time, initial_quantity)
          VALUES ($1, $2, $3, $4, $5)`,
-        [product.product_id, salePrice, saleQuantity, now, endTime]
+        [product.product_id, salePrice, saleQuantity, now, endTime, saleQuantity]
       );
     }
 

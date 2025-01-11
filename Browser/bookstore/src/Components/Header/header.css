@@ -187,6 +187,8 @@
 .mini-search-bar .search-bar-result .search-item-image{
     height: 120px;
     width: 80px;
+    border-radius: 0.5rem;
+    overflow: hidden;
 }
 .mini-search-bar .search-bar-result .search-item-desc .search-item-item-category{
     background-color: #8D28AD;

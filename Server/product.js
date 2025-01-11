@@ -69,7 +69,7 @@ productRouter.get('/filter',pagination ,async(req, res, next)=>{
     const { offset, pageSize } = req.pagination;
     const min=parseFloat(minPrice)
     const max=parseFloat(maxPrice)
-    console.log(category,publisher, format, offset, pageSize)
+    console.log(category,publisher, format, offset,minPrice, maxPrice, pageSize)
     const filterProduct= await db.filterProduct(category, publisher, format, min, max, pageSize, offset)            
     const count=await db.countFilterProduct(category, publisher, format, min, max)
 

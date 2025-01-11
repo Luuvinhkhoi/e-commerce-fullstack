@@ -248,7 +248,12 @@ export const BookDetail = ({image}) =>{
                                 <span>{bookDetail.description}</span>
                             </div>
                             <div className='item-price'>
-                                <span>{bookDetail.price} đ</span>
+                                {bookDetail.sale_price?(
+                                    <div style={{display:'flex', gap:'1rem', alignItems:'baseline'}}>
+                                        <p>{bookDetail.sale_price}đ</p>
+                                        <span style={{fontSize:'24px', color:'rgb(99, 99, 99)', textDecorationLine:'line-through'}}>{bookDetail.price}đ</span>
+                                    </div>
+                                ):(<span>{bookDetail.price} đ</span>)}
                             </div>
                             <div className='quantity-add-box'>
                                 <div className='item-quantity'>

@@ -80,7 +80,7 @@ export const Profile= ()=>{
                             </div>
                             {orderHistory.item[index]?.map((item) => (
                             <div key={item.product_id} className='item-detail'>
-                                <Link to={`/${item.product_id}`} className='item'>
+                                <Link to={`/${item.product_id}`} state={item.cloudinary_url} className='item'>
                                     <div className='item-image'>
                                         <img src={item.cloudinary_url} alt={item.product_name} />
                                     </div>

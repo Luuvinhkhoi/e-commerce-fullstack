@@ -79,8 +79,10 @@
     width: 100%;
 }
 .profile .order-invoice div .item-image{
-    height: 120px;
-    width: 120px;
+    height: 160px;
+    width: 125px;
+    border-radius: 0.5rem;
+    overflow: hidden;
 }
 .profile .order-invoice div .item-name-quantity-price{
     display: flex;

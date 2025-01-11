@@ -1,7 +1,6 @@
 import { useEffect, useState,  } from 'react';
 import { Link , useLocation, useSearchParams, useNavigate} from 'react-router-dom';
 import clevr from '../../util/clevr';
-import arrow from '../../Assets/right-arrow.png'
 import store from '../../Assets/store.png'
 import customer from '../../Assets/white-group.png'
 import book from '../../Assets/book.png'
@@ -118,18 +117,14 @@ export const SearchResult=()=>{
     }
     function handlePublisherOption(e){
         setPublisherOption(e.target.value)
+        console.log(publisherOption)
     }
-    const handlePageNumber = async (pageNumber) => {
-        setPageNumber(pageNumber);
-        const result=await clevr.getAllProduct(new URLSearchParams({ pageNumber, pageSize }).toString())
-        setProducts(result.products)
-    };
     async function filterProduct(){
         const params = new URLSearchParams();
         params.append('pageNumber',1)
         params.append('pageSize', pageSize)
-        if (categoryOptionState!=='All genres') {
-            params.append('category', categoryOptionState);
+        if (genre!=='All genres') {
+            params.append('category', genre);
         }
         if (formatOptionState) params.append('format', formatOptionState);
         if (publisherOption) params.append('publisher', publisherOption);
@@ -141,26 +136,79 @@ export const SearchResult=()=>{
         setTotalPage(Math.ceil(result.count/pageSize))
         window.scrollTo(0, 0);
     }
-    
+    const handlePageNumber = async (pageNumber) => {
+        setPageNumber(pageNumber);
+        setCategoryOptionState(genre)
+        const params = new URLSearchParams();
+        params.append('pageNumber',pageNumber)
+        params.append('pageSize', pageSize)
+        if (genre!=='All genres') {
+            params.append('category', genre);
+        }
+        if (formatOptionState) params.append('format', formatOptionState);
+        if (publisherOption) params.append('publisher', publisherOption);
+        if (minPrice !== null && minPrice !== undefined) params.append('minPrice', minPrice);
+        if (maxPrice !== null && maxPrice !== undefined) params.append('maxPrice', maxPrice);
+        let result=await clevr.filterProduct(params.toString())
+        setProducts(result.filterProduct)
+        setTotalPage(Math.ceil(result.count/pageSize))
+        window.scrollTo(0, 0);
+    };
     async function resetFilter() {
         setFormatOptionState(null);
         setPublisherOption(null);
         setMinPrice(0);
         setMaxPrice(1000000);
-        const result = await fetchProductData();
+        setPageNumber(1)
+        if(genre==='All genres'){
+            try {
+                setPageNumber(1)
+                const [productResult, publisherResult] = await Promise.all([
+                  clevr.filterProduct(new URLSearchParams({ pageNumber: 1, pageSize, minPrice, maxPrice }).toString()),
+                  clevr.getPublisher()
+                ]);
+                setProducts(productResult.filterProduct);
+                setPublisher(publisherResult);
+                setTotalPage(Math.ceil(productResult.count/pageSize))
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu:', error);
+            } finally {
+                setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
+            }
+        } else{
+            try {
+                setPageNumber(1)
+                const category=genre
+                const [productResult, publisherResult] = await Promise.all([
+                  clevr.filterProduct(new URLSearchParams({ pageNumber: 1, pageSize, category, minPrice, maxPrice }).toString()),
+                  clevr.getPublisher()
+                ]);
+                setProducts(productResult.filterProduct);
+                setPublisher(publisherResult);
+                setTotalPage(Math.ceil(Number(productResult.count/pageSize)))
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu:', error);
+            } finally {
+                setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
+            }
+        }
+        
     }
     
     useEffect(()=>{
         async function fetchData() {
             if(genre==='All genres'){
                 try {
+                    setPageNumber(1)
                     const [productResult, publisherResult] = await Promise.all([
-                      clevr.getAllProduct(new URLSearchParams({ pageNumber, pageSize }).toString()),
+                      clevr.filterProduct(new URLSearchParams({ pageNumber: 1, pageSize, minPrice, maxPrice }).toString()),
                       clevr.getPublisher()
                     ]);
-                    setProducts(productResult.products);
+                    setProducts(productResult.filterProduct);
                     setPublisher(publisherResult);
-                    setTotalPage(Math.ceil(productResult.count[0].count/pageSize))
+                    setPublisherOption(null)
+                    setFormatOptionState(null)
+                    setTotalPage(Math.ceil(productResult.count/pageSize))
                 } catch (error) {
                     console.error('Lỗi khi tải dữ liệu:', error);
                 } finally {
@@ -169,13 +217,16 @@ export const SearchResult=()=>{
             } else{
                 try {
                     const category=genre
+                    setPageNumber(1)
                     const [productResult, publisherResult] = await Promise.all([
-                      clevr.getProductByCategory(new URLSearchParams({ pageNumber, pageSize, category }).toString()),
+                      clevr.filterProduct(new URLSearchParams({ pageNumber:1, pageSize, category, minPrice, maxPrice }).toString()),
                       clevr.getPublisher()
                     ]);
                     setProducts(productResult.filterProduct);
                     setPublisher(publisherResult);
-                    setTotalPage(Math.ceil(Number(productResult.count.find(item=>item.category_name===categoryOptionState).count)/pageSize))
+                    setPublisherOption(null);
+                    setFormatOptionState(null)
+                    setTotalPage(Math.ceil(Number(productResult.count/pageSize)))
                 } catch (error) {
                     console.error('Lỗi khi tải dữ liệu:', error);
                 } finally {
@@ -190,8 +241,6 @@ export const SearchResult=()=>{
     useEffect(() => {
         window.scrollTo(0, 0); // Cuộn lên đầu trang mỗi khi pageNumber thay đổi
     }, [products]);
-    console.log(totalPage)
-    console.log(categoryOptionState)
     return (
       <>
         <div className='searchResult'>
