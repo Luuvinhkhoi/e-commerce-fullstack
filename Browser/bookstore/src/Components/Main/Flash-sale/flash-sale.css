@@ -37,6 +37,7 @@
     box-sizing: border-box;
 }
 .flash-sale-item-image{
+    position: relative;
     width: 35%;
     height: 240px;
     border-radius: 1rem;

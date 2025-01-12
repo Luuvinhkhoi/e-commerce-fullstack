@@ -248,7 +248,7 @@ export const BookDetail = ({image}) =>{
                                 <span>{bookDetail.description}</span>
                             </div>
                             <div className='item-price'>
-                                {bookDetail.sale_price?(
+                                {bookDetail.stock_quantity>0?(
                                     <div style={{display:'flex', gap:'1rem', alignItems:'baseline'}}>
                                         <p>{bookDetail.sale_price}đ</p>
                                         <span style={{fontSize:'24px', color:'rgb(99, 99, 99)', textDecorationLine:'line-through'}}>{bookDetail.price}đ</span>
@@ -269,7 +269,7 @@ export const BookDetail = ({image}) =>{
                         </div>
                         <div className='book-detail-row-1-column-2'>
                             <div className='item-image'>
-                                <img src={selectedImage}></img>
+                                 {first_selected_image?(<img src={selectedImage}></img>):(<img src={productImages[0].cloudinary_url}></img>)}
                             </div>  
                             <div className='item-list-image'>
                                 {productImages.map(image=>

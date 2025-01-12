@@ -16,7 +16,7 @@ export const Cart = () =>{
     let totalPrice=0
     if(items){
         totalPrice = items.reduce((total, item) => {
-            return total + item.price * item.quantity;
+            return total + item.price * item.cart_quantity;
         }, 0);
     }
     const tax = totalPrice * 0.02
@@ -32,7 +32,7 @@ export const Cart = () =>{
             // If quantity drops to 0, dispatch deleteCart
             const updateitems=store.getState().cart.items
             const item = updateitems.find(item => item.product_id === product_id);
-            if (!item || item.quantity === 0) {
+            if (!item || item.cart_quantity === 0) {
                 dispatch(deleteCart({ id: product_id }));
             }
         } else {
@@ -40,6 +40,23 @@ export const Cart = () =>{
             dispatch(addQuantityToBuy(product_id));
         }
     };
+    const handleCheckout=()=>{
+        const invalidProduct = items.find(item => {
+            if (item.sale_price > 0) {
+              return item.cart_quantity > item.stock_quantity; 
+            } 
+            return item.cart_quantity > item.quantity; 
+        });
+        
+        if (invalidProduct) {
+            alert(
+              `Sorry, We don't have enough "${invalidProduct.product_name}" in stock. We only have ` +
+              `${invalidProduct.sale_price > 0 ? invalidProduct.stock_quantity : invalidProduct.quantity} item`
+            );
+        } else {
+            navigate('/checkout');
+        }
+    }
     useEffect(() => {
         if (!userName) {
             setActiveOverlay('open');
@@ -59,9 +76,18 @@ export const Cart = () =>{
 
         // Function gửi cart lên server
         const saveCart = async () => {
-            if (hasUnsavedChanges) {
-                await dispatch(updateCart(items));
-                console.log("Cart data saved!");
+            const invalidProduct = items.find(item => {
+                if (item.sale_price > 0) {
+                  return item.cart_quantity > item.stock_quantity; 
+                } 
+                return item.cart_quantity > item.quantity; 
+            });
+            
+            if (!invalidProduct) {
+                if (hasUnsavedChanges) {
+                    await dispatch(updateCart(items));
+                    console.log("Cart data saved!");
+                }
             }
         };
 
@@ -169,14 +195,14 @@ export const Cart = () =>{
                         </div>
                         <div className='item-quantity'>
                             <button onClick={() => handleQuantityChange(item.product_id, -1)}>-</button>
-                            <span>{item.quantity}</span>
+                            <span>{item.cart_quantity}</span>
                             <button onClick={() => handleQuantityChange(item.product_id, 1)}>+</button>
                         </div>
                         <div className='item-price'>
-                            <span>{item.price}đ</span>
+                            {item.sale_price?(<span>{item.sale_price}đ</span>):(<span>{item.price}đ</span>)}
                         </div>
                         <div className='item-total-price'>
-                            <span>{(item.price * item.quantity)}đ</span>
+                            {item.sale_price?(<span>{(item.sale_price * item.cart_quantity)}đ</span>):(<span>{(item.price * item.cart_quantity)}đ</span>)}
                         </div>
                     </div>
                   )):(<></>)}
@@ -202,8 +228,8 @@ export const Cart = () =>{
                         <span>Total</span>
                         <p>{(totalPrice+tax)}đ</p>
                     </div>
-                    <div className='checkout-button' onClick={()=>navigate('/checkout')}>Check out</div>
-                    <div className='continue' onClick={() => navigate('/')}>Continue Shoping</div>
+                    <div className='checkout-button' onClick={handleCheckout}>Check out</div>
+                    <div className='continue' onClick={()=>navigate('/')}>Continue Shoping</div>
                 </div>
             </div>
             

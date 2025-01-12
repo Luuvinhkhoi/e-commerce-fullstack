@@ -16,7 +16,7 @@ const cartSlice=createSlice({
             const product=action.payload
             const existingItem=state.items.find(item=>item.bookDetail.product_id===product.bookDetail.product_id)
             if(existingItem){
-               existingItem.quantityToBuy+=1
+               existingItem.cart_quantityToBuy+=1
                state.hasUnsavedChanges=true
             } else{
                 state.items.push(action.payload)
@@ -26,16 +26,16 @@ const cartSlice=createSlice({
         addQuantityToBuy:(state, action)=>{
             const product_id=action.payload
             const existingItem=state.items.find(item=>item.product_id===product_id)
-            existingItem.quantity+=1
+            existingItem.cart_quantity+=1
             state.hasUnsavedChanges=true
         },
         minusQuantityToBuy:(state, action)=>{
             const product_id=action.payload
             const existingItem=state.items.find(item=>item.product_id===product_id)
             if(existingItem){
-                existingItem.quantity-=1
+                existingItem.cart_quantity-=1
                 state.hasUnsavedChanges=true
-                if(existingItem.quantity===0){
+                if(existingItem.cart_quantity===0){
                     console.log('Remove')
                     state.items = state.items.filter(item => item.product_id !== action.payload);
                 }

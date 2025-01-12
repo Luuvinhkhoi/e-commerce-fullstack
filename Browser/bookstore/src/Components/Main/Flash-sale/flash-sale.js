@@ -54,7 +54,30 @@ export const FlashSale=()=>{
                                 <SwiperSlide>
                                 <Link to={`/${item.product_id}`} state={item.cloudinary_url} className='flash-sale-item'>
                                     <div className='flash-sale-item-image'>
-                                        <img src={item.cloudinary_url}></img>
+                                        {item.stock_quantity!==0?(<img src={item.cloudinary_url}></img>):(
+                                            <div>
+                                                <img src={item.cloudinary_url}></img>
+                                                <div 
+                                                style={{
+                                                    backgroundColor:' rgba(0, 0, 0, .53)',
+                                                    position:'absolute',
+                                                    zIndex:'10',
+                                                    width:'100%',
+                                                    height:'100%',
+                                                    top:'0',
+                                                    display:'flex',
+                                                    alignItems:'center',
+                                                    justifyContent:'center'
+                                                }}>
+                                                    <div style={{
+                                                        backgroundColor:'#DC2626',
+                                                        color:'White',
+                                                        padding:'.5rem',
+                                                        borderRadius:'1rem'
+                                                    }}>SOLD OUT</div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div> 
                                     <div className='flash-sale-item-desc'>
                                         <div className='flash-sale-item-category'>
@@ -74,12 +97,18 @@ export const FlashSale=()=>{
                                                 <h5>{item.price}đ</h5>
                                             </div>
                                         </div> 
-                                        <div className='flash-sale-progress'>
-                                            <div style={{width: `${item.initial_quantity!==item.stock_quantity ? `${((item.initial_quantity - item.stock_quantity) / item.initial_quantity) * 100}%` : '0%'}`, backgroundColor:'#FF7020', height:'10px', borderRadius:'1rem'}}></div>
-                                        </div>  
-                                        <div className='flash-sale-item-quantity'>
-                                            <span>{item.stock_quantity} book in stock</span>
-                                        </div>
+                                        {item.stock_quantity!==0?(
+                                            <div>
+                                                <div className='flash-sale-progress'>      
+                                                    <div style={{width: `${item.initial_quantity!==item.stock_quantity ? `${((item.initial_quantity - item.stock_quantity) / item.initial_quantity) * 100}%` : '0%'}`, backgroundColor:'#FF7020', height:'10px', borderRadius:'1rem'}}></div>
+                                                </div>  
+                                                <div className='flash-sale-item-quantity'>
+                                                    <span>{item.stock_quantity} book in stock</span>
+                                                </div>
+                                            </div>
+                                        ):(
+                                            <div style={{color:'#DC2626'}}>This item has been sold out</div>
+                                        )}  
                                     </div> 
                                 </Link>
                                 </SwiperSlide>

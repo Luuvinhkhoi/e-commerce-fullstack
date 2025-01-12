@@ -33,7 +33,6 @@ const createUser = async (request, response)=>{
     if (hashPassword){
         const userId= await pool.query('insert into users(user_name, pass, email) values ($1, $2, $3) returning *', [user_name,hashPassword, email])
         const cart= await pool.query('insert into cart (user_id) values ($1) returning cart_id',[userId.rows[0].user_id])   
-        const cart_product=await pool.query('insert into cart_product(cart_id) values($1)',[cart.rows[0].cart_id])
         if (!cart){
           throw new Error('Failed to create cart');
         } 
@@ -197,7 +196,7 @@ const getPublisher=async()=>{
 }
 const getProductFromDatabaseById=async(id)=>{
     console.log(id)
-    const result = await pool.query('select * from product left join(select product_id as flashSale_productId,sale_price from flash_sales) flash_sales on product.product_id=flash_sales.flashSale_productId where product_id=$1',[id])
+    const result = await pool.query('select * from product left join(select product_id as flashSale_productId,sale_price, stock_quantity from flash_sales) flash_sales on product.product_id=flash_sales.flashSale_productId where product_id=$1',[id])
     const product= result.rows[0]
     return product
 }
@@ -401,18 +400,32 @@ const getCartByUserId=async(id)=>{
       const cart_id = await pool.query('select cart_id from cart where user_id=$1',[id])
       const cartProduct = await pool.query('select cart_product.*, product_images.cloudinary_url FROM cart_product LEFT JOIN (SELECT * FROM product_images WHERE id IN (SELECT MIN(id) FROM product_images GROUP BY product_id)) product_images ON cart_product.product_id = product_images.product_id where cart_product.cart_id=$1',[cart_id.rows[0].cart_id])
       const productIds = cartProduct.rows.map(row => row.product_id);
-      console.log(productIds)
       const productResults = await Promise.all(
         productIds.map(async (productId) => {
-          const productResult = await pool.query('select * from product where product_id=$1', [productId]);
+          const productResult = await pool.query(`select
+          product.*, 
+          COALESCE(flash_sales.sale_price, 0) as sale_price, 
+          COALESCE(flash_sales.stock_quantity, 0) as stock_quantity
+          from 
+              product 
+          left join 
+              (select 
+                  product_id as flashSale_productId, 
+                  sale_price, 
+                  stock_quantity 
+              from flash_sales) flash_sales 
+          on 
+              product.product_id = flash_sales.flashSale_productId 
+          where product.product_id=$1`, [productId]);
           return productResult.rows[0];
         })
       );
+      console.log(productResults)
       const productMap = new Map(productResults.map(p => [p.product_id, p]));
       const combined = 
         cartProduct.rows.map(cartItem => ({
           ...productMap.get(cartItem.product_id), // Lấy sản phẩm chi tiết từ bản đồ
-          quantity: cartItem.quantity,
+          cart_quantity: cartItem.cart_quantity,
           cloudinary_url: cartItem.cloudinary_url
         }))
       ;
@@ -426,9 +439,9 @@ const insertProductIntoCart=async(userId,productId, quantity)=>{
     const cartId=await pool.query("select cart_id from cart where user_id=$1", [userId])
     const existingItem=await pool.query('select product_id from cart_product where cart_id=$1 and product_id=$2',[cartId.rows[0].cart_id, productId])
     if(existingItem.rows.length>0){
-      await pool.query("UPDATE cart_product SET quantity = quantity + $1 WHERE cart_id = $2 AND product_id = $3", [quantity, cartId.rows[0].cart_id, productId]);
+      await pool.query("UPDATE cart_product SET cart_quantity = cart_quantity + $1 WHERE cart_id = $2 AND product_id = $3", [quantity, cartId.rows[0].cart_id, productId]);
     } else{
-      const product = await pool.query("insert into cart_product(cart_id, product_id, quantity) values ($1, $2, $3)", [cartId.rows[0].cart_id, productId, quantity])
+      const product = await pool.query("insert into cart_product(cart_id, product_id, cart_quantity) values ($1, $2, $3)", [cartId.rows[0].cart_id, productId, quantity])
     }
     return { message: 'Product added to cart' };
   }catch(error){
@@ -437,7 +450,7 @@ const insertProductIntoCart=async(userId,productId, quantity)=>{
 }
 const updateCart=async(userId, updateData)=>{
   try{
-    const products=updateData.map(({product_id, quantity})=>({product_id,quantity}))
+    const products=updateData.map(({product_id, cart_quantity})=>({product_id,cart_quantity}))
     console.log(updateData)
     const cart_id = await pool.query('select cart_id from cart where user_id=$1', [userId])
     if (cart_id.rows.length === 0) {
@@ -446,7 +459,7 @@ const updateCart=async(userId, updateData)=>{
     // Thực thi câu lệnh SQL với quantity, cart_id và product_id
     const productResults = await Promise.all(
       products.map(async (product) => {
-        const productResult = await pool.query('update cart_product set quantity = $1 where cart_id = $2 and product_id = $3', [product.quantity, cart_id.rows[0].cart_id, product.product_id]);
+        const productResult = await pool.query('update cart_product set cart_quantity = $1 where cart_id = $2 and product_id = $3', [product.cart_quantity, cart_id.rows[0].cart_id, product.product_id]);
         return productResult.rows[0];
       })
     );
@@ -705,7 +718,7 @@ const handleFlashSale = async () => {
     );
 
     for (let product of productResult.rows) {
-      const saleQuantity = Math.min(20, product.quantity); // Tối đa 20 sản phẩm
+      const saleQuantity = product.quantity; // Tối đa 20 sản phẩm
       const salePrice = product.price * 0.8;
 
       // Giảm số lượng trong bảng product
@@ -718,7 +731,7 @@ const handleFlashSale = async () => {
       await pool.query(
         `INSERT INTO flash_sales 
          (product_id, sale_price, stock_quantity, start_time, end_time, initial_quantity)
-         VALUES ($1, $2, $3, $4, $5)`,
+         VALUES ($1, $2, $3, $4, $5, $6)`,
         [product.product_id, salePrice, saleQuantity, now, endTime, saleQuantity]
       );
     }
@@ -752,7 +765,7 @@ const findBookByName=async(name)=>{
   }
 } 
 
-cron.schedule('13 0 * * *', () => {
+cron.schedule('17 12 * * *', () => {
     console.log('Running flash sale process at 12 AM...');
     handleFlashSale();
   }, {

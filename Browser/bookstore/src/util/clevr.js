@@ -580,6 +580,5 @@ let clevr={
             console.log(networkError.message)
         })
     }
-
 }
 export default clevr
