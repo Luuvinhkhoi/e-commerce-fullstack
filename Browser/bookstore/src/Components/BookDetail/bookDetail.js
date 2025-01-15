@@ -516,7 +516,7 @@ export const BookDetail = ({image}) =>{
                                        <img src={item.cloudinary_url}></img>
                                    </div>
                                    <div className='related-book-desc'>
-                                       <span className='item-name'>{item.product_name.length>10 ? item.product_name.substring(0, 10)+('...') : item.product_name}</span>
+                                       <span className='item-name'>{item.product_name.length>20 ? item.product_name.substring(0, 20)+('...') : item.product_name}</span>
                                        <br></br>
                                        <span className='item-price'>{item.price} đ</span>
                                    </div>

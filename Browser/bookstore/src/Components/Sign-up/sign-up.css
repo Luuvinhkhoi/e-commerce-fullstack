@@ -4,7 +4,7 @@ html, body{
 #root{
     height: 100%;
 }
-.sign-up{
+.sign-up-form{
     height: 100%;
     display: grid;
     place-items: center;  
@@ -67,7 +67,7 @@ html, body{
     font-weight: 600;
     font-size: 18px;
 }
-.sign-up a{
+.sign-up-form a{
     color: #8D28AD;
     font-weight: 500;
 }

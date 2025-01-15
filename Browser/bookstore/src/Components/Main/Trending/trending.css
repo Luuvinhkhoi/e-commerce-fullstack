@@ -1,21 +1,35 @@
 .trending{
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+}
+.trending-context{
+    margin: 5rem auto;
+    text-align: center;
+}
+.trending-context p{
+    font-weight: 600;
+    font-size: 30px;
+}
+.trending-context span{
+    color: rgba(0, 0, 0, 0.6)
 }
 .trending .trending-item{
+    width: 85%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 0 auto;
 }
 .trending .trending-item:hover .item-price{
     background-color: #8D28AD;
     color: #FFFFFF;
     border-radius: 1rem;
-    width: 60%;
+    width: 50%;
+    text-align: center;
 }
 .trending .item-img{
-    width: 200px;
     height: 300px;
+    width: 100%;
     border-radius: 1rem;
     overflow: hidden;
 }
@@ -38,4 +52,33 @@
     color: #8D28AD;
     font-weight: bold;
     padding: 0.5rem 0;
+    margin-bottom: 1rem;
+}
+@media only screen and (max-width:1024px) and (min-width:769px){
+    .trending{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .trending .trending-item{
+        width: 70%;
+    }
+}
+@media only screen and (max-width:768px) and (min-width:481px){
+    .trending{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .trending .trending-item{
+        width: 60%;
+    }
+}
+@media only screen and (max-width:480px) and (min-width:0){
+    .trending{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .trending .item-img{
+        height: 230px;
+        width: 180px;
+    }
 }

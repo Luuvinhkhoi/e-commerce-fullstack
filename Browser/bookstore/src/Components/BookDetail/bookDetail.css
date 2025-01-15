@@ -79,7 +79,7 @@
     height: 500px;
     display: grid;
     gap: 1rem;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 1.8fr 0.5fr;
 }
 .book-detail-row-1-column-2 .item-image{
     height: 100%;   
@@ -89,7 +89,7 @@
 .book-detail-row-2{
     display: grid;
     gap: 2rem;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1.5fr 1fr;
 }
 .book-detail-row-2-col-1{
     display: flex;
@@ -366,7 +366,7 @@
 }
 .book-detail-row-2-col-2 .related-book-image{
     height: 250px;
-    width: 200px;
+    width: 180px;
     border-radius: 0.5rem;
     overflow: hidden;
 }

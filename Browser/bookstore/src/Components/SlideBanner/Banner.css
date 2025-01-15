@@ -3,6 +3,8 @@
     color: #FFFFFF;
     height: 500px;
     text-align: start;
+    display: flex;
+    justify-content: flex-start;
 }
 .banner-description{
     width: 40%;
@@ -45,4 +47,14 @@
     text-transform: uppercase;
     border: none;
     outline: none;
+}
+@media only screen and (max-width:1024px) and (min-width:0px){
+    .banner-description{
+       width: 80%;
+    }
+}
+@media only screen and (max-width:439px) and (min-width:0px){
+    .banner-description{
+       top: unset
+    }
 }

@@ -48,6 +48,14 @@ export const FlashSale=()=>{
                             loop={true}
                             navigation={true}
                             modules={[Navigation]}
+                            breakpoints={{
+                                0:{
+                                    slidesPerView:1
+                                },
+                                1280:{
+                                    slidesPerView:2
+                                }
+                            }}
                             className="mySwiper"
                         >
                             {flashSaleItem.map(item=>

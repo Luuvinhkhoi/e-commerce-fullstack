@@ -682,7 +682,7 @@ const getTrendingItem=async()=>{
     ) product_images
     on product.product_id=product_images.product_id
     ORDER BY RANDOM()
-    LIMIT 5;`)
+    LIMIT 6;`)
     return result.rows
   } catch (error){
     throw error.message

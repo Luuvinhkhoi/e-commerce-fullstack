@@ -30,10 +30,6 @@ export const BestSeller = () =>{
             <>
               <div className='best-seller-context'>
                 <h2>Best Sellers</h2>
-                <div className='best-seller-button'>
-                    <span>View more</span>
-                    <a><img src={arrow}></img></a>
-                </div>
               </div>
               <div className='best-seller-slide-container'>
                     <Swiper
@@ -41,7 +37,18 @@ export const BestSeller = () =>{
                         spaceBetween={30}
                         navigation={true}
                         modules={[Navigation]}
-                        className="mySwiper"
+                        breakpoints={{
+                            0:{
+                                slidesPerView:1
+                            },
+                            650:{
+                                slidesPerView:2
+                            },
+                            1024:{
+                                slidesPerView:3
+                            }
+                        }}
+                        className="mySwiper" 
                     >
                         {item.map(item=>
                         <SwiperSlide>

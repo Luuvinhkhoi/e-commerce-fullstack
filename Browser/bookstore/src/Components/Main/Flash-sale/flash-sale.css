@@ -23,7 +23,7 @@
     font-weight: 300;
 }
 .flash-sale-slide-container{
-    width: 58%;
+    width: 65%;
 }
 .flash-sale .swiper-wrapper{
     margin: 0 2rem;
@@ -114,4 +114,28 @@
 .flash-sale-item-quantity span{
     font-size: 16px;
     font-weight: 500;
+}
+@media only screen and (max-width: 1280px) and (min-width:1025px) {
+    .flash-sale-slide-container{
+        width: 50%;
+    }
+}
+@media only screen and (max-width:1024px) and (min-width:769px){
+    .flash-sale-desc .intro{
+        display: none;
+    }
+    .flash-sale-slide-container{
+        width: 63%;
+    }
+}
+@media only screen and (max-width:768px) and (min-width:0px){
+    .flash-sale-desc{
+        width: 30%;
+    }
+    .flash-sale-desc .intro{
+        display: none;
+    }
+    .flash-sale-slide-container{
+        width: 50%;
+    }
 }

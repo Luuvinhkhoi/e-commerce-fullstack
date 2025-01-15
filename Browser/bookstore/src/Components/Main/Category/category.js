@@ -43,6 +43,17 @@ export const Category = () => {
                           slidesPerView={3}
                           spaceBetween={30}
                           modules={[Scrollbar]}
+                          breakpoints={{
+                            0:{
+                                slidesPerView:1
+                            },
+                            650:{
+                                slidesPerView:2
+                            },
+                            1024:{
+                                slidesPerView:3
+                            }
+                          }}
                           className="mySwiper"
                     >
                         {category.map(item=>

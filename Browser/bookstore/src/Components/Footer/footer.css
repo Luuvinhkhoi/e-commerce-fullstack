@@ -83,3 +83,25 @@
 .footer-subscribe-email .subscribe-email-button button{
     color: #FFFFFF;
 }
+@media only screen and (max-width:1024px) and (min-width:769px){
+    .footer{
+        gap: 1rem;
+    }
+}
+@media only screen and (max-width:768px) and (min-width:0px){
+    .footer-subscribe-email{
+        display: block;
+    }
+    .footer{
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        padding: 1rem 2rem;
+    }
+    .subscribe-email-input{
+        width: 90% !important;
+        margin-bottom: 1rem;
+    }
+    .subscribe-email-button{
+        text-align: center;
+    }
+}

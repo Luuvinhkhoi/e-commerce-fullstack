@@ -31,7 +31,7 @@ export const Signup=()=>{
         signUpAccount(); // Gọi hàm đăng ký
     }
     return(
-        <form onSubmit={handleSubmit} className="sign-up">
+        <form onSubmit={handleSubmit} className="sign-up-form">
             <div className='sign-up-box'>
                 <div className="sign-up-box-row-1">
                     <span>Sign-up</span>

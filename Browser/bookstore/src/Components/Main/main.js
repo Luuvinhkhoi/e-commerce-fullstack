@@ -24,8 +24,10 @@ import { Category } from './Category/category'
 import { Trending } from './Trending/trending'
 import { FeatureBook } from './Feature-Book/feature-book'
 import { FlashSale } from './Flash-sale/flash-sale'
-
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 export const Main = () =>{
+    const location=useLocation()
     const arr = [
         {
             img:'https://images.unsplash.com/photo-1535398089889-dd807df1dfaa?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -154,21 +156,21 @@ export const Main = () =>{
                 <div className='desc-item'>
                    <div className='desc-item-flex'>
                       <img src={store}></img>
-                      <span>268</span>
+                      <p>268</p>
                    </div>
                    <span>Our stores around the world</span>
                 </div>
                 <div className='desc-item'>
                    <div className='desc-item-flex'>
                       <img src={customer}></img>
-                      <span>25,634</span>
+                      <p>25,634</p>
                    </div>
                    <span>Our happy customers</span>
                 </div>
                 <div className='desc-item'>
                    <div className='desc-item-flex'>
                       <img src={book}></img>
-                      <span>68+k</span>
+                      <p>68+k</p>
                    </div>
                    <span>Book Collections</span>
                 </div>

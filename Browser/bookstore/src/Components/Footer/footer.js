@@ -1,4 +1,5 @@
 import mathImg from '../../Assets/maths .png'
+import './footer.css'
 export const Footer = () =>{
     return (
       <>  

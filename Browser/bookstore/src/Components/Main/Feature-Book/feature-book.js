@@ -12,11 +12,31 @@ import 'swiper/css/scrollbar';
 // import required modules
 import { Navigation } from 'swiper/modules';
 import { Scrollbar } from 'swiper/modules';
-
+import { insertCartIntoDatabase } from '../../../store/cartSlice';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import clevr from '../../../util/clevr'
 export const FeatureBook=()=>{
     const [featureBook, setFeatureBook]=useState()
     const [loading, setLoading]=useState(true)
+    const [userName, setUserName] = useState(false)
+    const [activeOverlay, setActiveOverlay]=useState('close')
+    const navigate=useNavigate()
+    const quantityToBuy=1
+    const dispatch=useDispatch()
+    function handleCloseOverlay(){
+        setActiveOverlay('close')
+    }
+    const handleAddToCart = async (id)=> {
+            if (!userName) {
+                setActiveOverlay('open'); // Hiển thị pop-up nếu chưa đăng nhập
+                return;
+            } else{
+                await dispatch(insertCartIntoDatabase({id, quantityToBuy}))
+                navigate('/cart')
+            }
+            // Logic thêm sản phẩm vào giỏ hàng nếu đã đăng nhập
+    };
     useEffect(()=>{
         async function getFeatureItem(){
            const result=await clevr.getFeatureItem()
@@ -25,6 +45,21 @@ export const FeatureBook=()=>{
         }
         getFeatureItem()
     },[])
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+          try {
+            const result = await clevr.getUserProfile();
+    
+            if (result && result.user_name) {
+              setUserName(true); 
+            }
+          } catch (error) {
+            console.error('Error fetching user profile:', error);
+          }
+        };
+    
+        fetchUserProfile();
+    }, []);
     return (
         <div className='feature-book'>
             {loading ? (
@@ -33,10 +68,6 @@ export const FeatureBook=()=>{
             <>
                 <div className='feature-book-context'>
                     <h2>Feature book</h2>
-                    <div className='feature-book-button'>
-                        <span>View more</span>
-                        <a><img src={arrow}></img></a>
-                    </div>
                 </div>
                 <div className='feature-book-slide-container'>
                     <Swiper
@@ -46,11 +77,20 @@ export const FeatureBook=()=>{
                           loop={true}
                           navigation={true}
                           modules={[Navigation]}
+                          breakpoints={{
+                            0:{
+                                slidesPerView:1
+                            },
+                            1024:{
+                                slidesPerView:2
+                            },
+                            
+                          }}
                           className="mySwiper"
                     >
                         {featureBook.map(item=>
                             <SwiperSlide>
-                              <Link to={`/${item.product_id}`} state={item.cloudinary_url}  className='feature-book-item'>
+                              <div state={item.cloudinary_url}  className='feature-book-item'  style={{cursor:'pointer'}}>
                                 <div className='feature-book-item-image'>
                                     <img src={item.cloudinary_url}></img>
                                 </div> 
@@ -65,7 +105,7 @@ export const FeatureBook=()=>{
                                     </div>
                                     <div className='feature-book-item-intro'>
                                         <div className='item-intro'>
-                                            <span>{item.description.length>200 ? item.description.substring(0,200)+('...'):item.description}</span>
+                                            <span>{item.description.length>150 ? item.description.substring(0,150)+('...'):item.description}</span>
                                         </div>
                                     </div>
                                     <div className='feature-book-item-price'>
@@ -73,16 +113,8 @@ export const FeatureBook=()=>{
                                             <h3>{item.price}đ</h3>
                                         </div>
                                     </div>   
-                                    <div className='feature-book-item-cart'>
-                                        <div className='item-cart'>
-                                            <div className='cart-img'>
-                                                <img src={whiteCartImg}></img>
-                                            </div>
-                                            <p>Add to cart</p>
-                                        </div>
-                                    </div> 
                                 </div> 
-                              </Link>
+                              </div>
                             </SwiperSlide>
                         )}
                     </Swiper>

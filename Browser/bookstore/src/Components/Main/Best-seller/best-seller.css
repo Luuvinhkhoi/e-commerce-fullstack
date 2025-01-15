@@ -33,6 +33,9 @@
     height: 100%;
     width: 100%;
 }
+.best-seller-item-desc{
+    width: calc(100% - 170px)
+}
 .best-seller-item-category{
     background-color: rgba(141, 40, 173,15%);
     padding: 0.5rem;
@@ -78,4 +81,7 @@
 .best-seller .swiper-button-next:after{
     font-size: 24px !important;
     color: #FFFFFF !important;
+}
+@media only screen and (max-width:728px){
+
 }

@@ -157,6 +157,9 @@ export const Cart = () =>{
             // Dọn dẹp khi component unmount
             return () => document.body.classList.remove('no-scroll');
     }, [activeOverlay]);
+    useEffect(() => {
+        window.scrollTo(0, 0); // Cuộn lên đầu trang
+    }, []);    
     return(
         <div className='cart'>
             <div className={`${activeOverlay}-overlay`}>

@@ -8,6 +8,8 @@ import cartImg from '../../Assets/shopping-cart.png'
 import searchImg from '../../Assets/search.png'
 import profileUser from '../../Assets/profile-user.png'
 import { getProfile , getEmail, getPhoneNumber} from '../../store/profileSlice'
+import { IoMenu } from "react-icons/io5";
+import { IoMdCloseCircle } from "react-icons/io";
 export const Header = () => {
     const userName=useSelector((state)=>state.profile.userName)
     const [activeOverlay, setActiveOverlay]=useState('close')
@@ -16,6 +18,15 @@ export const Header = () => {
     const [timeoutId, setTimeoutId] = useState(null);
     const [products, setProducts] = useState();
     const [loading, setLoading] = useState(true);
+    const [isActive, setIsActive]=useState('user-name')
+    function openNav(){
+      if(isActive=='user-name activeNavBar'){
+        setIsActive('user-name closeNavBar')
+
+      } else{
+        setIsActive('user-name activeNavBar')
+      }
+    }
     const searchRef = useRef(null)
     const location=useLocation()
     const navigate = useNavigate()
@@ -71,27 +82,24 @@ export const Header = () => {
         setProducts(result)
         setLoading(false)
     }
-
+    async function handleSearchSubmit(e) {
+        e.preventDefault()
+        navigate('/search')
+    }
     function handleInputChange(event) {
         const newQuery = event.target.value;
-        // Clear trước đó nếu có
         if (timeoutId) {
             clearTimeout(timeoutId);
         }
-        // Thiết lập timeout mới
         const id = setTimeout(() => {
             search(newQuery);
             setActive(true)
-        }, 1000); // Đặt thời gian chờ 300ms (thời gian trễ)
-
+        }, 1000);
         setTimeoutId(id);
     }
     function handleOverlayClick(){
         setActive(false);
         setProducts(false)
-    }
-    function handleInputClick(event) {
-        event.stopPropagation(); // Ngăn sự kiện onClick bị truyền ra ngoài
     }
     useEffect(() => {
         const handleScroll = () => {
@@ -210,11 +218,8 @@ export const Header = () => {
                     </ul>
                 </div>
             </div>
-            <div className='search-bar' onClick={handleActive} ref={searchRef}  >
+            <form className='search-bar' onClick={handleActive} ref={searchRef} onSubmit={handleSearchSubmit} >
                 <input placeholder='Find books here' onChange={handleInputChange}></input>
-                <div className='search-bar-img'>
-                    <img src={searchImg}></img>
-                </div>
                 {active?(
                     <div className='mini-search-bar'>
                       {loading?(
@@ -224,31 +229,33 @@ export const Header = () => {
                       ):(
                         <div className='search-bar-result'>
                             <span className='recommend'>Maybe you will like</span>
-                            {products.slice(0,2).map(item=>
-                                <Link to={`/${item.product_id}`} state={item.cloudinary_url}className='search-item'>
-                                    <div className='search-item-image'>
-                                        <img src={item.cloudinary_url}></img>
-                                    </div> 
-                                    <div className='search-item-desc'>
-                                        <div className='search-item-item-category'>
-                                            <p>{item.category_name}</p>
+                            <div>
+                                {products.slice(0,2).map(item=>
+                                    <Link to={`/${item.product_id}`} state={item.cloudinary_url}className='search-item'>
+                                        <div className='search-item-image'>
+                                            <img src={item.cloudinary_url}></img>
                                         </div> 
-                                        <div className='search-item-name-author'>
-                                                <div className='item-name'>
-                                                    <p>{item.product_name.length>40 ? item.product_name.substring(0,40)+('...'):item.product_name}</p>
-                                                </div>
-                                                <div className='item-author'>
-                                                    <p>{item.author}</p>
-                                                </div>
+                                        <div className='search-item-desc'>
+                                            <div className='search-item-item-category'>
+                                                <p>{item.category_name}</p>
+                                            </div> 
+                                            <div className='search-item-name-author'>
+                                                    <div className='item-name'>
+                                                        <p>{item.product_name.length>25 ? item.product_name.substring(0,25)+('...'):item.product_name}</p>
+                                                    </div>
+                                                    <div className='item-author'>
+                                                        <p>{item.author}</p>
+                                                    </div>
+                                            </div>
+                                            <div className='search-item-price'>
+                                                    <div className='item-price'>
+                                                        <p>{item.price}đ</p>
+                                                    </div>
+                                            </div>     
                                         </div>
-                                        <div className='search-item-price'>
-                                                <div className='item-price'>
-                                                    <p>{item.price}đ</p>
-                                                </div>
-                                        </div>     
-                                    </div>
-                                </Link>
-                            )}
+                                    </Link>
+                                )}
+                            </div>
                         </div>
                       )}
                     </div>
@@ -256,23 +263,29 @@ export const Header = () => {
                     <div></div>
                 )}
                 
-            </div>
+            </form>
             <div className={active?'header-overlay-active':'header-overlay-unactive'} onClick={handleOverlayClick}>
             </div>
             <div className='cart-img' onClick={handleAddToCart}>
                 <img src={cartImg}></img>
             </div>
             {userName ? 
-                <div className='user-name'>
-                    <Link className='user-name-col-1' to='/profile'>
+                <div className={isActive}>
+                    <div className="close" onClick={openNav}>
+                        <IoMdCloseCircle className="icon"/>
+                    </div>
+                    <Link className='user-name-col-1' to='/profile' onClick={openNav}>
                         <img src={profileUser}></img>
-                        <span>{userName}</span>
+                        <span>{userName.length>10?userName.substring(0,10)+('...'):userName}</span>
                     </Link>
                     <div className='user-name-col-2'>
                         <button onClick={handleLogout}>Logout</button>
                     </div>
                 </div>
-            : <div className='link'>
+            : <div className={isActive}>
+                <div className="close" onClick={openNav}>
+                    <IoMdCloseCircle className="icon"/>
+                </div>
                 <div className='sign-in'>
                     <Link to='/login' state={{ previousUrl: currentPath }} className='sign-in-anchor'>Sign in</Link>
                 </div>
@@ -281,7 +294,9 @@ export const Header = () => {
                 </div>
               </div>
             }
-
+            <div className="toggle" onClick={openNav}>
+                    <IoMenu className="icon" />
+            </div>
         </div>
       </>  
     )

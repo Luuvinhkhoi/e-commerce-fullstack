@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import './trending.css'
 import clevr from "../../../util/clevr"
 export const Trending=()=>{
     const [trendingItem, setTrendingItem]=useState()
@@ -29,7 +30,7 @@ export const Trending=()=>{
                         </div>
                         <div className='item-name-author'>
                             <div className='item-name'>
-                                <p>{item.product_name.length>20 ? item.product_name.substring(0,20)+('...'):item.product_name}</p>
+                                <p>{item.product_name.length>15 ? item.product_name.substring(0,15)+('...'):item.product_name}</p>
                             </div>
                             <div className='item-author'>
                                 <p>{item.author}</p>
