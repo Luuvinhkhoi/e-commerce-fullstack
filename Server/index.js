@@ -4,11 +4,12 @@ const e = require('cors');
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const cron = require('node-cron');
+require('dotenv').config();
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'e-commerce',
-    password: 'elkhoikun282002',
+    password: process.env.DATABASE_PASSWORD,
     port: 5432,
 });
 const findById = (id) => {
