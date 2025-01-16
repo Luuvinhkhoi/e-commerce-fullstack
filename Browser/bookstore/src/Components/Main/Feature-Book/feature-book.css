@@ -112,7 +112,7 @@
         grid-template-columns: 1fr 3fr;
     }
 }
-@media only screen and (max-width:768px) and (min-width: 0px){
+@media only screen and (max-width:768px) and (min-width: 481px){
     .feature-book-item-image{
         width: 50%;
         height: 300px;
@@ -121,5 +121,21 @@
     }
     .feature-book-item {
         display: flex !important;
+    }
+}
+@media only screen and (max-width:480px) and (min-width: 0px){
+    .feature-book-item {
+        display: block !important;
+    }
+    .feature-book-item-image{
+        width: 35%;
+        margin: 0 auto;
+        height: unset;
+        max-height: 200px;
+        border-radius: 0;
+    }
+    .feature-book-item-desc{
+        width: 100%;
+        height: unset;
     }
 }

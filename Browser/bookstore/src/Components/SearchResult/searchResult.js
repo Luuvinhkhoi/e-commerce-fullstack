@@ -370,21 +370,21 @@ export const SearchResult=()=>{
                 <div className='desc-item'>
                    <div className='desc-item-flex'>
                       <img src={store}></img>
-                      <span>268</span>
+                      <p>268</p>
                    </div>
                    <span>Our stores around the world</span>
                 </div>
                 <div className='desc-item'>
                    <div className='desc-item-flex'>
                       <img src={customer}></img>
-                      <span>25,634</span>
+                      <p>25,634</p>
                    </div>
                    <span>Our happy customers</span>
                 </div>
                 <div className='desc-item'>
                    <div className='desc-item-flex'>
                       <img src={book}></img>
-                      <span>68+k</span>
+                      <p>68+k</p>
                    </div>
                    <span>Book Collections</span>
                 </div>

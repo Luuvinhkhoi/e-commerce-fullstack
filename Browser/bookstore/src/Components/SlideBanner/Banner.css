@@ -57,4 +57,14 @@
     .banner-description{
        top: 25%
     }
+    .banner p{
+        display: none;
+    }
+    .banner-description-child .theme-option->p{
+        display: block;
+    }
+    .banner-description-child .theme-option-active>p{
+        display: block;
+    }
+
 }

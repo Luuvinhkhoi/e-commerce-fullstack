@@ -78,7 +78,7 @@
         grid-template-columns: repeat(2, 1fr);
     }
     .trending .item-img{
-        height: 230px;
-        width: 180px;
+        max-height: 230px;
+        max-width: 180px;
     }
 }

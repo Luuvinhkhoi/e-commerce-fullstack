@@ -1,5 +1,6 @@
 .flash-sale{
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
     width: 100%;
     gap: 2.5rem;
     background-color: #8D28AD;
@@ -23,7 +24,7 @@
     font-weight: 300;
 }
 .flash-sale-slide-container{
-    width: 65%;
+    overflow: hidden;
 }
 .flash-sale .swiper-wrapper{
     margin: 0 2rem;
@@ -58,9 +59,6 @@
 }
 .flash-sale-item-name-author{
     margin: 1.5rem 0;
-}
-.flash-sale-item-desc{
-    width: 240px;
 }
 .flash-sale-item-desc .item-name{
     font-weight:500;
@@ -116,26 +114,51 @@
     font-weight: 500;
 }
 @media only screen and (max-width: 1280px) and (min-width:1025px) {
-    .flash-sale-slide-container{
-        width: 50%;
+    .flash-sale{
+        grid-template-columns: 1fr 1fr;
     }
 }
 @media only screen and (max-width:1024px) and (min-width:769px){
     .flash-sale-desc .intro{
         display: none;
     }
-    .flash-sale-slide-container{
-        width: 63%;
-    }
 }
+
 @media only screen and (max-width:768px) and (min-width:0px){
+    .flash-sale{
+        display: block;
+    }
+    .flash-sale-context{
+        text-align: center;
+    }
+    .flash-sale-context p{
+        font-size: 30px;
+    }
     .flash-sale-desc{
-        width: 30%;
+        margin-bottom: 1rem;
     }
     .flash-sale-desc .intro{
         display: none;
     }
-    .flash-sale-slide-container{
-        width: 50%;
+    .flash-sale-context{
+        padding-left: 0.5rem;
+    }
+    .flash-sale .swiper-wrapper{
+        margin: 0;
+    }
+    .flash-sale-item-image{
+        height: unset;
+        margin: 0 auto;
+        border-radius: 0;
+    }
+    .flash-sale-item-name-author{
+        margin: 0;
+    }
+    .flash-sale-item{
+        display: block;
+        border-radius: 0;
+    }
+    .flash-sale-item-desc .item-price{
+        display: block;
     }
 }

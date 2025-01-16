@@ -15,9 +15,17 @@
     width: 80%;
     margin: 0 auto;
 } 
+@media only screen and (max-width:1280px) and (min-width:0){
+   .countdown-timer{
+    width: 100%;
+   }
+}
 @media only screen and (max-width:1024px) and (min-width:0){
     .countdown-timer{
         padding: 0;
+        width: 100%;
+    }
+    .countdown-timer{
         width: 100%;
     }
     .countdown-timer span{

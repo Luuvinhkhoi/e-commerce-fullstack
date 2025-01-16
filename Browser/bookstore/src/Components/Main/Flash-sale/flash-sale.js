@@ -50,7 +50,11 @@ export const FlashSale=()=>{
                             modules={[Navigation]}
                             breakpoints={{
                                 0:{
-                                    slidesPerView:1
+                                    slidesPerView:1,
+                                    spaceBetween:0
+                                },
+                                768:{
+                                    spaceBetween:33
                                 },
                                 1280:{
                                     slidesPerView:2
