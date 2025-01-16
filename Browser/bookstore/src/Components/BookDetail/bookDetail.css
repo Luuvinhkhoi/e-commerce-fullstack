@@ -372,6 +372,7 @@
 }
 .book-detail-row-2-col-2 .related-book-desc{
     margin-left: 2rem;
+    width: 70%;
 }
 .book-detail-row-2-col-2 .related-book-desc .item-name{
     font-size: 18px;
@@ -436,5 +437,32 @@ body.no-scroll {
     font-size: 18px;
     font-weight: 400;
     margin-top: 2rem;
+}
+@media only screen and (max-width:768px) and (min-width:0px){
+    .book-detail-row-1 {
+        display: unset
+    }
+    .book-detail-row-1-column-1{
+        margin-bottom: 1rem;
+    }
+    .book-detail-row-1-column-2{
+        width: 80%;
+        margin: 0 auto;
+        height: unset;
+    }
+    .book-detail-row-2{
+        display: unset;
+    }
+    .book-detail-row-2-col-2{
+        margin-top: 4rem;
+    }
+}
+@media only screen and (max-width:550px) and (min-width:0px){
+    .related-book-desc{
+        width: 90%;
+    }
+    .book-detail-review-row-1{
+        gap: 1rem;
+    }
 }
 

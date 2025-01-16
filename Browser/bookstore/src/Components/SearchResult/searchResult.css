@@ -139,11 +139,10 @@ input[type='range']::-moz-range-thumb{
     gap: 3.5rem
 }   
 .book-list .book-list-row-1 .book-list-item .book-list-item-image{
-    height: 400px;
     border-radius: 0.5rem;
     overflow: hidden;
-    width: 250px;
     position: relative;
+    aspect-ratio: 2.8/4;
 }
 .best-seller-tag{
     position: absolute;
@@ -213,5 +212,30 @@ input[type='range']::-moz-range-thumb{
     color: #8D28AD;
     font-size: 16px;
     font-weight: 600;
+}
+@media only screen and (max-width: 1024px) and (min-width:769px){
+    .book-list .book-list-row-1{
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media only screen and (max-width: 768px) and (min-width:0px){
+    .searchResult{
+        grid-template-columns: 0.5fr 1fr;
+    }
+    .filter-row-1 .option {
+        margin: 0rem;
+    }
+    .filter .reset-button{
+        width: 90%;
+    }
+    .filter .search-button {
+        width: 90%;
+    }
+    .filter-row-1 .price-range-row-4 {
+        width: unset;
+    }
+    .book-list .book-list-row-1{
+        grid-template-columns: repeat(1, 1fr);
+    }
 }
 

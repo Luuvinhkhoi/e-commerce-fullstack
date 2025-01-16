@@ -97,11 +97,11 @@
         gap: 1rem;
         padding: 1rem 2rem;
     }
-    .subscribe-email-input{
-        width: 90% !important;
+    .footer-subscribe-email .subscribe-email-input{
+        width: unset !important;
         margin-bottom: 1rem;
     }
-    .subscribe-email-button{
+    .footer-subscribe-email .subscribe-email-button{
         text-align: center;
     }
 }

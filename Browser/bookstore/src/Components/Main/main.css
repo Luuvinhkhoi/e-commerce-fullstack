@@ -187,7 +187,7 @@
     .subscribe-context{
         font-size: 30px;
         width: 70%;
-        margin-bottom: 1rem;
+        margin: 0.5rem auto;
     }
     .subscribe-email{
         width: 80%;
@@ -213,7 +213,7 @@
     .subscribe-context{
         font-size: 30px;
         width: 70%;
-        margin-bottom: 1rem;
+        margin: .5rem auto;
     }
     .subscribe-email{
         width: 80%;

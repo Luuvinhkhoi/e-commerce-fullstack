@@ -15,7 +15,7 @@ export const Checkout = ()=>{
     let totalPrice=0
     if(items){
         totalPrice = items.reduce((total, item) => {
-            return total + item.price * item.quantity;
+            return total + item.price * item.cart_quantity;
         }, 0);
     }
     function handleCloseOverlay(){
@@ -136,13 +136,24 @@ export const Checkout = ()=>{
             <div className="checkout-row-1">
               <form onSubmit={handleSubmit}>
                 <div className="checkout-row-1-col-1">
-                        <h2>Shipping Information</h2>
-                        <div><input placeholder="Họ và tên" onChange={handleNameChange} required></input></div>
-                        <div><input placeholder="Số điện thoại" required onChange={handlePhoneChange}></input></div>
-                        {error && <div style={{ color: "red", fontFamily:'Roboto' }}>{error}</div>}
-                        <LocationSelector onChange={handleLocationChange}></LocationSelector>
-                        <div><input placeholder="Địa chỉ nhà" onChange={handleAddressChange} required></input></div>
+                        <div className="checkout-row-1-col-1-row-1">
+                            <h2>Shipping Information</h2>
+                            <div><input placeholder="Họ và tên" onChange={handleNameChange} required></input></div>
+                            <div><input placeholder="Số điện thoại" required onChange={handlePhoneChange}></input></div>
+                            {error && <div style={{ color: "red", fontFamily:'Roboto' }}>{error}</div>}
+                            <LocationSelector onChange={handleLocationChange}></LocationSelector>
+                            <div><input placeholder="Địa chỉ nhà" onChange={handleAddressChange} required></input></div>
+                        </div>
+                        <div className="checkout-row-1-col-1-row-2">
+                            <h2>Payment method</h2>
+                            <div>
+                                <input type="radio" name="paymentMethod" value="cod" onChange={handlePaymentMethodChange}required ></input>
+                                <label>Thanh toán khi nhận hàng</label>
+                            </div>
+                            <div></div>
+                        </div>
                 </div>
+                
                 <div className="checkout-row-1-col-2">
                     <h2>Order Summary</h2>
                     <div className='checkout-row-1-col-2'>
@@ -170,14 +181,6 @@ export const Checkout = ()=>{
                             <button type="submit" >Place an order</button>
                         </div>       
                     </div>
-                </div>
-                <div className="checkout-row-1-col-3">
-                    <h2>Payment method</h2>
-                    <div>
-                        <input type="radio" name="paymentMethod" value="cod" onChange={handlePaymentMethodChange}required ></input>
-                        <label>Thanh toán khi nhận hàng</label>
-                    </div>
-                    <div></div>
                 </div>
               </form>
             </div>

@@ -192,20 +192,22 @@ export const Cart = () =>{
                         <div className='item-image-name-author'>
                             <img src={item.cloudinary_url}></img>
                             <div className='item-name-author'>
-                                <p>{item.product_name}</p>
+                                <p>{item.product_name.length>20 ? item.product_name.substring(0, 20)+('...') : item.product_name}</p>
                                 <span>{item.author}</span>
                             </div>
                         </div>
-                        <div className='item-quantity'>
-                            <button onClick={() => handleQuantityChange(item.product_id, -1)}>-</button>
-                            <span>{item.cart_quantity}</span>
-                            <button onClick={() => handleQuantityChange(item.product_id, 1)}>+</button>
-                        </div>
-                        <div className='item-price'>
-                            {item.sale_price?(<span>{item.sale_price}đ</span>):(<span>{item.price}đ</span>)}
-                        </div>
-                        <div className='item-total-price'>
-                            {item.sale_price?(<span>{(item.sale_price * item.cart_quantity)}đ</span>):(<span>{(item.price * item.cart_quantity)}đ</span>)}
+                        <div className='item-selection'>
+                            <div className='item-quantity'>
+                                <button onClick={() => handleQuantityChange(item.product_id, -1)}>-</button>
+                                <span>{item.cart_quantity}</span>
+                                <button onClick={() => handleQuantityChange(item.product_id, 1)}>+</button>
+                            </div>
+                            <div className='item-price'>
+                                {item.sale_price?(<span>{item.sale_price}đ</span>):(<span>{item.price}đ</span>)}
+                            </div>
+                            <div className='item-total-price'>
+                                {item.sale_price?(<span>{(item.sale_price * item.cart_quantity)}đ</span>):(<span>{(item.price * item.cart_quantity)}đ</span>)}
+                            </div>
                         </div>
                     </div>
                   )):(<></>)}

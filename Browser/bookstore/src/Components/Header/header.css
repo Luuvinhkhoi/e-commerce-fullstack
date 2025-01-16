@@ -223,7 +223,7 @@
 }
 .close{
     position: relative;
-    top: 100rem
+    top: -100rem
 }
 @media only screen and (max-width:1024px) and (min-width:0px){
     .header{
