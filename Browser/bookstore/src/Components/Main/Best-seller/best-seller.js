@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import './best-seller.css'
 import clevr from "../../../util/clevr"
 import { Swiper, SwiperSlide } from 'swiper/react';
+import Aos from "aos"
+import 'aos/dist/aos.css';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -13,7 +15,9 @@ import { Scrollbar } from 'swiper/modules';
 export const BestSeller = () =>{
     const [item, setItem]=useState()    
     const [loading, setLoading] = useState(true);
-
+    useEffect(()=>{
+        Aos.init({duration:2000})
+      }, [])
     useEffect(()=>{
         async function getBestSeller(){
             const result=await clevr.getBestSeller()
@@ -23,7 +27,7 @@ export const BestSeller = () =>{
         getBestSeller()
     }, [])
     return (
-        <div className='best-seller'>
+        <div className='best-seller' data-aos='fade-up'>
           {loading ? (
                 <p>Loading...</p> // Hiển thị thông báo loading trong khi dữ liệu đang được tải
           ) : (

@@ -15,6 +15,8 @@ export const SearchResult=()=>{
     const [searchParams] = useSearchParams();
     const navigate=useNavigate()
     const genre = searchParams.get('genre') || 'All genres';
+    const query = searchParams.get('query') || ''
+    console.log(query)
     let [categoryOptionState, setCategoryOptionState]=useState(genre);
     let [formatOptionState, setFormatOptionState]=useState(null)
     const [publisher, setPublisher]=useState()
@@ -197,32 +199,52 @@ export const SearchResult=()=>{
     
     useEffect(()=>{
         async function fetchData() {
-            if(genre==='All genres'){
-                try {
-                    setPageNumber(1)
-                    const [productResult, publisherResult] = await Promise.all([
-                      clevr.filterProduct(new URLSearchParams({ pageNumber: 1, pageSize, minPrice, maxPrice }).toString()),
-                      clevr.getPublisher()
-                    ]);
-                    setProducts(productResult.filterProduct);
-                    setPublisher(publisherResult);
-                    setPublisherOption(null)
-                    setFormatOptionState(null)
-                    setTotalPage(Math.ceil(productResult.count/pageSize))
-                } catch (error) {
-                    console.error('Lỗi khi tải dữ liệu:', error);
-                } finally {
-                    setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
+            if(!query){
+                if(genre==='All genres'){
+                    try {
+                        setPageNumber(1)
+                        const [productResult, publisherResult] = await Promise.all([
+                          clevr.filterProduct(new URLSearchParams({ pageNumber: 1, pageSize, minPrice, maxPrice }).toString()),
+                          clevr.getPublisher()
+                        ]);
+                        setProducts(productResult.filterProduct);
+                        setPublisher(publisherResult);
+                        setPublisherOption(null)
+                        setFormatOptionState(null)
+                        setTotalPage(Math.ceil(productResult.count/pageSize))
+                    } catch (error) {
+                        console.error('Lỗi khi tải dữ liệu:', error);
+                    } finally {
+                        setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
+                    }
+                } else{
+                    try {
+                        const category=genre
+                        setPageNumber(1)
+                        const [productResult, publisherResult] = await Promise.all([
+                          clevr.filterProduct(new URLSearchParams({ pageNumber:1, pageSize, category, minPrice, maxPrice }).toString()),
+                          clevr.getPublisher()
+                        ]);
+                        setProducts(productResult.filterProduct);
+                        setPublisher(publisherResult);
+                        setPublisherOption(null);
+                        setFormatOptionState(null)
+                        setTotalPage(Math.ceil(Number(productResult.count/pageSize)))
+                    } catch (error) {
+                        console.error('Lỗi khi tải dữ liệu:', error);
+                    } finally {
+                        setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
+                    }
                 }
             } else{
                 try {
-                    const category=genre
+                    const name=query
                     setPageNumber(1)
                     const [productResult, publisherResult] = await Promise.all([
-                      clevr.filterProduct(new URLSearchParams({ pageNumber:1, pageSize, category, minPrice, maxPrice }).toString()),
+                      clevr.getProductByName(new URLSearchParams({name}).toString()),
                       clevr.getPublisher()
                     ]);
-                    setProducts(productResult.filterProduct);
+                    setProducts(productResult);
                     setPublisher(publisherResult);
                     setPublisherOption(null);
                     setFormatOptionState(null)
@@ -236,11 +258,12 @@ export const SearchResult=()=>{
             
           }
          fetchData() 
-    },[genre])
+    },[genre, query])
     
     useEffect(() => {
         window.scrollTo(0, 0); // Cuộn lên đầu trang mỗi khi pageNumber thay đổi
     }, [products]);
+    console.log(products)
     return (
       <>
         <div className='searchResult'>
@@ -355,13 +378,15 @@ export const SearchResult=()=>{
                     </div>
                 )} 
                 <div className='pagination'>
-                    {[...Array(totalPage)].map((_, index) => (
-                        <div key={index} onClick={() => handlePageNumber(index + 1)} className={pageNumber === index + 1 ? 'active-page-number' : 'unactive-page-number'}>
-                            <button >
-                            {index + 1}
-                            </button>
-                        </div>
-                    ))}
+                    {totalPage?(
+                         [...Array(totalPage)].map((_, index) => (
+                            <div key={index} onClick={() => handlePageNumber(index + 1)} className={pageNumber === index + 1 ? 'active-page-number' : 'unactive-page-number'}>
+                                <button >
+                                {index + 1}
+                                </button>
+                            </div>
+                        ))
+                    ):(<div></div>)}
                 </div>  
             </div>
         </div>

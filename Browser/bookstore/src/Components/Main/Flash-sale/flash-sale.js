@@ -54,10 +54,12 @@ export const FlashSale=()=>{
                                     spaceBetween:0
                                 },
                                 768:{
-                                    spaceBetween:33
+                                    spaceBetween:33,
+                                    slidesPerView:1,
                                 },
                                 1280:{
-                                    slidesPerView:2
+                                    slidesPerView:2,
+                                    spaceBetween:33,
                                 }
                             }}
                             className="mySwiper"

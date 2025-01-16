@@ -15,6 +15,7 @@ export const Header = () => {
     const [activeOverlay, setActiveOverlay]=useState('close')
     const [isOpen, setIsOpen]= useState('closeToogle')
     const [active, setActive]=useState(false)
+    const [searchString, setSearchString]=useState('')
     const [timeoutId, setTimeoutId] = useState(null);
     const [products, setProducts] = useState();
     const [loading, setLoading] = useState(true);
@@ -84,17 +85,20 @@ export const Header = () => {
     }
     async function handleSearchSubmit(e) {
         e.preventDefault()
-        navigate('/search')
+        navigate(`/search?query=${encodeURIComponent(searchString)}`);
+        setActive(false)
+        setActiveOverlay('close')
     }
     function handleInputChange(event) {
         const newQuery = event.target.value;
         if (timeoutId) {
             clearTimeout(timeoutId);
         }
+        setSearchString(newQuery)
         const id = setTimeout(() => {
             search(newQuery);
             setActive(true)
-        }, 1000);
+        }, 500);
         setTimeoutId(id);
     }
     function handleOverlayClick(){

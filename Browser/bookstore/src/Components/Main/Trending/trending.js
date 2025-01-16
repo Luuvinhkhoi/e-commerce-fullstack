@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import './trending.css'
+import Aos from "aos"
+import 'aos/dist/aos.css';
 import clevr from "../../../util/clevr"
 export const Trending=()=>{
     const [trendingItem, setTrendingItem]=useState()
@@ -14,8 +16,11 @@ export const Trending=()=>{
         }
         getTredingItem()
     }, [])
+    useEffect(()=>{
+        Aos.init({duration:2000})
+    }, [])
     return (
-        <div className='trending'>
+        <div className='trending' data-aos='fade-up'>
              {loading ? (
                 <p>Loading...</p> // Hiển thị thông báo loading trong khi dữ liệu đang được tải
              ) : (

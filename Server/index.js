@@ -681,7 +681,6 @@ const getTrendingItem=async()=>{
         FROM product_images
     ) product_images
     on product.product_id=product_images.product_id
-    ORDER BY RANDOM()
     LIMIT 6;`)
     return result.rows
   } catch (error){
@@ -751,12 +750,43 @@ const getFeatureBook= async ()=>{
 }
 const findBookByName=async(name)=>{
   try{
-    const result=await pool.query(`SELECT *
-      FROM product
-      left join (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images) product_images
-      on product.product_id=product_images.product_id
-      INNER JOIN category 
-      ON product.category_id = category.category_id
+    const result=await pool.query(`
+      WITH BestSeller AS (
+          SELECT 
+              product.product_id,
+              product.product_name,
+              product.quantity,
+              product.category_id,
+              product_images.cloudinary_url
+          FROM 
+              product
+          JOIN (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images order by product_id)
+              product_images ON product.product_id = product_images.product_id
+          order by product.quantity asc
+          limit 5
+      )
+      SELECT 
+          product.product_id,
+          product.product_name,
+          product.quantity,
+          product.price,
+          category.category_name,
+          product_images.cloudinary_url,
+          flash_sales.sale_price,
+          CASE 
+              WHEN BestSeller.product_id IS NOT NULL THEN 'Best Seller'
+              ELSE 'Normal'
+          END AS product_status
+      FROM 
+          product
+      LEFT JOIN (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images)
+          product_images ON product.product_id = product_images.product_id
+      LEFT JOIN 
+          category ON product.category_id = category.category_id
+      LEFT JOIN 
+          BestSeller ON product.product_id = BestSeller.product_id
+      left join(select product_id as flashSale_productId,sale_price from flash_sales) flash_sales
+            on product.product_id=flash_sales.flashSale_productId
       where product.product_name ilike $1`,[`%${name}%`]
     )
     return result.rows
