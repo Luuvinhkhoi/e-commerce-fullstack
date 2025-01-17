@@ -10,6 +10,7 @@ const pool = new Pool({
     host: 'localhost',
     database: 'e-commerce',
     password: process.env.DATABASE_PASSWORD,
+  
     port: 5432,
 });
 const findById = (id) => {
