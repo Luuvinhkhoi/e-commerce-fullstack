@@ -1,5 +1,5 @@
 
-const baseUrl="https://e-commerce-fullstack-f11n.onrender.com/"
+const baseUrl="https://e-commerce-fullstack-f11n.onrender.com"
 let clevr={
     sigUpAccount(userName, email, password){
         console.log(userName)
