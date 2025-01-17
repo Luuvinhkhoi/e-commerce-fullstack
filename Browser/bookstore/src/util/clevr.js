@@ -1,5 +1,5 @@
 
-const baseUrl="http://localhost:4001"
+const baseUrl="https://your-backend-app-name.onrender.com"
 let clevr={
     sigUpAccount(userName, email, password){
         console.log(userName)
@@ -49,7 +49,7 @@ let clevr={
         });
     },
     logOut(){
-        return  fetch('http://localhost:4001/logout', {
+        return  fetch(`${baseUrl}/logout`, {
             method: 'POST',
             credentials: 'include',
         }).then(response => {
@@ -62,7 +62,7 @@ let clevr={
         });
     },
     logIn(email, password){
-        return fetch('http://localhost:4001/login',{
+        return fetch(`${baseUrl}/login`,{
             method:'POST',
             credentials:'include',
             headers: {
@@ -89,7 +89,7 @@ let clevr={
 
     },
     facebookLogin(){
-        return fetch('http://localhost:4001/login/facebook',{
+        return fetch(`${baseUrl}/login/facebook`,{
             method:'GET',
             credentials:'include',
         }).then(response => {
@@ -108,7 +108,7 @@ let clevr={
         });
     },
     emailLogin(){
-        return fetch('http://localhost:4001/login/google',{
+        return fetch(`${baseUrl}/login/google`,{
             method:'GET',
             credentials:'include',
         }).then(response => {
@@ -127,7 +127,7 @@ let clevr={
         });
     },
     getAllProduct(query){
-        return fetch(`http://localhost:4001/product?${query}`, {
+        return fetch(`${baseUrl}/product?${query}`, {
             method:"GET",
         }).then(response=>{
             if (response.ok){
@@ -144,7 +144,7 @@ let clevr={
     },
     getBookDetail(id){
         console.log(id)
-        return fetch(`http://localhost:4001/product/${id}`,{
+        return fetch(`${baseUrl}/product/${id}`,{
             method:'GET'
         }).then(response=>{
             if (response.ok){
@@ -160,7 +160,7 @@ let clevr={
         })
     },
     getRelatedBook(id){
-        return fetch(`http://localhost:4001/product/related_product/${id}`,{
+        return fetch(`${baseUrl}/product/related_product/${id}`,{
             method:'GET'
         }).then(response=>{
             if (response.ok){
@@ -176,7 +176,7 @@ let clevr={
         })
     },
     getProductImages(id){
-        return fetch(`http://localhost:4001/product/product_images/${id}`,{
+        return fetch(`${baseUrl}/product/product_images/${id}`,{
             method:'GET'
         }).then(response=>{
             if (response.ok){
@@ -194,7 +194,7 @@ let clevr={
     submitReview(score, content, id){
         console.log(score)
         console.log(content)
-        return fetch(`http://localhost:4001/review/${id}`,{
+        return fetch(`${baseUrl}/review/${id}`,{
             method:'POST',
             credentials: 'include',
             body:JSON.stringify({
@@ -218,7 +218,7 @@ let clevr={
         })
     },
     getReview(id){
-        return fetch(`http://localhost:4001/review/${id}`,{
+        return fetch(`${baseUrl}/review/${id}`,{
             method:'GET',
             credentials:'include'
         }).then(response=>{
@@ -235,7 +235,7 @@ let clevr={
         })
     },
     getRatingStat(id){
-        return fetch(`http://localhost:4001/review/stat/${id}`,{
+        return fetch(`${baseUrl}/review/stat/${id}`,{
             method:'GET',
         }).then(response=>{
             if (response.ok){
@@ -251,7 +251,7 @@ let clevr={
         })
     },
     getCart(){
-        return fetch(`http://localhost:4001/cart`,{
+        return fetch(`${baseUrl}/cart`,{
             method:'GET',
             credentials:'include',
         }).then(response=>{
@@ -268,7 +268,7 @@ let clevr={
         })
     },
     insertCart(product_id, quantity){
-        return fetch(`http://localhost:4001/cart`,{
+        return fetch(`${baseUrl}/cart`,{
             method:'POST',
             credentials:'include',
             body:JSON.stringify({
@@ -293,7 +293,7 @@ let clevr={
     },
     updateCart(updateData){
         console.log(updateData)
-        return fetch(`http://localhost:4001/cart`,{
+        return fetch(`${baseUrl}/cart`,{
             method:"PUT",
             credentials:'include',
             body:JSON.stringify({
@@ -316,7 +316,7 @@ let clevr={
         })
     },
     deleteItemInCart(id){
-        return fetch(`http://localhost:4001/cart`,{
+        return fetch(`${baseUrl}/cart`,{
             method:"DELETE",
             credentials:'include',
             body:JSON.stringify({
@@ -339,7 +339,7 @@ let clevr={
         })
     },
     getBestSeller(){
-        return fetch(`http://localhost:4001/product/best-seller`,{
+        return fetch(`${baseUrl}/product/best-seller`,{
             method:"GET",
         }).then(response=>{
             if (response.ok){
@@ -355,7 +355,7 @@ let clevr={
         })
     },
     getFlashSaleItems(){
-        return fetch(`http://localhost:4001/product/discount`,{
+        return fetch(`${baseUrl}/product/discount`,{
             method:"GET",
         }).then(response=>{
             if (response.ok){
@@ -370,7 +370,7 @@ let clevr={
             console.log(networkError.message)
         })
     }, getAllCategory(){
-        return fetch('http://localhost:4001/category',{
+        return fetch(`${baseUrl}/category`,{
             method:"GET",
         }).then(response=>{
             if (response.ok){
@@ -385,7 +385,7 @@ let clevr={
             console.log(networkError.message)
         })
     }, getTrendingItem(){
-        return fetch('http://localhost:4001/product/trending',{
+        return fetch(`${baseUrl}/product/trending`,{
             method:"GET",
         }).then(response=>{
             if (response.ok){
@@ -400,7 +400,7 @@ let clevr={
             console.log(networkError.message)
         })
     }, getFeatureItem(){
-        return fetch('http://localhost:4001/product/feature-book',{
+        return fetch(`${baseUrl}/product/feature-book`,{
             method:"GET",
         }).then(response=>{
             if (response.ok){
@@ -415,7 +415,7 @@ let clevr={
             console.log(networkError.message)
         })
     }, getEndtime(){
-        return fetch('http://localhost:4001/product/discount/flash-sale-endtime',{
+        return fetch(`${baseUrl}/product/discount/flash-sale-endtime`,{
             method:"GET",
         }).then(response=>{
             if (response.ok){
@@ -431,7 +431,7 @@ let clevr={
         });
            
     }, getPublisher(){
-        return fetch('http://localhost:4001/publisher',{
+        return fetch(`${baseUrl}/publisher`,{
             method:"GET",
         }).then(response=>{
             if (response.ok){
@@ -446,7 +446,7 @@ let clevr={
             console.log(networkError.message)
         }); 
     }, filterProduct(query){
-        return fetch(`http://localhost:4001/product/filter?${query}`,{
+        return fetch(`${baseUrl}/product/filter?${query}`,{
             method:"GET",
         }).then(response=>{
             if (response.ok){
@@ -461,7 +461,7 @@ let clevr={
             console.log(networkError.message)
         }); 
     }, getProductByName(query){
-        return fetch(`http://localhost:4001/product/search?${query}`,{
+        return fetch(`${baseUrl}/product/search?${query}`,{
             method:"GET",
         }).then(response=>{
             if (response.ok){
@@ -476,7 +476,7 @@ let clevr={
             console.log(networkError.message)
         }); 
     }, getProductByCategory(category){
-        return fetch(`http://localhost:4001/category/category-filter?${category}`,{
+        return fetch(`${baseUrl}/category/category-filter?${category}`,{
             method:"GET",
         }).then(response=>{
             if (response.ok){
@@ -491,7 +491,7 @@ let clevr={
             console.log(networkError.message)
         }); 
     }, checkout(name, province, city, ward ,address, payment_method, fee, phone_number){
-        return fetch(`http://localhost:4001/cart/checkout`,{
+        return fetch(`${baseUrl}/cart/checkout`,{
             method:"POST",
             headers: {
                 "Content-Type": "application/json" 
@@ -520,7 +520,7 @@ let clevr={
             console.log(networkError.message)
         }); 
     }, updateUser(updateData){
-        return fetch(`http://localhost:4001/user`,{
+        return fetch(`${baseUrl}/user`,{
             method:"PATCH",
             headers: {
                 "Content-Type": "application/json" 
@@ -542,7 +542,7 @@ let clevr={
             console.log(networkError.message)
         });
     }, getOrderHistory(){
-        return fetch(`http://localhost:4001/order`,{
+        return fetch(`${baseUrl}/order`,{
             method:"GET",
             credentials:'include'
         }).then(response=>{
@@ -558,7 +558,7 @@ let clevr={
             console.log(networkError.message)
         });
     },updateReview(updateData, id){
-        return fetch(`http://localhost:4001/review/${id}`,{
+        return fetch(`${baseUrl}/review/${id}`,{
             method:"PATCH",
             headers: {
                 "Content-Type": "application/json" 

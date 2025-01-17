@@ -7,7 +7,7 @@ const bodyParser= require('body-parser')
 const app=express();
 const db=require('./index.js');
 const cors = require('cors');
-const port=4001;
+const port = process.env.PORT || 4001;
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const store=new session.MemoryStore();
@@ -38,7 +38,7 @@ app.use(
         saveUninitialized: false,
         store,
         cookie: {
-          maxAge: 30*60*1000,
+          maxAge: 30*60*100000,
           httpOnly: false,   // Đảm bảo rằng cookie không thể bị truy cập từ client-side JavaScript
           secure: false,
           sameSite: 'lax'    // set thành true khi sử dụng HTTPS, false cho môi trường phát triển (HTTP)
@@ -53,7 +53,7 @@ app.use(passport.initialize())
 app.use(passport.session());
 
 app.use(cors({
-  origin: 'http://localhost:3000', // Chỉ cho phép frontend từ origin này
+  origin: 'https://your-frontend-app.onrender.com', // Chỉ cho phép frontend từ origin này
   methods: ['GET', 'POST','PATCH', 'PUT', 'DELETE'], // Chỉ cho phép các phương thức này
   credentials: true, // Nếu cần gửi cookie hoặc thông tin xác thực
 }));
