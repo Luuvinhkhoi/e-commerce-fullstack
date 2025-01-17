@@ -10,8 +10,10 @@ const pool = new Pool({
     host: 'dpg-cu4jp4rtq21c73cs34ag-a.singapore-postgres.render.com',
     database: 'activity_database_os33',
     password: process.env.DATABASE_PASSWORD,
-  
     port: 5432,
+    ssl: {
+      rejectUnauthorized: false, // Bỏ kiểm tra chứng chỉ (chỉ dùng khi kết nối qua cloud)
+    },
 });
 const findById = (id) => {
   return new Promise((resolve, reject) => {
