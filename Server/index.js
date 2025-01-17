@@ -1,5 +1,5 @@
 const Pool= require('pg').Pool
-const bcrypt=require('bcrypt');
+const bcrypt=require('bcryptjs');
 const e = require('cors');
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
