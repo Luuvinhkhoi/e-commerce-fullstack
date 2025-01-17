@@ -6,9 +6,9 @@ const LocalStrategy = require("passport-local").Strategy;
 const cron = require('node-cron');
 require('dotenv').config();
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'e-commerce',
+    user: 'activity_database_os33_user',
+    host: 'dpg-cu4jp4rtq21c73cs34ag-a.singapore-postgres.render.com',
+    database: 'activity_database_os33',
     password: process.env.DATABASE_PASSWORD,
   
     port: 5432,
