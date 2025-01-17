@@ -41,7 +41,7 @@ app.use(
           maxAge: 30*60*100000,
           httpOnly: false,   // Đảm bảo rằng cookie không thể bị truy cập từ client-side JavaScript
           secure: false,
-          sameSite: 'lax'    // set thành true khi sử dụng HTTPS, false cho môi trường phát triển (HTTP)
+          sameSite: 'true'    // set thành true khi sử dụng HTTPS, false cho môi trường phát triển (HTTP)
         },
     })
 );
@@ -53,7 +53,7 @@ app.use(passport.initialize())
 app.use(passport.session());
 
 app.use(cors({
-  origin: 'https://your-frontend-app.onrender.com', // Chỉ cho phép frontend từ origin này
+  origin: 'https://e-commerce-fullstack-ecli.onrender.com/', // Chỉ cho phép frontend từ origin này
   methods: ['GET', 'POST','PATCH', 'PUT', 'DELETE'], // Chỉ cho phép các phương thức này
   credentials: true, // Nếu cần gửi cookie hoặc thông tin xác thực
 }));
@@ -61,7 +61,7 @@ app.use(cors({
 passport.use(new FacebookStrategy({ 
    clientID: process.env.FACEBOOK_APP_ID,
    clientSecret: process.env.FACEBOOK_APP_SECRET, 
-   callbackURL: 'http://localhost:4001/oauth2/redirect/facebook' 
+   callbackURL: 'https://e-commerce-fullstack-ecli.onrender.com/oauth2/redirect/facebook' 
   },
    async function (accessToken, refreshToken, profile, done) {
      console.log('get access token success')
@@ -96,7 +96,7 @@ passport.use(new FacebookStrategy({
 passport.use(new GoogleStrategy({ 
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: 'http://localhost:4001/oauth2/redirect/google',
+  callbackURL: 'https://e-commerce-fullstack-ecli.onrender.com/oauth2/redirect/google',
   scope: ['profile', 'email'] 
  },
   async function(issuer, profile, done)  {
@@ -175,17 +175,17 @@ app.post('/login', passport.authenticate('local'), (req, res) => {
    res.status(200).json({ message: 'Login successful', user: req.user }); 
 });
 app.get('/oauth2/redirect/facebook',
-  passport.authenticate('facebook', { failureRedirect: 'http://localhost:3000/login', failureMessage: true }),
+  passport.authenticate('facebook', { failureRedirect: 'https://e-commerce-fullstack-ecli.onrender.com/login', failureMessage: true }),
   function(req, res) {
-    res.redirect('http://localhost:3000/')
+    res.redirect('https://e-commerce-fullstack-ecli.onrender.com/')
   }
 );
 app.get('/login/facebook', passport.authenticate('facebook'));
 app.get('/login/google', passport.authenticate('google'));
 app.get('/oauth2/redirect/google',
-  passport.authenticate('google', { failureRedirect: 'http://localhost:3000/login', failureMessage: true }),
+  passport.authenticate('google', { failureRedirect: 'https://e-commerce-fullstack-ecli.onrender.com/login', failureMessage: true }),
   function(req, res) {
-    res.redirect('http://localhost:3000/')
+    res.redirect('https://e-commerce-fullstack-ecli.onrender.com/')
   }
 );
 function authorizedUser(req, res, next) {
