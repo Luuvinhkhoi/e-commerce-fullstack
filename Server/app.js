@@ -44,7 +44,8 @@ app.use(
           maxAge: 30*60*100000,
           httpOnly: true,   
           secure: false,
-          sameSite: 'none'    
+          sameSite: 'none',
+          domain:'.onrender.com'  
         },
     })
 );
