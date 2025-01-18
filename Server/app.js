@@ -27,7 +27,7 @@ const RedisStore = require('connect-redis').default;
 const { createClient } = require('redis');
 
 const redisClient = createClient({
-  url: process.env.REDIS_URL || "redis://default:your_redis_password@redis-host:6379",
+  url: process.env.REDIS_URL ,
   legacyMode: true,
 });
 
