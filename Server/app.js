@@ -28,7 +28,9 @@ const { createClient } = require('redis');
 
 const redisClient = createClient({
   url: process.env.REDIS_URL ,
-  legacyMode: true,
+});
+redisClient.on('error', (err) => {
+  console.error('Redis error:', err);
 });
 
 redisClient.connect().catch(console.error);
@@ -183,6 +185,7 @@ app.post('/sign-up', async (req, res) => {
   }); 
 });
 app.post('/login', passport.authenticate('local'), (req, res) => {
+   console.log('Session trước khi lưu:', req.session);
    res.status(200).json({ message: 'Login successful', user: req.user }); 
 });
 app.get('/oauth2/redirect/facebook',
