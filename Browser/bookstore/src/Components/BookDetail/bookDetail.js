@@ -172,25 +172,31 @@ export const BookDetail = ({image}) =>{
         setSeletedImage(first_selected_image)
     }, [id]);
     useEffect(()=>{
-        async function fetchDetail(){
-          let result = await getBookDetail(id)
-          let result2=await getRelatedBook(id)
-          let result3=await clevr.getProductImages(id)
-          let result4=await clevr.getReview(id)
-          let result5=await clevr.getRatingStat(id)
-          if(result4.isReviewResult.length>0){
-            setActiveStar(result4.isReviewResult[0].score)
-            setReviewContent(result4.isReviewResult[0].content)
-          }
-          setBookDetail(result)
-          setRelatedBook(result2)
-          setProductImages(result3)
-          setListReview(result4.productReview)
-          setIsReview(result4.isReviewResult)
-          setLoading(false)
-          setRatingStat(result5)
+        try{
+            async function fetchDetail(){
+                let result = await getBookDetail(id)
+                let result2=await getRelatedBook(id)
+                let result3=await clevr.getProductImages(id)
+                let result4=await clevr.getReview(id)
+                let result5=await clevr.getRatingStat(id)
+                if(result4.isReviewResult.length>0){
+                  setActiveStar(result4.isReviewResult[0].score)
+                  setReviewContent(result4.isReviewResult[0].content)
+                }
+                setBookDetail(result)
+                setRelatedBook(result2)
+                setProductImages(result3)
+                setListReview(result4.productReview)
+                setIsReview(result4.isReviewResult)
+                setRatingStat(result5)
+              }
+              fetchDetail()
+        } catch (error) {
+            console.error('Lỗi khi tải dữ liệu:', error);
+        } finally {
+            setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
         }
-        fetchDetail()
+        
     }, [id])
     useEffect(() => {
         const fetchUserProfile = async () => {
