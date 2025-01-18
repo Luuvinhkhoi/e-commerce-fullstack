@@ -10,7 +10,6 @@ const cors = require('cors');
 const port = process.env.PORT || 4001;
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const store=new session.MemoryStore();
 const productRouter=require('./product.js')
 const categoryRouter=require('./category.js')
 const userRouter=require('./user.js')
@@ -24,6 +23,15 @@ const Pool= require('pg').Pool;
 require('dotenv').config();
 var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require('passport-google-oidc').Strategy;
+const RedisStore = require('connect-redis').default;
+const { createClient } = require('redis');
+
+const redisClient = createClient({
+  url: process.env.REDIS_URL || "redis://default:your_redis_password@redis-host:6379",
+  legacyMode: true,
+});
+
+redisClient.connect().catch(console.error);
 const pool = new Pool({
   user: 'activity_database_os33_user',
   host: 'dpg-cu4jp4rtq21c73cs34ag-a.singapore-postgres.render.com',
@@ -39,7 +47,7 @@ app.use(
         secret: secret,
         resave: false,
         saveUninitialized: false,
-        store,
+        store: new RedisStore({ client: redisClient }),
         cookie: {
           maxAge: 60*60*1000,
           httpOnly: true,   
