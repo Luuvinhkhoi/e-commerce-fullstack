@@ -25,11 +25,14 @@ require('dotenv').config();
 var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require('passport-google-oidc').Strategy;
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'e-commerce',
-  password: 'elkhoikun282002',
+  user: 'activity_database_os33_user',
+  host: 'dpg-cu4jp4rtq21c73cs34ag-a.singapore-postgres.render.com',
+  database: 'activity_database_os33',
+  password: process.env.DATABASE_PASSWORD,
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false, // Bỏ kiểm tra chứng chỉ (chỉ dùng khi kết nối qua cloud)
+  },
 });
 app.use(
     session({
@@ -53,7 +56,7 @@ app.use(passport.initialize())
 app.use(passport.session());
 
 app.use(cors({
-  origin: '*', // Chỉ cho phép frontend từ origin này
+  origin: 'https://e-commerce-fullstack-ecli.onrender.com', // Chỉ cho phép frontend từ origin này
   methods: ['GET', 'POST','PATCH', 'PUT', 'DELETE'], // Chỉ cho phép các phương thức này
   credentials: true, // Nếu cần gửi cookie hoặc thông tin xác thực
 }));
@@ -61,7 +64,7 @@ app.use(cors({
 passport.use(new FacebookStrategy({ 
    clientID: process.env.FACEBOOK_APP_ID,
    clientSecret: process.env.FACEBOOK_APP_SECRET, 
-   callbackURL: 'https://e-commerce-fullstack-ecli.onrender.com/oauth2/redirect/facebook' 
+   callbackURL: 'https://e-commerce-fullstack-f11n.onrender.com/oauth2/redirect/facebook' 
   },
    async function (accessToken, refreshToken, profile, done) {
      console.log('get access token success')
@@ -96,7 +99,7 @@ passport.use(new FacebookStrategy({
 passport.use(new GoogleStrategy({ 
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: 'https://e-commerce-fullstack-ecli.onrender.com/oauth2/redirect/google',
+  callbackURL: 'https://e-commerce-fullstack-f11n.onrender.com/oauth2/redirect/google',
   scope: ['profile', 'email'] 
  },
   async function(issuer, profile, done)  {
