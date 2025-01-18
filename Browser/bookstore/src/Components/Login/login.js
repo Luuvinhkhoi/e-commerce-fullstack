@@ -47,8 +47,8 @@ export const Login = ()=>{
                 </div>
                 <div className='third-party-login'>
                     <span>Or login with:</span>
-                    <a href="http://localhost:4001/login/facebook" class="button"><img src={facebookImg}></img></a>
-                    <a href="http://localhost:4001/login/google" class="button"><img src={gmailImg}></img></a>
+                    <a href="https://e-commerce-fullstack-f11n.onrender.com/login/facebook" class="button"><img src={facebookImg}></img></a>
+                    <a href="https://e-commerce-fullstack-f11n.onrender.com/login/google" class="button"><img src={gmailImg}></img></a>
                 </div>
                 <div className='sign-up-link'>
                     <span>Not a member yet?</span>
