@@ -215,6 +215,7 @@ export const BookDetail = ({image}) =>{
         fetchUserProfile();
     }, []);
     console.log(isReview)
+    console.log(loading)
     console.log(bookDetail)
     return (
       <> 
