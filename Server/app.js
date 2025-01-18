@@ -50,7 +50,7 @@ app.use(
         resave: false,
         saveUninitialized: false,
         store: new RedisStore({ client: redisClient }),
-        proxy:true
+        proxy:true,
         cookie: {
           maxAge: 60*60*1000,
           httpOnly: true,   
