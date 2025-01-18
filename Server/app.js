@@ -34,6 +34,11 @@ const pool = new Pool({
     rejectUnauthorized: false, // Bỏ kiểm tra chứng chỉ (chỉ dùng khi kết nối qua cloud)
   },
 });
+app.use(cors({
+  origin: 'https://e-commerce-fullstack-ecli.onrender.com', // Chỉ cho phép frontend từ origin này
+  methods: ['GET', 'POST','PATCH', 'PUT', 'DELETE'], // Chỉ cho phép các phương thức này
+  credentials: true, // Nếu cần gửi cookie hoặc thông tin xác thực
+}));
 app.use(
     session({
         secret: secret,
@@ -41,9 +46,9 @@ app.use(
         saveUninitialized: false,
         store,
         cookie: {
-          maxAge: 30*60*100000,
+          maxAge: 30*60*10000,
           httpOnly: true,   
-          secure: false,
+          secure: true,
           sameSite: 'none'    
         },
     })
@@ -55,11 +60,6 @@ app.use(bodyParser.urlencoded({
 app.use(passport.initialize())
 app.use(passport.session());
 
-app.use(cors({
-  origin: 'https://e-commerce-fullstack-ecli.onrender.com', // Chỉ cho phép frontend từ origin này
-  methods: ['GET', 'POST','PATCH', 'PUT', 'DELETE'], // Chỉ cho phép các phương thức này
-  credentials: true, // Nếu cần gửi cookie hoặc thông tin xác thực
-}));
 
 passport.use(new FacebookStrategy({ 
    clientID: process.env.FACEBOOK_APP_ID,
