@@ -41,11 +41,10 @@ app.use(
         saveUninitialized: false,
         store,
         cookie: {
-          maxAge: 30*60*100000,
+          maxAge: 60*60*1000,
           httpOnly: true,   
-          secure: false,
+          secure: true,
           sameSite: 'none',
-          domain:'.onrender.com'  
         },
     })
 );
