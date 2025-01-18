@@ -183,6 +183,7 @@ export const BookDetail = ({image}) =>{
                   setActiveStar(result4.isReviewResult[0].score)
                   setReviewContent(result4.isReviewResult[0].content)
                 }
+                console.log(result)
                 setBookDetail(result)
                 setRelatedBook(result2)
                 setProductImages(result3)
