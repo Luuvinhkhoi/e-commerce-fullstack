@@ -50,12 +50,13 @@ app.use(
         resave: false,
         saveUninitialized: false,
         store: new RedisStore({ client: redisClient }),
+        proxy:true
         cookie: {
           maxAge: 60*60*1000,
           httpOnly: true,   
           secure: true,
           sameSite: 'none', 
-          domain: '.onrender.com'
+          domain: '.onrender.com',
         },
     })
 );
