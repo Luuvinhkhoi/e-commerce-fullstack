@@ -56,7 +56,7 @@ app.use(
           httpOnly: true,   
           secure: true,
           sameSite: 'none', 
-          domain: '.onrender.com',
+          domain: 'e-commerce-fullstack-f11n.onrender.com',
         },
     })
 );
