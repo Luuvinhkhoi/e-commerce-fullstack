@@ -214,6 +214,7 @@ export const BookDetail = ({image}) =>{
         fetchUserProfile();
     }, []);
     console.log(isReview)
+    console.log(bookDetail)
     return (
       <> 
         <div className={`${activeOverlay}-overlay`}>
