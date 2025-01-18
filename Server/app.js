@@ -186,11 +186,19 @@ app.get('/oauth2/redirect/facebook',
 app.get('/login/facebook', passport.authenticate('facebook'));
 app.get('/login/google', passport.authenticate('google'));
 app.get('/oauth2/redirect/google',
+  (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://e-commerce-fullstack-ecli.onrender.com');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+  },
   passport.authenticate('google', { failureRedirect: 'https://e-commerce-fullstack-ecli.onrender.com/login', failureMessage: true }),
   function(req, res) {
-    res.redirect('https://e-commerce-fullstack-ecli.onrender.com/')
+    res.header('Access-Control-Allow-Origin', 'https://e-commerce-fullstack-ecli.onrender.com');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.redirect('https://e-commerce-fullstack-ecli.onrender.com/');
   }
 );
+
 function authorizedUser(req, res, next) {
     // Check for the authorized property within the session
     console.log(`AUTHORIZE${req.session.authorized}`)
