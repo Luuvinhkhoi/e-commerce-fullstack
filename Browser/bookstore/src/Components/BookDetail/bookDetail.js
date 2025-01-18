@@ -171,34 +171,38 @@ export const BookDetail = ({image}) =>{
         window.scrollTo(0, 0);
         setSeletedImage(first_selected_image)
     }, [id]);
-    useEffect(()=>{
-        try{
-            async function fetchDetail(){
-                let result = await getBookDetail(id)
-                let result2=await getRelatedBook(id)
-                let result3=await clevr.getProductImages(id)
-                let result4=await clevr.getReview(id)
-                let result5=await clevr.getRatingStat(id)
-                if(result4.isReviewResult.length>0){
-                  setActiveStar(result4.isReviewResult[0].score)
-                  setReviewContent(result4.isReviewResult[0].content)
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Gửi tất cả các yêu cầu API cùng lúc
+                const result = await getBookDetail(id);
+                const result2 = await getRelatedBook(id);
+                const result3 = await clevr.getProductImages(id);
+                const result4 = await clevr.getReview(id);
+                const result5 = await clevr.getRatingStat(id);
+    
+                // Kiểm tra xem kết quả có hợp lệ không, nếu có thì cập nhật trạng thái
+                if (result && result2 && result3 && result4 && result5) {
+                    setBookDetail(result);
+                    setRelatedBook(result2);
+                    setProductImages(result3);
+                    setListReview(result4.productReview);
+                    setIsReview(result4.isReviewResult);
+                    setRatingStat(result5);
+                    if (result4.isReviewResult.length > 0) {
+                        setActiveStar(result4.isReviewResult[0].score);
+                        setReviewContent(result4.isReviewResult[0].content);
+                    }
                 }
-                console.log(result)
-                setBookDetail(result)
-                setRelatedBook(result2)
-                setProductImages(result3)
-                setListReview(result4.productReview)
-                setIsReview(result4.isReviewResult)
-                setRatingStat(result5)
-              }
-              fetchDetail()
-        } catch (error) {
-            console.error('Lỗi khi tải dữ liệu:', error);
-        } finally {
-            setLoading(false); // Đặt loading thành false sau khi dữ liệu đã tải xong
-        }
-        
-    }, [id])
+            } catch (error) {
+                console.error('Error while fetching data:', error);
+            } finally {
+                setLoading(false); // Đặt loading thành false khi tất cả dữ liệu đã được lấy về
+            }
+        };
+    
+        fetchData();
+    }, [id]);
     useEffect(() => {
         const fetchUserProfile = async () => {
           try {
