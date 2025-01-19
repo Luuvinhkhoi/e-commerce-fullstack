@@ -542,17 +542,18 @@ const checkout=async(user_id,province, city, ward , address,phone_number, paymen
     if(isFlashSale.length>0){
       const minus_quantity=await Promise.all(
         cart_product.rows.map(async (product)=>{
-          const productResult=await pool.query('update flash_sales set stock_quantity= stock_quantity-$1 where product_id=$2',[product.quantity, product.product_id])
+          const productResult=await pool.query('update flash_sales set stock_quantity= stock_quantity-$1 where product_id=$2',[product.cart_quantity, product.product_id])
+          return productResult.rows[0]
+        })
+      )
+    } else{
+      const minus_quantity=await Promise.all(
+        cart_product.rows.map(async (product)=>{
+          const productResult=await pool.query('update product set quantity= quantity-$1 where product_id=$2',[product.quantity, product.product_id])
           return productResult.rows[0]
         })
       )
     }
-    const minus_quantity=await Promise.all(
-      cart_product.rows.map(async (product)=>{
-        const productResult=await pool.query('update product set quantity= quantity-$1 where product_id=$2',[product.quantity, product.product_id])
-        return productResult.rows[0]
-      })
-    )
     const deleteCart = await deleteAllProductInCart(user_id)
     return ({ message: 'Checkout success'});  
   } catch(error){
