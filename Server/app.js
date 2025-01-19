@@ -44,6 +44,22 @@ const pool = new Pool({
     rejectUnauthorized: false, // Bỏ kiểm tra chứng chỉ (chỉ dùng khi kết nối qua cloud)
   },
 });
+pool.connect((err, client, release) => {
+  if (err) {
+    console.error('Error connecting to the database', err);
+    return;
+  }
+
+  // Đảm bảo mã hóa UTF-8 cho kết nối
+  client.query("SET client_encoding TO 'UTF8';", (err) => {
+    if (err) {
+      console.error('Error setting encoding to UTF8', err);
+    } else {
+      console.log('Encoding set to UTF-8');
+    }
+    release();
+  });
+});
 app.use(
     session({
         secret: secret,
