@@ -517,11 +517,15 @@ const checkout=async(user_id,province, city, ward , address,phone_number, paymen
       return ({message:'Failed'})
     }
     const totalPrice = cartProduct.reduce((total, product)=>{
-      return total + (product.quantity * product.price)
+      if(product.sale_price===0){
+        return total + (product.cart_quantity * product.price)
+      } else{ 
+        return total + (product.cart_quantity * product.sale_price)
+      }
     }, 0)
     const order = await pool.query('insert into orders (name, province, city, ward ,address, payment_method, total_price, shipping_fee, user_id, phone_number) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning *',[name,province , city , ward,address,payment_method,totalPrice, fee,user_id, phone_number])
     const cart_id = await pool.query('select cart_id from cart where user_id=$1',[user_id])
-    const cart_product = await pool.query('select product_id, quantity from cart_product where cart_id=$1',[cart_id.rows[0].cart_id])
+    const cart_product = await pool.query('select product_id, cart_quantity from cart_product where cart_id=$1',[cart_id.rows[0].cart_id])
     const order_product=await Promise.all(
       cart_product.rows.map(async (product)=>{
         const productResult=await pool.query('insert into order_product (order_id, product_id, quantity) values ($1, $2, $3)',[order.rows[0].order_id,product.product_id, product.quantity])
