@@ -278,7 +278,7 @@ export const Header = () => {
                     </div>
                     <Link className='user-name-col-1' to='/profile'>
                         <img src={profileUser}></img>
-                        <span style={{fontFamily:'Roboto !important'}}>{userName.length>10?userName.substring(0,10)+('...'):userName}</span>
+                        <span style={{fontFamily:'Roboto'}}>{userName.length>10?userName.substring(0,10)+('...'):userName}</span>
                     </Link>
                     <div className='user-name-col-2'>
                         <button onClick={handleLogout}>Logout</button>
