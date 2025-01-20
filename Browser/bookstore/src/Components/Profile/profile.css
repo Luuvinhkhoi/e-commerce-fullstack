@@ -127,9 +127,38 @@
     height: 20px;
     width: 20px;
 }
-@media only screen and (max-width: 1024px) and (min-width:0px){
+@media only screen and (max-width: 1024px) and (min-width:729px){
     .profile{
         margin:6rem 2rem;
+    }
+}
+@media only screen and (max-width: 728px) and (min-width:0px){
+    .profile{
+        margin:6rem 2rem;
+    }
+    .profile .order-invoice div .item-image{
+        height: 130px;
+    }
+    .profile .order-invoice div .item-name-quantity-price{
+        display: flex;
+    }
+    .profile .order-invoice div .item-name-quantity-price>div p{
+        font-size: unset;
+        font-weight: unset;
+    }
+    .profile .order-history-form{
+        padding: unset;
+    }
+    .profile .order-invoice div .item-name-quantity-price{
+        display: block;
+    }
+    .profile .order-invoice div .item-name-quantity-price>div p{
+        font-size: unset;
+        font-weight: unset;
+    }
+    .profile .order-invoice div .item-price{
+        font-size: unset;
+        font-weight: unset;
     }
 }
 
