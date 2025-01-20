@@ -4,7 +4,6 @@ const db=require('./index.js')
 reviewRouter.get('/:product_id', async(req,res, next)=>{
     const userId=req.user
     if(userId){
-        console.log('userId exist')
         const result=await db.getReview(req.params.product_id, req.user.user_id)
         if(result){
             res.status(200).send(result)
@@ -30,7 +29,6 @@ reviewRouter.get('/stat/:product_id', async(req,res, next)=>{
 })
 reviewRouter.post('/:product_id', async(req, res, next)=>{
     const {score,content}= req.body;
-    console.log(req.body)
     const result= await db.addReview(score, content, req.params.product_id, req.user.user_id)
     if (result){
         res.status(200).send('success')

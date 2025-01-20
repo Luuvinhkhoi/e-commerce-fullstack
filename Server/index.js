@@ -81,7 +81,6 @@ const login = async (email, password, done)=>{
         }
         
         // Xác thực thành công, trả về người dùng
-        console.log('Success');
         return done(null, user);
     } catch (error) {
         // Trả về lỗi nếu có
@@ -215,7 +214,6 @@ const getPublisher=async()=>{
   return product
 }
 const getProductFromDatabaseById=async(id)=>{
-    console.log(id)
     const result = await pool.query('select * from product left join(select product_id as flashSale_productId,sale_price, stock_quantity from flash_sales) flash_sales on product.product_id=flash_sales.flashSale_productId where product_id=$1',[id])
     const product= result.rows[0]
     return product
@@ -308,7 +306,6 @@ const createProduct=async(product_name, description, price, quantity, category_i
 const updateProduct=async(id, updateData)=>{
   try{
     const fieldsToUpdate = updateData;
-    console.log(fieldsToUpdate)
     if (!id || Object.keys(fieldsToUpdate).length === 0) {
       return res.status(400).send('Failed');
     }
@@ -319,8 +316,6 @@ const updateProduct=async(id, updateData)=>{
       .map((columnName, index) => `${columnName} = $${index + 1}`)
       .join(', ');
     const query = `UPDATE product SET ${setClause} WHERE product_id = $${columnNames.length + 1}`;
-    console.log(query)
-    console.log([...columnValues, id])
     await pool.query(query, [...columnValues, parseInt(id, 10)]);
     return {message:`Success update with ${id}`};
   } catch (err){
@@ -387,11 +382,6 @@ const updateUser=async(id, updateData)=>{
       .map((columnName, index) => `${columnName} = $${index + 1}`)
       .join(', ');
     const query = `UPDATE users SET ${setClause} WHERE user_id = $${columnNames.length + 1}`;
-    console.log(query)
-    console.log(columnNames)
-    console.log(columnValues)
-    console.log(setClause)
-    console.log([...columnValues, id])
     await pool.query(query, [...columnValues, parseInt(id, 10)]);
     return {message:`Success update with ${id}`};
   } catch (err){
@@ -440,7 +430,6 @@ const getCartByUserId=async(id)=>{
           return productResult.rows[0];
         })
       );
-      console.log(productResults)
       const productMap = new Map(productResults.map(p => [p.product_id, p]));
       const combined = 
         cartProduct.rows.map(cartItem => ({
@@ -471,7 +460,6 @@ const insertProductIntoCart=async(userId,productId, quantity)=>{
 const updateCart=async(userId, updateData)=>{
   try{
     const products=updateData.map(({product_id, cart_quantity})=>({product_id,cart_quantity}))
-    console.log(updateData)
     const cart_id = await pool.query('select cart_id from cart where user_id=$1', [userId])
     if (cart_id.rows.length === 0) {
       throw new Error('Cart not found');
@@ -483,7 +471,6 @@ const updateCart=async(userId, updateData)=>{
         return productResult.rows[0];
       })
     );
-    console.log(productResults)
     return {message:`Success update with ${cart_id.rows[0].cart_id}`};
   } catch (err){
     throw new Error('Error ' + err.message);
@@ -493,8 +480,6 @@ const updateCart=async(userId, updateData)=>{
 const deleteProductInCartByProductId=async(userId, productId)=>{
     try{
       const cart_id = await pool.query('select cart_id from cart where user_id=$1', [userId])
-      console.log(productId)
-      console.log(cart_id.rows[0].cart_id)
       pool.query('Delete from cart_product where cart_id=$1 and product_id=$2', [cart_id.rows[0].cart_id,parseInt(productId, 10)]);
       return {message:`Success delete with ${productId}`}
     } catch(err){
@@ -538,7 +523,6 @@ const checkout=async(user_id,province, city, ward , address,phone_number, paymen
         return productResult.rows[0]
       })
     )
-    console.log(isFlashSale)
     if(isFlashSale.length>0){
       const minus_quantity=await Promise.all(
         cart_product.rows.map(async (product)=>{

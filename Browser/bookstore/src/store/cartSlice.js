@@ -47,14 +47,12 @@ export const getCart=createAsyncThunk(
     'cart/getCart',
     async(_,thunkAPI)=>{
         const result=await clevr.getCart()
-        console.log(result)
         thunkAPI.dispatch(getItem(result))
     }
 )
 export const insertCartIntoDatabase=createAsyncThunk(
     'cart/insertCart',
     async({id, quantityToBuy},thunkAPI)=>{
-        console.log(id, quantityToBuy)
         const result=await clevr.insertCart(id, quantityToBuy)
     }
 )
@@ -62,16 +60,13 @@ export const updateCart=createAsyncThunk(
     'cart/updateCart',
     async(_, thunkAPI)=>{
         const state = thunkAPI.getState(); 
-        console.log(state.cart.items)
         const result=await clevr.updateCart(state.cart.items)
-        console.log('try to update cart')
     }
 )
 export const deleteCart=createAsyncThunk(
     'cart/deleteCart',
     async({id}, thunkAPI)=>{
         const result=await clevr.deleteItemInCart(id)
-        console.log('try to delete cart')
     }
 )
 export const {updateItem, addQuantityToBuy, minusQuantityToBuy, getItem}=cartSlice.actions

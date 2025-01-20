@@ -39,8 +39,7 @@ export const Profile= ()=>{
     useEffect(()=>{
         setPhoneNumberChange(phoneNumber)
     }, [phoneNumber])
-    console.log(userNameChange)
-    console.log(orderHistory)
+
     return(
         <div className="profile">
             <div className='profile-image'>

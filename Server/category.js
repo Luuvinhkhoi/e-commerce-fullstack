@@ -26,12 +26,10 @@ categoryRouter.get('/category-filter',pagination ,async (req, res, next)=>{
     const publisher=null
     const min=null
     const max=null
-    console.log(req.query, publisher, format, min, max, pageSize, offset)
     const [products, count] = await Promise.all([
             db.filterProduct(req.query.category, publisher, format, min, max, pageSize, offset), 
             db.countFilterProduct()
     ]);
-    console.log(products)
     if(products){
         res.status(200).send({filterProduct: products, count: count})
     } else{

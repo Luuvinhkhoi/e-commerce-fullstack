@@ -19,7 +19,6 @@ userRouter.get('/:user_id', async (req, res, next)=>{
 userRouter.post('/',db.createUser)
 userRouter.patch("/", async(req, res, next)=>{
     const id=req.user.user_id;
-    console.log(id)
     try{
       const result=await db.updateUser(id, req.body.updateData);
       res.status(200).send(result)

@@ -16,7 +16,6 @@ export const SearchResult=()=>{
     const navigate=useNavigate()
     const genre = searchParams.get('genre') || 'All genres';
     const query = searchParams.get('query') || ''
-    console.log(query)
     let [categoryOptionState, setCategoryOptionState]=useState(genre);
     let [formatOptionState, setFormatOptionState]=useState(null)
     const [publisher, setPublisher]=useState()
@@ -119,7 +118,6 @@ export const SearchResult=()=>{
     }
     function handlePublisherOption(e){
         setPublisherOption(e.target.value)
-        console.log(publisherOption)
     }
     async function filterProduct(){
         const params = new URLSearchParams();
@@ -263,7 +261,6 @@ export const SearchResult=()=>{
     useEffect(() => {
         window.scrollTo(0, 0); // Cuộn lên đầu trang mỗi khi pageNumber thay đổi
     }, [products]);
-    console.log(products)
     return (
       <>
         <div className='searchResult'>

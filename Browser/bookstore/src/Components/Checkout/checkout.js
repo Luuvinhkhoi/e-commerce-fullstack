@@ -2,12 +2,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { getCart} from '../../store/cartSlice'
 import { updateName, updatePhoneNumber, updateAddress, updatePaymentMethod } from "../../store/checkoutSlice";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LocationSelector } from "./location";
 import './checkout.css'
 import clevr from "../../util/clevr";
 export const Checkout = ()=>{
     const dispatch=useDispatch()
+    const navigate=useNavigate()
     const userName=useSelector((state)=>state.profile.userName)
     const [activeOverlay, setActiveOverlay]=useState('close')
     const items=useSelector((state)=>state.cart.items)
@@ -28,7 +29,6 @@ export const Checkout = ()=>{
     };
     const handleSubmit=(e)=>{
          try{
-           e.preventDefault()
            if (!name) {
             alert("Vui lòng chọn đầy đủ thông tin vị trí.");
            }
@@ -36,6 +36,7 @@ export const Checkout = ()=>{
             alert("Vui lòng nhập số điện thoại đúng định dạng.");
            } 
             clevr.checkout(name,province.label, city.label, ward.label ,address, payment_method, tax, phoneNumber)
+            alert('Success checkout')
          } catch(error){
             console.log(error)
          }
@@ -110,7 +111,6 @@ export const Checkout = ()=>{
         // Dọn dẹp khi component unmount
         return () => document.body.classList.remove('no-scroll');
     }, [activeOverlay]);
-    console.log(name,province.label, city.label, ward.label ,address, payment_method, tax, phoneNumber)
     return(
       <>
         <div className={`${activeOverlay}-overlay`}>

@@ -15,7 +15,6 @@ export const Category = () => {
     const [category, setCategory]=useState()    
     const [loading, setLoading] = useState(true);
     const navigate=useNavigate()
-    console.log(category)
     const handleCategoryClick = (categoryName) => {
         // Chuyển hướng đến URL với params dựa trên category_name
         navigate(`/search?genre=${encodeURIComponent(categoryName)}`);

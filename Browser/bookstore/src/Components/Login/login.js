@@ -6,7 +6,8 @@ import facebookImg from '../../Assets/facebook.png'
 import gmailImg from '../../Assets/gmail.png'
 export const Login = ()=>{
     const [emailState, setEmailState]=useState('')
-    const [passwordState, setPasswordState]=useState('')
+    const [passwordState, setPasswordState]=useState('')    
+    const [error, setError] = useState("");
     const location=useLocation()
     const navigate=useNavigate()
     function handleEmailInput(e){
@@ -17,10 +18,10 @@ export const Login = ()=>{
     }
     async function handleLogin(){
         const result= await clevr.logIn(emailState, passwordState)
-        console.log(result)
         if (!result){
-            console.error('fail');
+            setError("Invalid credential");
         } else{
+            setError("");
             navigate(location.state?.previousUrl || '/')
         }
     }
@@ -44,6 +45,7 @@ export const Login = ()=>{
                         <div className='login-button'>
                             <button>Login</button>
                         </div>
+                        {error && <div style={{ color: "red", fontFamily:'Roboto' }}>{error}</div>}
                 </div>
                 <div className='third-party-login'>
                     <span>Or login with:</span>

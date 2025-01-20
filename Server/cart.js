@@ -23,7 +23,6 @@ cartRouter.post('/', async(req,res,next)=>{
 cartRouter.use('/checkout', checkoutRouter)
 checkoutRouter.post('/',async(req, res, next)=>{
     try{
-        console.log(req.body)
         const {name,phone_number,province, city, ward , address, payment_method, fee}=req.body
         const result=await db.checkout(req.user.user_id,province, city, ward, address,phone_number, payment_method, name, fee)
         if (result){

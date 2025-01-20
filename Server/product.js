@@ -5,7 +5,6 @@ let flashSaleEndTime = new Date();
 flashSaleEndTime.setHours(0, 0, 0, 0); // Mặc định 0h sáng UTC mỗi ngày
 const pagination = (req, res, next) => {
     const { pageNumber, pageSize } = req.query;
-    console.log(pageNumber, pageSize)
     req.pagination = {
         pageNumber: Number(pageNumber),
         pageSize: Number(pageSize),
@@ -17,7 +16,6 @@ const pagination = (req, res, next) => {
 productRouter.get('/',pagination,async(req, res, next)=>{
     try {
         const { offset, pageSize } = req.pagination;
-        console.log('getALLL')
         const [products, count] = await Promise.all([
             db.getAllProductFromDatabase(offset, pageSize), 
             db.countTotalProduct()
@@ -47,7 +45,6 @@ productRouter.get('/feature-book', async(req, res, next)=>{
 productRouter.get('/search', async(req, res, next) =>{
   try{  
     const {name}=req.query
-    console.log(name)
     const product=await db.findBookByName(name)
     res.status(200).send(product)
   } catch(error){
@@ -103,7 +100,6 @@ productRouter.post('/', async (req, res, next)=>{
 });
 productRouter.patch('/:product_id', async (req, res) => {
     const id=req.params.product_id;
-    console.log(id)
     try{
       const result=await db.updateProduct(id, req.body);
       res.status(200).send(result)

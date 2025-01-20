@@ -7,7 +7,6 @@ import clevr from "../../../util/clevr"
 export const Trending=()=>{
     const [trendingItem, setTrendingItem]=useState()
     const [loading, setLoading] = useState(true);
-    console.log(trendingItem)
     useEffect(()=>{
         async function getTredingItem() {
             const result=await clevr.getTrendingItem()

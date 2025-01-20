@@ -17,7 +17,6 @@ import { Link } from 'react-router-dom';
 export const FlashSale=()=>{
     const [flashSaleItem, setFlashSaleItem]=useState()
     const [loading, setLoading]=useState(true)
-    console.log(flashSaleItem)
     useEffect(()=>{
         async function getFlashSaleItem(params) {
             const result=await clevr.getFlashSaleItems()

@@ -153,7 +153,6 @@ export const Header = () => {
         }
     }
     const handleAddToCart = async ()=> {
-        console.log('cartttttt')
             if (!userName) {
                 setActiveOverlay('open'); // Hiển thị pop-up nếu chưa đăng nhập
                 return;
@@ -178,7 +177,6 @@ export const Header = () => {
         // Dọn dẹp khi component unmount
         return () => document.body.classList.remove('no-scroll');
     }, [activeOverlay]);
-    console.log(userName)
     return (
       <>
         <div className={`${activeOverlay}-overlay`}>
@@ -278,7 +276,7 @@ export const Header = () => {
                     <div className="close" onClick={openNav}>
                         <IoMdCloseCircle className="icon"/>
                     </div>
-                    <Link className='user-name-col-1' to='/profile' onClick={openNav}>
+                    <Link className='user-name-col-1' to='/profile'>
                         <img src={profileUser}></img>
                         <span>{userName.length>10?userName.substring(0,10)+('...'):userName}</span>
                     </Link>

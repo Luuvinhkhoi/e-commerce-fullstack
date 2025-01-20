@@ -28,13 +28,11 @@ export const BookDetail = ({image}) =>{
     const [ratingStat, setRatingStat]=useState()
     const location=useLocation()
     const first_selected_image=location.state
-    console.log(first_selected_image)
     const [selectedImage, setSeletedImage]=useState(first_selected_image)
     const [quantityToBuy, setQuantity]=useState(1)
     const [loading, setLoading] = useState(true);
     let { id } = useParams();
     const dispatch=useDispatch()
-    console.log(id)
     function getBookDetail(id){
           return clevr.getBookDetail(id)
     }
@@ -218,9 +216,6 @@ export const BookDetail = ({image}) =>{
     
         fetchUserProfile();
     }, []);
-    console.log(isReview)
-    console.log(loading)
-    console.log(bookDetail)
     return (
       <> 
         <div className={`${activeOverlay}-overlay`}>
