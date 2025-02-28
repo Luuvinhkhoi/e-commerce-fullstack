@@ -34,26 +34,34 @@ redisClient.on('error', (err) => {
 });
 
 redisClient.connect().catch(console.error);
+const build_mode=process.env.BUILD_MODE
+console.log(process.env.FACEBOOK_APP_ID)
+console.log(process.env.DATABASE_USER)
+console.log(process.env.DATABASE_HOST)
+console.log(process.env.DATABASE_DATABASE)
+console.log(process.env.DATABASE_PASSWORD)
+
 const pool = new Pool({
-  user: 'activity_database_os33_user',
-  host: 'dpg-cu4jp4rtq21c73cs34ag-a.singapore-postgres.render.com',
-  database: 'activity_database_os33',
+  user: process.env.DATABASE_USER,
+  host: process.env.DATABASE_HOST,
+  database: process.env.DATABASE_DATABASE,
   password: process.env.DATABASE_PASSWORD,
   port: 5432,
-  ssl: {
-    rejectUnauthorized: false, // Bỏ kiểm tra chứng chỉ (chỉ dùng khi kết nối qua cloud)
-  },
+  ssl:false
 });
 pool.connect((err, client, release) => {
   if (err) {
-    console.error('Error connecting to the database', err);
-    return;
+      console.error('Error connecting to the database:', err.message);
+      console.error('Error details:', err);
+      return;
   }
 
   // Đảm bảo mã hóa UTF-8 cho kết nối
   client.query("SET client_encoding TO 'UTF8';", (err) => {
     if (err) {
-      console.error('Error setting encoding to UTF8', err);
+      console.error('Error connecting to the database:', err.message);
+      console.error('Error details:', err);
+      return;
     } else {
       console.log('Encoding set to UTF-8');
     }
@@ -84,7 +92,7 @@ app.use(passport.initialize())
 app.use(passport.session());
 
 app.use(cors({
-  origin: 'https://e-commerce-fullstack-ecli.onrender.com', // Chỉ cho phép frontend từ origin này
+  origin: ["http://localhost:3000", "https://e-commerce-fullstack-ecli.onrender.com"], // Chỉ cho phép frontend từ origin này
   methods: ['GET', 'POST','PATCH', 'PUT', 'DELETE'], // Chỉ cho phép các phương thức này
   credentials: true, // Nếu cần gửi cookie hoặc thông tin xác thực
 }));

@@ -19,7 +19,7 @@
     width: 24px;
 }
 .best-seller-item {
-    display: flex !important;
+    display: flex;
     height: 100%;
     gap: 1.5rem
 }
@@ -54,10 +54,10 @@
     font-weight: 600;
 }
 .best-seller-slide-container{
-    margin: 0 2rem;
+    margin: 0 .5rem;
 }
 .best-seller .swiper-wrapper{
-    margin: 0 2.5rem;
+    margin: 0 .5rem;
 }
 .best-seller .swiper-button-prev{
     height: 40px !important;
@@ -82,6 +82,14 @@
     font-size: 24px !important;
     color: #FFFFFF !important;
 }
-@media only screen and (max-width:728px){
-
+@media only screen and (max-width:1024px) and (min-width:0px){
+    .best-seller-item {
+        display: block;
+    }
+    .best-seller-item-image{
+        margin:1rem auto
+    }
+    .best-seller-item-desc{
+        width: 100%
+    }
 }

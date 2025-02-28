@@ -71,7 +71,7 @@ export const FeatureBook=()=>{
                 </div>
                 <div className='feature-book-slide-container'>
                     <Swiper
-                          slidesPerView={"auto"}
+                          slidesPerView={'auto'}
                           centeredSlides={true}
                           spaceBetween={30}
                           loop={true}
@@ -79,10 +79,16 @@ export const FeatureBook=()=>{
                           modules={[Navigation]}
                           breakpoints={{
                             0:{
-                                slidesPerView:1
+                                slidesPerView:1,
+                                centeredSlides: false
                             },
-                            1024:{
-                                slidesPerView:2
+                            979:{
+                                slidesPerView:2,
+                                centeredSlides: false
+                            },
+                            1200:{
+                                slidesPerView:'auto',
+                                centeredSlides:true
                             },
                             
                           }}
