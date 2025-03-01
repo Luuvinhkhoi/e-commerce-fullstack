@@ -136,8 +136,10 @@ input[type='range']::-moz-range-thumb{
     margin-top: 1.5rem;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 3.5rem
 }   
+.book-list .book-list-item{
+    width: 85%;
+}
 .book-list .book-list-row-1 .book-list-item .book-list-item-image{
     border-radius: 0.5rem;
     overflow: hidden;
@@ -213,6 +215,10 @@ input[type='range']::-moz-range-thumb{
     font-size: 16px;
     font-weight: 600;
 }
+.book-list-item-desc{
+    display: grid;
+    grid-template-rows: repeat(3, minmax(auto, 65px));
+}
 @media only screen and (max-width: 1024px) and (min-width:769px){
     .book-list .book-list-row-1{
         grid-template-columns: repeat(2, 1fr);
@@ -221,6 +227,10 @@ input[type='range']::-moz-range-thumb{
 @media only screen and (max-width: 768px) and (min-width:0px){
     .searchResult{
         grid-template-columns: 0.5fr 1fr;
+        margin: 6rem auto;
+    }
+    .filter{
+        margin-right: .5rem;
     }
     .filter-row-1 .option {
         margin: 0rem;
@@ -236,6 +246,9 @@ input[type='range']::-moz-range-thumb{
     }
     .book-list .book-list-row-1{
         grid-template-columns: repeat(1, 1fr);
+    }
+    .book-list .book-list-row-1 .book-list-item .book-list-item-image{
+        aspect-ratio: 1/1.3
     }
 }
 

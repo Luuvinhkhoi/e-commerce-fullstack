@@ -76,11 +76,11 @@ app.use(
         store: new RedisStore({ client: redisClient }),
         proxy:true,
         cookie: {
-          maxAge: 60*60*1000,
-          httpOnly: true,   
-          secure: true,
-          sameSite: 'none', 
-          domain: 'e-commerce-fullstack-f11n.onrender.com',
+          maxAge: 60 * 60 * 1000, 
+          httpOnly: true,
+          secure: process.env.BUILD_MODE === 'production'? true : false, 
+          sameSite: process.env.BUILD_MODE === 'production' ? 'none' : 'lax',
+          domain: process.env.BUILD_MODE === 'production' ? 'e-commerce-fullstack-f11n.onrender.com' : undefined,
         },
     })
 );
