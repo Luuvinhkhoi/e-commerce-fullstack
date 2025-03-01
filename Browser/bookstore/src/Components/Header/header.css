@@ -361,18 +361,10 @@
     .openToogle{
         display: block;
         height: unset;
-        z-index: 100;
         top: 90px;
     }
-    ul{
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* Chia thành 2 cột */
-        gap: 10px; /* Khoảng cách giữa các cột */
-        list-style: none;
-        padding: 0;
-    }
     .navigation-list{
-        margin: 1rem 0;
+        margin: .5rem 0;
         display: grid;
         grid-template-columns: 1fr 1fr; /* Chia thành 2 cột */
         gap: 10px; /* Khoảng cách giữa các cột */

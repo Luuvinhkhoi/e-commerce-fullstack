@@ -16,3 +16,9 @@ option{
 .css-1jqq78o-placeholder{
     font-family: 'Roboto' !important;
 }
+@media only screen and (max-width:468px) {
+    .css_select_div{
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
