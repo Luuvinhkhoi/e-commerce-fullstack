@@ -35,11 +35,6 @@ redisClient.on('error', (err) => {
 
 redisClient.connect().catch(console.error);
 const build_mode=process.env.BUILD_MODE
-console.log(process.env.FACEBOOK_APP_ID)
-console.log(process.env.DATABASE_USER)
-console.log(process.env.DATABASE_HOST)
-console.log(process.env.DATABASE_DATABASE)
-console.log(process.env.DATABASE_PASSWORD)
 
 const pool = new Pool({
   user: process.env.DATABASE_USER,
@@ -92,7 +87,7 @@ app.use(passport.initialize())
 app.use(passport.session());
 
 app.use(cors({
-  origin: ["http://localhost:3000", "https://e-commerce-fullstack-ecli.onrender.com"], // Chỉ cho phép frontend từ origin này
+  origin: ["http://localhost:3000", "https://e-commerce-fullstack-ecli.onrender.com,https://pay.payos.vn "], // Chỉ cho phép frontend từ origin này
   methods: ['GET', 'POST','PATCH', 'PUT', 'DELETE'], // Chỉ cho phép các phương thức này
   credentials: true, // Nếu cần gửi cookie hoặc thông tin xác thực
 }));
@@ -139,9 +134,6 @@ passport.use(new GoogleStrategy({
   scope: ['profile', 'email'] 
  },
   async function(issuer, profile, done)  {
-    console.log('get access token success')
-    console.log(issuer)
-    console.log(profile)
     try { 
      const result = await pool.query('SELECT * FROM linked_profile WHERE provider = $1 AND subject = $2', [  issuer, profile.id ]); 
      let cred = result.rows[0]; 
@@ -211,7 +203,6 @@ app.post('/sign-up', async (req, res) => {
   }); 
 });
 app.post('/login', passport.authenticate('local'), (req, res) => {
-   console.log('Session trước khi lưu:', req.session);
    res.status(200).json({ message: 'Login successful', user: req.user }); 
 });
 app.get('/oauth2/redirect/facebook',
@@ -230,8 +221,10 @@ app.get('/oauth2/redirect/google',
 );
 
 function authorizedUser(req, res, next) {
+    if (req.path === '/checkout/receive-hook') {
+        return next(); // Bỏ qua xác thực nếu là webhook
+    }
     // Check for the authorized property within the session
-    console.log(`AUTHORIZE${req.session.authorized}`)
     if (req.isAuthenticated()) {
       // next middleware function is invoked
       return next();

@@ -159,7 +159,24 @@ export const Cart = () =>{
     }, [activeOverlay]);
     useEffect(() => {
         window.scrollTo(0, 0); // Cuộn lên đầu trang
-    }, []);    
+    }, []);   
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get("orderCode");
+        const status = urlParams.get("status");
+
+        if (orderId && status === "CANCELLED") {
+            fetch("http://localhost:4001/cart/checkout/cancel", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials:'include',
+                body: JSON.stringify({ orderId })
+            })
+            .then(response => response.json())
+            .then(data => console.log("Cập nhật đơn hàng:", data))
+            .catch(error => console.error("Lỗi cập nhật đơn hàng:", error));
+        }
+    }, []); 
     return(
         <div className='cart'>
             <div className={`${activeOverlay}-overlay`}>

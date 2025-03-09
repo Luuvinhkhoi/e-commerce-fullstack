@@ -515,7 +515,8 @@ let clevr={
         }).then(jsonResponse=>{
             if(!jsonResponse){
                 console.log('response error')
-            } return jsonResponse
+            }
+            window.location.href=jsonResponse.checkoutUrl
         }). catch(networkError=>{
             console.log(networkError.message)
         }); 

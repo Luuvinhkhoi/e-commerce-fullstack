@@ -3,6 +3,7 @@ import profileUser from '../../Assets/large-profile-user.png'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import calendar from '../../Assets/calendar.png'
+import check from '../../Assets/check.png'
 import clevr from '../../util/clevr'
 import { getOrderHistory } from '../../store/profileSlice'
 import { Link } from 'react-router-dom'
@@ -68,6 +69,14 @@ export const Profile= ()=>{
                             <div>
                                 <div>
                                     <p>Order: ORD{time.order_id}</p>
+                                    {time.payment_status==='paid'?
+                                        <div style={{display:'flex', gap:'5px'}}>
+                                            <img src={check} style={{width:'24px', height:'24px'}}></img>
+                                            <p style={{fontSize:'14px'}}>Đã thanh toán</p>
+                                        </div>
+                                    :
+                                    <div></div>
+                                    }
                                 </div>
                                 <div className='calendar-price'>
                                     <p>{time.total_price}đ</p>
@@ -89,7 +98,7 @@ export const Profile= ()=>{
                                             <span>Quantity: {item.quantity}</span>
                                         </div>
                                         <div className='item-price'>
-                                            <p>{item.price}đ</p>
+                                            <p style={{fontSize:'14px', fontWeight:'normal'}}>{item.price}đ</p>
                                         </div>
                                     </div>
                                 </Link>

@@ -506,12 +506,12 @@ const checkout=async(user_id,province, city, ward , address,phone_number, paymen
         return total + (product.cart_quantity * product.sale_price)
       }
     }, 0)
-    const order = await pool.query('insert into orders (name, province, city, ward ,address, payment_method, total_price, shipping_fee, user_id, phone_number) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning *',[name,province , city , ward,address,payment_method,totalPrice, fee,user_id, phone_number])
+    const order = await pool.query('insert into orders (name, province, city, ward ,address, payment_method, total_price, shipping_fee, user_id, phone_number, payment_status) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning *',[name,province , city , ward,address,payment_method,totalPrice, fee,user_id, phone_number, 'pending'])
     const cart_id = await pool.query('select cart_id from cart where user_id=$1',[user_id])
     const cart_product = await pool.query('select product_id, cart_quantity from cart_product where cart_id=$1',[cart_id.rows[0].cart_id])
     const order_product=await Promise.all(
       cart_product.rows.map(async (product)=>{
-        const productResult=await pool.query('insert into order_product (order_id, product_id, quantity) values ($1, $2, $3)',[order.rows[0].order_id,product.product_id, product.quantity])
+        const productResult=await pool.query('insert into order_product (order_id, product_id, quantity) values ($1, $2, $3)',[order.rows[0].order_id,product.product_id, product.cart_quantity])
         return productResult.rows[0]
       })
     )
@@ -537,14 +537,14 @@ const checkout=async(user_id,province, city, ward , address,phone_number, paymen
       )
     }
     const deleteCart = await deleteAllProductInCart(user_id)
-    return ({ message: 'Checkout success'});  
+    return (order);  
   } catch(error){
     throw new Error('Error'+error.message)
   }
 }
 const getOrderByUserId=async(user_id)=>{
   try{
-    const orderId= await pool.query(`select order_id,total_price,TO_CHAR(order_time, 'YYYY-MM-DD') AS formatted_date from orders where user_id=$1`,[user_id])
+    const orderId= await pool.query(`select order_id,payment_status,total_price,TO_CHAR(order_time, 'YYYY-MM-DD') AS formatted_date from orders where user_id=$1`,[user_id])
     const orderTime=orderId.rows
     const orderDetail= await Promise.all(
       orderId.rows.map(async(order)=>{
@@ -559,6 +559,35 @@ const getOrderByUserId=async(user_id)=>{
     return ({orderDetail, orderTime})
   } catch(error){
     throw new Error('Error'+error.message)
+  }
+}
+const updatePayment_status=async(order_id)=>{
+  try{
+    const update=await pool.query('UPDATE orders set payment_status=$1 where order_id=$2',['paid', order_id])
+  }catch(error){
+    throw new Error('Error'+ error.message)
+  }
+}
+const cancelPayment=async(order_id)=>{
+  try{
+    const updateOrder_product=await pool.query('DELETE from order_product where order_id=$1',[order_id])
+    const update=await pool.query('DELETE from orders where order_id=$1',[order_id])
+  }catch(error){
+    throw new Error('Error'+ error.message)
+  }
+}
+const getPendingOrdersOlderThan=async(minute)=>{
+  try{
+    console.log(`Đang tìm đơn hàng quá hạn ${minute} phút...`);
+    const getPendingOrder = await pool.query(
+      `SELECT order_id FROM orders 
+       WHERE payment_status = 'pending' 
+       AND order_time <= NOW() - ($1 * INTERVAL '1 minute')`,
+      [minute]
+    );
+    return getPendingOrder.rows
+  } catch(err){
+    throw new Error('Error'+ err.message)
   }
 }
 const upload=async(cloudinary_url,productId)=>{
@@ -732,7 +761,6 @@ const handleFlashSale = async () => {
         'UPDATE product SET quantity = quantity - $1 WHERE product_id = $2',
         [saleQuantity, product.product_id]
       );
-      console.log(result.rows)
       // Thêm sản phẩm vào flash_sales
       await pool.query(
         `INSERT INTO flash_sales 
@@ -834,6 +862,9 @@ module.exports={
     deleteAllProductInCart,
     deleteProductInCartByProductId,
     checkout, 
+    updatePayment_status,
+    cancelPayment,
+    getPendingOrdersOlderThan,
     getOrderByUserId,
     upload,
     getAllImage, 
