@@ -1,5 +1,9 @@
-
-const baseUrl="http://localhost:4001"
+const baseUrl =
+  process.env.NODE_ENV=== "development"
+    ? process.env.REACT_APP_BASE_URL_DEV
+    : process.env.REACT_APP_BASE_URL_PROD;
+console.log(process.env.NODE_ENV)
+console.log(baseUrl)
 let clevr={
     sigUpAccount(userName, email, password){
         console.log(userName)

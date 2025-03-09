@@ -79,7 +79,7 @@ export const Profile= ()=>{
                                     }
                                 </div>
                                 <div className='calendar-price'>
-                                    <p>{time.total_price}đ</p>
+                                    <p>{parseInt(time.total_price) + parseInt(time.shipping_fee)}đ</p>
                                     <div>
                                         <img src={calendar}></img>
                                         <span>{time.formatted_date}</span>

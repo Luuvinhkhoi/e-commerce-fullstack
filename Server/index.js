@@ -544,7 +544,7 @@ const checkout=async(user_id,province, city, ward , address,phone_number, paymen
 }
 const getOrderByUserId=async(user_id)=>{
   try{
-    const orderId= await pool.query(`select order_id,payment_status,total_price,TO_CHAR(order_time, 'YYYY-MM-DD') AS formatted_date from orders where user_id=$1`,[user_id])
+    const orderId= await pool.query(`select order_id,payment_status,total_price, shipping_fee,TO_CHAR(order_time, 'YYYY-MM-DD') AS formatted_date from orders where user_id=$1`,[user_id])
     const orderTime=orderId.rows
     const orderDetail= await Promise.all(
       orderId.rows.map(async(order)=>{
