@@ -27,7 +27,7 @@ export const Checkout = ()=>{
     const handleLocationChange = (data) => {
         console.log("Dữ liệu từ LocationSelector:", data);
     };
-    const handleSubmit=(e)=>{
+    const handleSubmit=async(e)=>{
          try{
            e.preventDefault()
            if (!name) {
@@ -36,7 +36,12 @@ export const Checkout = ()=>{
            if (!error && !phoneNumber) {
             alert("Vui lòng nhập số điện thoại đúng định dạng.");
            } 
-            clevr.checkout(name,province.label, city.label, ward.label ,address, payment_method, tax, phoneNumber)
+           if(payment_method==='cod'){
+                await clevr.codcheckout(name,province.label, city.label, ward.label ,address, payment_method, tax, phoneNumber)
+                navigate('/cart')
+           } else if(payment_method==='onl'){
+                clevr.onlcheckout(name,province.label, city.label, ward.label ,address, payment_method, tax, phoneNumber)
+           }
          } catch(error){
             console.log(error)
          }
@@ -151,7 +156,7 @@ export const Checkout = ()=>{
                                 <label>Thanh toán khi nhận hàng</label>
                             </div>
                             <div>
-                                <input type="radio" name="paymentMethod" value="cod" onChange={handlePaymentMethodChange}required ></input>
+                                <input type="radio" name="paymentMethod" value="onl" onChange={handlePaymentMethodChange}required ></input>
                                 <label>Thanh toán bằng chuyển khoản</label>
                             </div>
                         </div>

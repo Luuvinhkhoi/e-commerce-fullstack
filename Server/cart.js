@@ -25,7 +25,7 @@ cartRouter.post('/', async(req,res,next)=>{
 })
 
 cartRouter.use('/checkout', checkoutRouter)
-checkoutRouter.post('/', async (req, res, next) => {
+checkoutRouter.post('/onl', async (req, res, next) => {
     try {
         const {name,phone_number,province, city, ward , address, payment_method, fee}=req.body
         const result=await db.checkout(req.user.user_id,province, city, ward, address,phone_number, payment_method, name, fee)  
@@ -60,7 +60,7 @@ checkoutRouter.post('/receive-hook',(req, res)=>{
     db.updatePayment_status(req.body.data.orderCode)
     res.json()
 })
-/*checkoutRouter.post('/',async(req, res, next)=>{
+checkoutRouter.post('/cod',async(req, res, next)=>{
     try{
         const {name,phone_number,province, city, ward , address, payment_method, fee}=req.body
         const result=await db.checkout(req.user.user_id,province, city, ward, address,phone_number, payment_method, name, fee)
@@ -70,7 +70,7 @@ checkoutRouter.post('/receive-hook',(req, res)=>{
     } catch(error){
         res.status(500).send({message: error.message})
     }
-})*/
+})
 cartRouter.put('/', async(req, res, next)=>{
     try{
         const result=await db.updateCart(req.user.user_id, req.body.updateData)
