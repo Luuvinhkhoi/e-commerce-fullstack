@@ -29,6 +29,7 @@ export const Checkout = ()=>{
     };
     const handleSubmit=(e)=>{
          try{
+           e.preventDefault()
            if (!name) {
             alert("Vui lòng chọn đầy đủ thông tin vị trí.");
            }
@@ -36,7 +37,6 @@ export const Checkout = ()=>{
             alert("Vui lòng nhập số điện thoại đúng định dạng.");
            } 
             clevr.checkout(name,province.label, city.label, ward.label ,address, payment_method, tax, phoneNumber)
-            alert('Success checkout')
          } catch(error){
             console.log(error)
          }
