@@ -357,6 +357,22 @@
         gap: 1rem;
     }
 }
+@media only screen and (max-width:650px){
+    .openToogle{
+        display: block;
+        height: unset;
+        top: 90px;
+    }
+    .navigation-list{
+        margin: .5rem 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Chia thành 2 cột */
+        gap: 10px; /* Khoảng cách giữa các cột */
+        list-style: none;
+        padding: 0;
+        text-align: center;
+    }
+}
 
 
 

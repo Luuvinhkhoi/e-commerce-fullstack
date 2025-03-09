@@ -71,7 +71,7 @@ export const FeatureBook=()=>{
                 </div>
                 <div className='feature-book-slide-container'>
                     <Swiper
-                          slidesPerView={"auto"}
+                          slidesPerView={'auto'}
                           centeredSlides={true}
                           spaceBetween={30}
                           loop={true}
@@ -79,10 +79,16 @@ export const FeatureBook=()=>{
                           modules={[Navigation]}
                           breakpoints={{
                             0:{
-                                slidesPerView:1
+                                slidesPerView:1,
+                                centeredSlides: false
                             },
-                            1024:{
-                                slidesPerView:2
+                            979:{
+                                slidesPerView:2,
+                                centeredSlides: false
+                            },
+                            1200:{
+                                slidesPerView:'auto',
+                                centeredSlides:true
                             },
                             
                           }}
@@ -90,7 +96,7 @@ export const FeatureBook=()=>{
                     >
                         {featureBook.map(item=>
                             <SwiperSlide>
-                              <div state={item.cloudinary_url}  className='feature-book-item'  style={{cursor:'pointer'}}>
+                              <Link to={`/${item.product_id}`} state={item.cloudinary_url}  className='feature-book-item'  style={{cursor:'pointer'}}>
                                 <div className='feature-book-item-image'>
                                     <img src={item.cloudinary_url}></img>
                                 </div> 
@@ -114,7 +120,7 @@ export const FeatureBook=()=>{
                                         </div>
                                     </div>   
                                 </div> 
-                              </div>
+                              </Link>
                             </SwiperSlide>
                         )}
                     </Swiper>

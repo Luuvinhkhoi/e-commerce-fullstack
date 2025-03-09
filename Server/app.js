@@ -34,26 +34,29 @@ redisClient.on('error', (err) => {
 });
 
 redisClient.connect().catch(console.error);
+const build_mode=process.env.BUILD_MODE
+
 const pool = new Pool({
-  user: 'activity_database_os33_user',
-  host: 'dpg-cu4jp4rtq21c73cs34ag-a.singapore-postgres.render.com',
-  database: 'activity_database_os33',
+  user: process.env.DATABASE_USER,
+  host: process.env.DATABASE_HOST,
+  database: process.env.DATABASE_DATABASE,
   password: process.env.DATABASE_PASSWORD,
   port: 5432,
-  ssl: {
-    rejectUnauthorized: false, // Bỏ kiểm tra chứng chỉ (chỉ dùng khi kết nối qua cloud)
-  },
+  ssl:false
 });
 pool.connect((err, client, release) => {
   if (err) {
-    console.error('Error connecting to the database', err);
-    return;
+      console.error('Error connecting to the database:', err.message);
+      console.error('Error details:', err);
+      return;
   }
 
   // Đảm bảo mã hóa UTF-8 cho kết nối
   client.query("SET client_encoding TO 'UTF8';", (err) => {
     if (err) {
-      console.error('Error setting encoding to UTF8', err);
+      console.error('Error connecting to the database:', err.message);
+      console.error('Error details:', err);
+      return;
     } else {
       console.log('Encoding set to UTF-8');
     }
@@ -68,11 +71,11 @@ app.use(
         store: new RedisStore({ client: redisClient }),
         proxy:true,
         cookie: {
-          maxAge: 60*60*1000,
-          httpOnly: true,   
-          secure: true,
-          sameSite: 'none', 
-          domain: 'e-commerce-fullstack-f11n.onrender.com',
+          maxAge: 60 * 60 * 1000, 
+          httpOnly: true,
+          secure: process.env.BUILD_MODE === 'production'? true : false, 
+          sameSite: process.env.BUILD_MODE === 'production' ? 'none' : 'lax',
+          domain: process.env.BUILD_MODE === 'production' ? 'e-commerce-fullstack-f11n.onrender.com' : undefined,
         },
     })
 );
@@ -84,7 +87,7 @@ app.use(passport.initialize())
 app.use(passport.session());
 
 app.use(cors({
-  origin: 'https://e-commerce-fullstack-ecli.onrender.com', // Chỉ cho phép frontend từ origin này
+  origin: ["http://localhost:3000", "https://e-commerce-fullstack-ecli.onrender.com,https://pay.payos.vn "], // Chỉ cho phép frontend từ origin này
   methods: ['GET', 'POST','PATCH', 'PUT', 'DELETE'], // Chỉ cho phép các phương thức này
   credentials: true, // Nếu cần gửi cookie hoặc thông tin xác thực
 }));
@@ -131,9 +134,6 @@ passport.use(new GoogleStrategy({
   scope: ['profile', 'email'] 
  },
   async function(issuer, profile, done)  {
-    console.log('get access token success')
-    console.log(issuer)
-    console.log(profile)
     try { 
      const result = await pool.query('SELECT * FROM linked_profile WHERE provider = $1 AND subject = $2', [  issuer, profile.id ]); 
      let cred = result.rows[0]; 
@@ -203,7 +203,6 @@ app.post('/sign-up', async (req, res) => {
   }); 
 });
 app.post('/login', passport.authenticate('local'), (req, res) => {
-   console.log('Session trước khi lưu:', req.session);
    res.status(200).json({ message: 'Login successful', user: req.user }); 
 });
 app.get('/oauth2/redirect/facebook',
@@ -222,8 +221,10 @@ app.get('/oauth2/redirect/google',
 );
 
 function authorizedUser(req, res, next) {
+    if (req.path === '/checkout/receive-hook') {
+        return next(); // Bỏ qua xác thực nếu là webhook
+    }
     // Check for the authorized property within the session
-    console.log(`AUTHORIZE${req.session.authorized}`)
     if (req.isAuthenticated()) {
       // next middleware function is invoked
       return next();

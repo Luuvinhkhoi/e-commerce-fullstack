@@ -45,8 +45,9 @@ export const BestSeller = () =>{
                             0:{
                                 slidesPerView:1
                             },
-                            650:{
-                                slidesPerView:2
+                            768:{
+                                slidesPerView:2,
+                                spaceBetween:0
                             },
                             1024:{
                                 slidesPerView:3
