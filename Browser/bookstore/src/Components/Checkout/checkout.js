@@ -150,7 +150,10 @@ export const Checkout = ()=>{
                                 <input type="radio" name="paymentMethod" value="cod" onChange={handlePaymentMethodChange}required ></input>
                                 <label>Thanh toán khi nhận hàng</label>
                             </div>
-                            <div></div>
+                            <div>
+                                <input type="radio" name="paymentMethod" value="cod" onChange={handlePaymentMethodChange}required ></input>
+                                <label>Thanh toán bằng chuyển khoản</label>
+                            </div>
                         </div>
                 </div>
                 
