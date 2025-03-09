@@ -494,8 +494,8 @@ let clevr={
         }). catch(networkError=>{
             console.log(networkError.message)
         }); 
-    }, checkout(name, province, city, ward ,address, payment_method, fee, phone_number){
-        return fetch(`${baseUrl}/cart/checkout`,{
+    }, onlcheckout(name, province, city, ward ,address, payment_method, fee, phone_number){
+        return fetch(`${baseUrl}/cart/checkout/onl`,{
             method:"POST",
             headers: {
                 "Content-Type": "application/json" 
@@ -524,7 +524,38 @@ let clevr={
         }). catch(networkError=>{
             console.log(networkError.message)
         }); 
-    }, updateUser(updateData){
+    }, codcheckout(name, province, city, ward ,address, payment_method, fee, phone_number){
+        return fetch(`${baseUrl}/cart/checkout/cod`,{
+            method:"POST",
+            headers: {
+                "Content-Type": "application/json" 
+            },
+            credentials:'include',
+            body:JSON.stringify({
+                name,
+                province,
+                city,
+                ward,
+                address,
+                payment_method,
+                fee,
+                phone_number
+            })
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Request failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            }
+            window.location.href=jsonResponse.checkoutUrl
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        }); 
+    }
+    , updateUser(updateData){
         return fetch(`${baseUrl}/user`,{
             method:"PATCH",
             headers: {
