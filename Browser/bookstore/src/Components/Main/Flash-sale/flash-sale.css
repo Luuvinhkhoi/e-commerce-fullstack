@@ -1,6 +1,6 @@
 .flash-sale{
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 2.5fr;
     width: 100%;
     gap: 2.5rem;
     background-color: #8D28AD;
@@ -13,7 +13,7 @@
 .flash-sale-context{
     color: #FFFFFF;
     text-align: start;
-    padding-left: 4rem;
+    padding-left: 2rem;
 }
 .flash-sale-context p{
     font-size: 50px;
@@ -39,7 +39,7 @@
 }
 .flash-sale-item-image{
     position: relative;
-    width: 35%;
+    width: 40%;
     height: 240px;
     border-radius: 1rem;
     overflow: hidden;
@@ -117,11 +117,18 @@
     .flash-sale{
         grid-template-columns: 1fr 1fr;
     }
+    .flash-sale-item-image{
+        width: 35%;
+    }
 }
 @media only screen and (max-width:1024px) and (min-width:769px){
     .flash-sale-desc .intro{
         display: none;
     }
+    .flash-sale-item-image{
+        width: 30%;
+    }
+
 }
 
 @media only screen and (max-width:768px) and (min-width:0px){

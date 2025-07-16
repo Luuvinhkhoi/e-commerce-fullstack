@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: 1fr 0.5fr 0.5fr 1fr;
     gap: 5rem;
-    padding: 4rem 6rem;
+    padding: 2rem 4rem;
     align-items: baseline;
 }
 .footer li{

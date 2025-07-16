@@ -131,7 +131,7 @@ export const Main = () =>{
                 </div>
                 <div className='news-grid'>
                     {arr.map(item=>
-                        <div className='news-item'>
+                        <div key={item.name} className='news-item'>
                             <div className='news-item-image'>
                                 <img src={item.img}></img>
                             </div>

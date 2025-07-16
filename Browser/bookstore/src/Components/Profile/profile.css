@@ -136,6 +136,9 @@
     .profile{
         margin:6rem 2rem;
     }
+    .profile .order-invoice >div{
+        margin: .5rem;
+    }
     .profile .order-invoice div .item-image{
         height: 130px;
     }

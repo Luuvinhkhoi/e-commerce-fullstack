@@ -2,11 +2,8 @@ const baseUrl =
   process.env.NODE_ENV=== "development"
     ? process.env.REACT_APP_BASE_URL_DEV
     : process.env.REACT_APP_BASE_URL_PROD;
-console.log(process.env.NODE_ENV)
-console.log(baseUrl)
 let clevr={
     sigUpAccount(userName, email, password){
-        console.log(userName)
         return fetch(`${baseUrl}/sign-up`,{
             method:'POST',
             credentials: 'include',
@@ -22,7 +19,6 @@ let clevr={
             if (response.ok) {
               return response.json();
             }
-            console.log(response);
             throw new Error(`Request failed with ${response.status}`);
         }).then(jsonResponse => {
             if (!jsonResponse) {
@@ -41,7 +37,6 @@ let clevr={
             if (response.ok) {
               return response.json();
             }
-            console.log(response);
             throw new Error(`Request failed with ${response.status}`);
         }).then(jsonResponse => {
             if (!jsonResponse) {
@@ -80,7 +75,6 @@ let clevr={
             if (response.ok) {
               return response.json();
             }
-            console.log(response);
             throw new Error(`Request failed with ${response.status}`);
         }).then(jsonResponse => {
             if (!jsonResponse) {
@@ -100,7 +94,6 @@ let clevr={
             if (response.ok) {
               return response.json();
             }
-            console.log(response);
             throw new Error(`Request failed with ${response.status}`);
         }).then(jsonResponse => {
             if (!jsonResponse) {
@@ -119,7 +112,6 @@ let clevr={
             if (response.ok) {
               return response.json();
             }
-            console.log(response);
             throw new Error(`Request failed with ${response.status}`);
         }).then(jsonResponse => {
             if (!jsonResponse) {
@@ -147,7 +139,6 @@ let clevr={
         })
     },
     getBookDetail(id){
-        console.log(id)
         return fetch(`${baseUrl}/product/${id}`,{
             method:'GET'
         }).then(response=>{
@@ -196,8 +187,6 @@ let clevr={
         })
     },
     submitReview(score, content, id){
-        console.log(score)
-        console.log(content)
         return fetch(`${baseUrl}/review/${id}`,{
             method:'POST',
             credentials: 'include',
@@ -296,7 +285,6 @@ let clevr={
         })
     },
     updateCart(updateData){
-        console.log(updateData)
         return fetch(`${baseUrl}/cart`,{
             method:"PUT",
             credentials:'include',
@@ -436,6 +424,21 @@ let clevr={
            
     }, getPublisher(){
         return fetch(`${baseUrl}/publisher`,{
+            method:"GET",
+        }).then(response=>{
+            if (response.ok){
+                return response.json()
+            }
+            throw Error('Reques failed')
+        }).then(jsonResponse=>{
+            if(!jsonResponse){
+                console.log('response error')
+            } return jsonResponse
+        }). catch(networkError=>{
+            console.log(networkError.message)
+        }); 
+    }, filterDiscountProduct(query){
+        return fetch(`${baseUrl}/product/filter/discount?${query}`,{
             method:"GET",
         }).then(response=>{
             if (response.ok){

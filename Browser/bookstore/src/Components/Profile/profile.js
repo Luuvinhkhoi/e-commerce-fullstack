@@ -22,6 +22,7 @@ export const Profile= ()=>{
         setActiveTab(tabIndex); // Cập nhật tab được chọn
     }; 
     async function handleProfileChange(e){
+        e.preventDefault()
         const updateData={phone_number:phoneNumberChange, user_name: userNameChange}
         await clevr.updateUser(updateData)
     }
@@ -72,7 +73,7 @@ export const Profile= ()=>{
                                     {time.payment_status==='paid'?
                                         <div style={{display:'flex', gap:'5px'}}>
                                             <img src={check} style={{width:'24px', height:'24px'}}></img>
-                                            <p style={{fontSize:'14px'}}>Đã thanh toán</p>
+                                            <p style={{fontSize:'14px'}}>Paid</p>
                                         </div>
                                     :
                                     <div></div>

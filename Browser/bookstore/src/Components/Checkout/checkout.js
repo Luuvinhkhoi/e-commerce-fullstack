@@ -25,7 +25,6 @@ export const Checkout = ()=>{
     const tax = totalPrice * 0.02
     const [error, setError] = useState("");
     const handleLocationChange = (data) => {
-        console.log("Dữ liệu từ LocationSelector:", data);
     };
     const handleSubmit=async(e)=>{
          try{
@@ -152,12 +151,12 @@ export const Checkout = ()=>{
                         <div className="checkout-row-1-col-1-row-2">
                             <h2>Payment method</h2>
                             <div>
-                                <input type="radio" name="paymentMethod" value="cod" onChange={handlePaymentMethodChange}required ></input>
-                                <label>Thanh toán khi nhận hàng</label>
+                                <input id="cod" type="radio" name="paymentMethod" value="cod" onChange={handlePaymentMethodChange}required ></input>
+                                <label htmlFor="cod">Thanh toán khi nhận hàng</label>
                             </div>
                             <div>
-                                <input type="radio" name="paymentMethod" value="onl" onChange={handlePaymentMethodChange}required ></input>
-                                <label>Thanh toán bằng chuyển khoản</label>
+                                <input id="onl" type="radio" name="paymentMethod" value="onl" onChange={handlePaymentMethodChange}required ></input>
+                                <label htmlFor="onl">Thanh toán bằng chuyển khoản</label>
                             </div>
                         </div>
                 </div>

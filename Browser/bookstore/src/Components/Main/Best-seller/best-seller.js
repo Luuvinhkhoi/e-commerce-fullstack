@@ -56,7 +56,7 @@ export const BestSeller = () =>{
                         className="mySwiper" 
                     >
                         {item.map(item=>
-                        <SwiperSlide>
+                        <SwiperSlide key={item.product_id}>
                             <Link to={`/${item.product_id}`} state={item.cloudinary_url}className='best-seller-item'>
                                 <div className='best-seller-item-image'>
                                     <img src={item.cloudinary_url}></img>

@@ -16,7 +16,11 @@ export const Cart = () =>{
     let totalPrice=0
     if(items){
         totalPrice = items.reduce((total, item) => {
-            return total + item.price * item.cart_quantity;
+            if(item.sale_price){
+                return total + item.sale_price * item.cart_quantity;
+            } else{
+                return total + item.price * item.cart_quantity;
+            }
         }, 0);
     }
     const tax = totalPrice * 0.02
@@ -27,7 +31,6 @@ export const Cart = () =>{
     const handleQuantityChange = async (product_id, change) => {
         if (change === -1) {
             // Decrease quantity
-            console.log('hihi')
             await dispatch(minusQuantityToBuy(product_id));
             // If quantity drops to 0, dispatch deleteCart
             const updateitems=store.getState().cart.items
@@ -86,7 +89,6 @@ export const Cart = () =>{
             if (!invalidProduct) {
                 if (hasUnsavedChanges) {
                     await dispatch(updateCart(items));
-                    console.log("Cart data saved!");
                 }
             }
         };
@@ -173,7 +175,6 @@ export const Cart = () =>{
                 body: JSON.stringify({ orderId })
             })
             .then(response => response.json())
-            .then(data => console.log("Cập nhật đơn hàng:", data))
             .catch(error => console.error("Lỗi cập nhật đơn hàng:", error));
         }
     }, []); 

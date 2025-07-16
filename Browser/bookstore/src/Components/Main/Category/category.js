@@ -56,7 +56,7 @@ export const Category = () => {
                           className="mySwiper"
                     >
                         {category.map(item=>
-                            <SwiperSlide>
+                            <SwiperSlide key={item.category_name}>
                                 <div className='category-item' onClick={()=>handleCategoryClick(item.category_name)}>
                                    <p>{item.category_name}</p>
                                    <span>{item.count} item</span>

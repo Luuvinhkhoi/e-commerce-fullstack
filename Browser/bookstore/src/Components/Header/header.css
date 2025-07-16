@@ -2,10 +2,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1.5rem;
-    width: 90%;
-    margin: 20px auto;
-    height: 80px;
+    gap: 1rem;
+    width: 95%;
+    margin: 0px auto 25px auto;
+    height: 95px;
 }
 .brand{
     display: flex;
@@ -46,6 +46,7 @@
     left: 0;
     right: 0;
     width: 100%;
+    z-index: 20;
     height: 50px;
     background-color: #8D28AD;
     display: flex; 
@@ -119,7 +120,7 @@
 .user-name{
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
 }
 .user-name .user-name-col-1{
     height: 50px;

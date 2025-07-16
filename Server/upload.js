@@ -12,7 +12,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 uploadRouter.post('/:productId', upload.single('image'), async (req, res) => {
   cloudinary.uploader.upload(req.file.path, async (err, result)=>{
-    console.log('hihi');
     if(err){
       console.log(err)
       return res.status(400).json({message:'Error'})

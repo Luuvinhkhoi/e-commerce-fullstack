@@ -28,13 +28,16 @@ cartRouter.use('/checkout', checkoutRouter)
 checkoutRouter.post('/onl', async (req, res, next) => {
     try {
         const {name,phone_number,province, city, ward , address, payment_method, fee}=req.body
+        const baseUrl =  process.env.BUILD_MODE === 'development'
+            ? process.env.BASE_URL_DEV
+            : process.env.BASE_URL_PROD;
         const result=await db.checkout(req.user.user_id,province, city, ward, address,phone_number, payment_method, name, fee)  
         const order = {
             amount: parseInt(result.rows[0].shipping_fee)+parseInt(result.rows[0].total_price),
             description: 'Thanh toán sách',
             orderCode: result.rows[0].order_id,
-            returnUrl: 'http://localhost:3000',
-            cancelUrl: 'http://localhost:3000/cart'
+            returnUrl: `${baseUrl}`,
+            cancelUrl: `${baseUrl}/cart`
         };
         
         const paymentLink = await payos.createPaymentLink(order);

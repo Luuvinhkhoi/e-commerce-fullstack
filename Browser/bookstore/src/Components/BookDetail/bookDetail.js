@@ -281,7 +281,7 @@ export const BookDetail = ({image}) =>{
                             </div>  
                             <div className='item-list-image'>
                                 {productImages.map(image=>
-                                    <div onClick={()=>setSeletedImage(image.cloudinary_url)} style={{borderRadius:8, overflow:'hidden', height:120, marginBottom:10}}>
+                                    <div key={image.cloudinary_url} onClick={()=>setSeletedImage(image.cloudinary_url)} style={{borderRadius:8, overflow:'hidden', height:120, marginBottom:10}}>
                                         <img src={image.cloudinary_url}></img>
                                     </div>
                                 )}
@@ -327,35 +327,30 @@ export const BookDetail = ({image}) =>{
                                             <div>
                                                 <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count5Star/ratingStat.countReview*100 : 0}%`}}></div>
                                             </div>
-                                            <span></span>
                                         </div>
                                         <div>
                                             <span><img src={star}></img>4</span>
                                             <div>
                                                 <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count4Star/ratingStat.countReview*100 : 0}%`}}></div>
                                             </div>
-                                            <span></span>
                                         </div>
                                         <div>
                                             <span><img src={star}></img>3</span>
                                             <div>
                                                 <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count3Star/ratingStat.countReview*100 : 0}%`}}></div>
                                             </div>
-                                            <span></span>
                                         </div>
                                         <div>
                                             <span><img src={star}></img>2</span>
                                             <div>
                                                 <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count2Star/ratingStat.countReview*100 : 0}%`}}></div>
                                             </div>
-                                            <span></span>
                                         </div>
                                         <div>
                                             <span><img src={star}></img>1</span>
                                             <div>
                                                 <div style={{width:`${ratingStat.countReview > 0 ? ratingStat.count1Star/ratingStat.countReview*100 : 0}%`}}></div>
                                             </div>
-                                            <span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -486,7 +481,7 @@ export const BookDetail = ({image}) =>{
                                         (
                                             <div className='list-review'>
                                                 {listReview.map(item=>
-                                                    <div>
+                                                    <div key={item.user_name}>
                                                         <div className='rating-score'>
                                                             <div>{item.score}</div>
                                                             <div className='star-score'>
@@ -519,7 +514,7 @@ export const BookDetail = ({image}) =>{
                         <div className='book-detail-row-2-col-2'>
                             <span>Related book</span>
                             {relatedBook.map(item=>
-                               <Link to={`/${item.product_id}`} state={item.cloudinary_url} className='related-book'>
+                               <Link key={item.product_id} to={`/${item.product_id}`} state={item.cloudinary_url} className='related-book'>
                                    <div className='related-book-image'>
                                        <img src={item.cloudinary_url}></img>
                                    </div>

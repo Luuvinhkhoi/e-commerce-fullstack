@@ -56,7 +56,7 @@ export const Banner = () => {
                                 Celebrate World Book Day with us and enjoy an exclusive 60% discount on
                                 a wide selection of books. Don't miss out on this limited-time offer!
                             </p>
-                            <Link to='/search?genre=All%20genres' className='banner-description-child'>
+                            <Link to='/search?genre=All%20genres&discount=true' className='banner-description-child'>
                                 Browse Discounted Books
                             </Link>
                         </>

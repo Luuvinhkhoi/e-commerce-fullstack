@@ -1,12 +1,25 @@
 .searchResult{
-    width: 85%;
+    width: 95%;
     display: grid;
     grid-template-columns: 1fr 3fr;
-    margin: 4.5rem auto;
+    margin: 0 auto;
+}
+.searchResult .overlay{
+    display: none;
+}
+.searchResult .toggle{
+    display: none;
 }
 .searchResult h2{
     font-size: 30px;
     font-weight: 600;
+}
+.item-name span{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 .filter{
     border-right: 1px solid #F0E4F4;
@@ -94,6 +107,7 @@ input[type='range']::-moz-range-thumb{
     display: flex;
     justify-content: space-between;
     width: 80%;
+    gap:1rem;
     margin: 1rem auto;
 }
 .filter-row-1 .price-range-row-4 input{
@@ -107,7 +121,6 @@ input[type='range']::-moz-range-thumb{
 }
 .filter .search-button{
     height: 70px;
-    width: 250px;
     border-radius: 0.5rem;
     overflow: hidden;
     background-color: #8D28AD;
@@ -117,14 +130,38 @@ input[type='range']::-moz-range-thumb{
 }
 .filter .reset-button{
     height: 70px;
-    width: 250px;
     border-radius: 0.5rem;
     overflow: hidden;
 }
 .filter .reset-button button{
     color: #636363;
 }
+.overlay-active .search-button{
+    height: 70px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: #8D28AD;
+}
+.overlay-active .search-button button{
+    color: #ffff;
+}
+.overlay-active .reset-button{
+    height: 70px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+.overlay-active .reset-button button{
+    color: #636363;
+}
 .filter button{
+    height: 100%;
+    width: 100%;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+    background: none;
+}
+.overlay-active button{
     height: 100%;
     width: 100%;
     border: none;
@@ -144,6 +181,8 @@ input[type='range']::-moz-range-thumb{
     border-radius: 0.5rem;
     overflow: hidden;
     position: relative;
+    min-height: 180px;
+    min-width: 140px;
     aspect-ratio: 2.8/4;
 }
 .best-seller-tag{
@@ -219,15 +258,32 @@ input[type='range']::-moz-range-thumb{
     display: grid;
     grid-template-rows: repeat(3, minmax(auto, 65px));
 }
+.searchResult .active{
+    position: absolute; 
+} 
+.searchResult .overlay-unActive{
+        height: 0;
+        width: 0;
+        display: none
+}
 @media only screen and (max-width: 1024px) and (min-width:769px){
     .book-list .book-list-row-1{
         grid-template-columns: repeat(2, 1fr);
     }
+    .filter-row-1 .price-range-row-4{
+        width: 100%;
+    }
 }
 @media only screen and (max-width: 768px) and (min-width:0px){
     .searchResult{
-        grid-template-columns: 0.5fr 1fr;
-        margin: 6rem auto;
+        display: flex;
+        margin: 0 auto;
+    }
+    .searchResult .toggle{
+        display: block;
+    }
+    .book-list .book-list-row-1{
+        grid-template-columns: repeat(2, 1fr);
     }
     .filter{
         margin-right: .5rem;
@@ -244,11 +300,45 @@ input[type='range']::-moz-range-thumb{
     .filter-row-1 .price-range-row-4 {
         width: unset;
     }
-    .book-list .book-list-row-1{
-        grid-template-columns: repeat(1, 1fr);
-    }
+    
     .book-list .book-list-row-1 .book-list-item .book-list-item-image{
         aspect-ratio: 1/1.3
     }
+    .searchResult .filter{
+        display: none;
+    }
+    .searchResult .overlay-active{
+        position: fixed;
+        top: 0;
+        z-index: 100;
+        left: 0;
+        height: 100%;
+        width: 200%;
+        display: block;
+        background: rgba(0, 0, 0, 0.5); /* Màu nền mờ */
+    }
+    
+    .searchResult .overlay-unActive{
+        height: 0;
+        width: 0;
+        display: none
+    }
+    .searchResult .active{
+        left: 0;
+        overflow: auto;
+        height: 100%;
+        padding: .5rem;
+        position: absolute;
+        z-index: 100;
+        width: 250px;
+        overflow-y: scroll;
+        background-color: #fff;
+        transition: ease-in-out 500ms;
+    }   
+    .searchResult .unActive{
+        left: -600px;
+        position: absolute;
+    }
 }
+
 

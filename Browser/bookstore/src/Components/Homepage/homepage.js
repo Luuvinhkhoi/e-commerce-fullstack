@@ -7,6 +7,7 @@ export const Root = () =>{
  return(
     <>
       <Header></Header>
+      <div style={{backgroundColor:'#FBF7FC', height:'3rem'}}></div>
       <Outlet></Outlet>
       <Footer></Footer>
     </>

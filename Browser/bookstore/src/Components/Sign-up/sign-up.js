@@ -6,6 +6,7 @@ export const Signup=()=>{
     const [userNameState, setUserNameState]=useState('')
     const [emailState, setEmailState]=useState('')
     const [passwordState, setPasswordState]=useState('')
+    const [error, setError]=useState()
     const navigate=useNavigate()
     function handleUserNameInput(e){
         setUserNameState(prev=>prev=e.target.value)   
@@ -21,7 +22,7 @@ export const Signup=()=>{
         const result= await clevr.sigUpAccount(userNameState, emailState, passwordState)
         console.log(result)
         if (!result){
-            console.error('fail');
+            setError('This email has already been used')
         } else{
             navigate('/')
         }
@@ -49,8 +50,9 @@ export const Signup=()=>{
                         <div className='sign-up-button'>
                             <button>Sign-up</button>
                         </div>
+                        {error && <div style={{ color: "red", fontFamily:'Roboto' }}>{error}</div>}
                 </div>
-                <span>Already have an account? <Link to='/login'>Log in</Link></span>
+                <div style={{marginTop:'1rem'}}><span>Already have an account? <Link to='/login'>Log in</Link></span></div>
             </div>    
         </form>
     )

@@ -7,13 +7,13 @@
     justify-content: flex-start;
 }
 .banner-description{
-    width: 40%;
+    width: 60%;
     position: absolute;
     top: 30%;
     left: 5%;
 }
 .banner-description-child{
-    margin:1rem
+    margin:1.5rem
 }
 .banner a{
     padding: 1rem;
@@ -50,7 +50,7 @@
 }
 @media only screen and (max-width:1024px) and (min-width:0px){
     .banner-description{
-       width: 80%;
+       width: 97%;
     }
 }
 @media only screen and (max-width:468px) and (min-width:0px){

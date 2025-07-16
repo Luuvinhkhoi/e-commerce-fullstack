@@ -95,7 +95,7 @@ export const FeatureBook=()=>{
                           className="mySwiper"
                     >
                         {featureBook.map(item=>
-                            <SwiperSlide>
+                            <SwiperSlide key={item.product_id}>
                               <Link to={`/${item.product_id}`} state={item.cloudinary_url}  className='feature-book-item'  style={{cursor:'pointer'}}>
                                 <div className='feature-book-item-image'>
                                     <img src={item.cloudinary_url}></img>

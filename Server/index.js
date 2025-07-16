@@ -46,17 +46,23 @@ const findById = (id) => {
 
 const createUser = async (request, response)=>{
     const {user_name, email, pass} = request.body
-    const saltRound=await bcrypt.genSalt(10);
-    const hashPassword=await  bcrypt.hash(pass, saltRound);
-    if (hashPassword){
-        const userId= await pool.query('insert into users(user_name, pass, email) values ($1, $2, $3) returning *', [user_name,hashPassword, email])
-        const cart= await pool.query('insert into cart (user_id) values ($1) returning cart_id',[userId.rows[0].user_id])   
-        if (!cart){
-          throw new Error('Failed to create cart');
-        } 
-        return userId.rows[0]
+    const checkUser=await pool.query('select * from users where email=$1', [email])
+    console.log(checkUser.rows)
+    if(checkUser.rows.length==0){
+      const saltRound=await bcrypt.genSalt(10);
+      const hashPassword=await  bcrypt.hash(pass, saltRound);
+      if (hashPassword){
+          const userId= await pool.query('insert into users(user_name, pass, email) values ($1, $2, $3) returning *', [user_name,hashPassword, email])
+          const cart= await pool.query('insert into cart (user_id) values ($1) returning cart_id',[userId.rows[0].user_id])   
+          if (!cart){
+            throw new Error('Failed to create cart');
+          } 
+          return userId.rows[0]
+      } else{
+          throw new Error('Failed to hash password');
+      }
     } else{
-        throw new Error('Failed to hash password');
+      return {message: 'User already exists' };
     }
 };
 const login = async (email, password, done)=>{
@@ -282,6 +288,25 @@ const filterProduct=async(category, publisher, format, min, max, pageSize, offse
     throw new Error('Error: ' + error.message);
   }
 }
+const filterDiscountProduct=async(category, publisher, format, min, max, pageSize, offset)=>{
+    try{
+    let result = await pool.query(
+      `Select * from flash_sales inner join product on product.product_id=flash_sales.product_id 
+       left join (SELECT DISTINCT ON (product_id) product_id, cloudinary_url FROM product_images) product_images 
+       on product_images.product_id=flash_sales.product_id inner join category on product.category_id=category.category_id
+       WHERE (category.category_name = COALESCE($1, category_name))
+         AND (publisher = COALESCE($2, publisher))
+         AND (format = COALESCE($3, format))
+         AND (sale_price >= COALESCE($4, price) AND sale_price <= COALESCE($5, price))
+       LIMIT $6 OFFSET $7;`,
+      [category, publisher, format, min, max, pageSize, offset]
+    );
+    return result.rows
+  } catch (error){
+    throw new Error('Error: ' + error.message);
+  }
+
+}
 const createProduct=async(product_name, description, price, quantity, category_id)=>{
   try {
     let result;
@@ -506,7 +531,7 @@ const checkout=async(user_id,province, city, ward , address,phone_number, paymen
         return total + (product.cart_quantity * product.sale_price)
       }
     }, 0)
-    const order = await pool.query('insert into orders (name, province, city, ward ,address, payment_method, total_price, shipping_fee, user_id, phone_number, payment_status) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning *',[name,province , city , ward,address,payment_method,totalPrice, fee,user_id, phone_number, 'pending'])
+    const order = await pool.query('insert into orders (name, province, city, ward ,address, payment_method, total_price, shipping_fee, user_id, phone_number) values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning *',[name,province , city , ward,address,payment_method,totalPrice, fee,user_id, phone_number])
     const cart_id = await pool.query('select cart_id from cart where user_id=$1',[user_id])
     const cart_product = await pool.query('select product_id, cart_quantity from cart_product where cart_id=$1',[cart_id.rows[0].cart_id])
     const order_product=await Promise.all(
@@ -709,6 +734,7 @@ const getDiscountItem=async()=>{
     throw error.message
   }
 }
+
 const getTrendingItem=async()=>{
   try{
     const result=await pool.query(`SELECT * FROM product
@@ -881,6 +907,7 @@ module.exports={
     getFeatureBook,
     getPublisher,
     filterProduct,
+    filterDiscountProduct,
     countTotalProduct,
     countFilterProduct,
     findBookByName, 
