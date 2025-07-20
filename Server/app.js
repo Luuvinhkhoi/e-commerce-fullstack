@@ -87,7 +87,7 @@ app.use(passport.initialize())
 app.use(passport.session());
 
 app.use(cors({
-  origin: ["http://localhost:3000", "https://e-commerce-fullstack-ecli.onrender.com,https://pay.payos.vn "], // Chỉ cho phép frontend từ origin này
+  origin: ["http://localhost:3000", "https://e-commerce-fullstack-ecli.onrender.com","https://pay.payos.vn","https://clevr-bookstore.netlify.app/"], // Chỉ cho phép frontend từ origin này
   methods: ['GET', 'POST','PATCH', 'PUT', 'DELETE'], // Chỉ cho phép các phương thức này
   credentials: true, // Nếu cần gửi cookie hoặc thông tin xác thực
 }));

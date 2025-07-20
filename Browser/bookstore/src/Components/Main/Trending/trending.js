@@ -25,7 +25,7 @@ export const Trending=()=>{
              ) : (
               <>
                {trendingItem.map((item)=>
-                    <Link key={item.product_id} to={`/${item.product_id}`} state={item.cloudinary_url} className='trending-item' tabIndex={0}>
+                    <Link key={item.product_id} to={`/book/${item.product_id}`} state={item.cloudinary_url} className='trending-item' tabIndex={0}>
                         <div className='item-img'>
                             <img src={item.cloudinary_url}></img>
                         </div>

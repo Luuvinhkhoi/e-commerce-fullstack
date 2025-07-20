@@ -13,13 +13,15 @@ import { BookDetail } from './Components/BookDetail/bookDetail';
 import { SearchResult } from './Components/SearchResult/searchResult';
 import { Checkout } from './Components/Checkout/checkout';
 import { Profile } from './Components/Profile/profile';
+import NotFound from './Components/Not found/notFound';
 function App() {
   const router=createBrowserRouter(createRoutesFromElements(
       <>
         <Route path='/' element={<Root></Root>}>
           <Route index element={<Main></Main>}></Route>
+          <Route path="*" element={<NotFound />} />
           <Route path='/search' element={<SearchResult></SearchResult>}></Route>
-          <Route path='/:id' element={<BookDetail></BookDetail>}></Route>
+          <Route path='/book/:id' element={<BookDetail></BookDetail>}></Route>
           <Route path='/cart' element={<Cart></Cart>}></Route>
           <Route path='/profile' element={<Profile></Profile>}></Route>
           <Route path='/checkout' element={<Checkout></Checkout>}></Route>

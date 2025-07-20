@@ -455,7 +455,7 @@ export const SearchResult=()=>{
                     <div className='book-list-row-1'>
                         {products.length>0 ? (
                             products.map(item=>
-                                <Link key={item.product_id} to={`/${item.product_id}`} state={item.cloudinary_url}><div className='book-list-item'>
+                                <Link key={item.product_id} to={`/book/${item.product_id}`} state={item.cloudinary_url}><div className='book-list-item'>
                                     <div className='book-list-item-image'>
                                         {item.product_status==='Normal'?(
                                             <img src={item.cloudinary_url}></img>
