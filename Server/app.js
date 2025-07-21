@@ -74,7 +74,7 @@ app.use(
           maxAge: 60 * 60 * 1000, 
           httpOnly: true,
           secure: process.env.BUILD_MODE === 'production'? true : false, 
-          sameSite: process.env.BUILD_MODE === 'production' ? 'none' : 'lax',
+          sameSite: 'none'
         },
     })
 );
