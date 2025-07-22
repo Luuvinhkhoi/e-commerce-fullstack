@@ -205,17 +205,17 @@ app.post('/login', passport.authenticate('local'), (req, res) => {
    res.status(200).json({ message: 'Login successful', user: req.user }); 
 });
 app.get('/oauth2/redirect/facebook',
-  passport.authenticate('facebook', { failureRedirect: 'https://e-commerce-fullstack-ecli.onrender.com/login', failureMessage: true }),
+  passport.authenticate('facebook', { failureRedirect: 'https://clevr-bookstore.netlify.app/login', failureMessage: true }),
   function(req, res) {
-    res.redirect('https://e-commerce-fullstack-ecli.onrender.com/')
+    res.redirect('https://clevr-bookstore.netlify.app/')
   }
 );
 app.get('/login/facebook', passport.authenticate('facebook'));
 app.get('/login/google', passport.authenticate('google'));
 app.get('/oauth2/redirect/google',
-  passport.authenticate('google', { failureRedirect: 'https://e-commerce-fullstack-ecli.onrender.com/login', failureMessage: true }),
+  passport.authenticate('google', { failureRedirect: 'https://clevr-bookstore.netlify.app/login', failureMessage: true }),
   function(req, res) {
-    res.redirect('https://e-commerce-fullstack-ecli.onrender.com/')
+    res.redirect('https://clevr-bookstore.netlify.app/')
   }
 );
 
