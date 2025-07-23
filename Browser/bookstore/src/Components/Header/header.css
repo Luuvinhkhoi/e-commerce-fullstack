@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
     width: 95%;
     margin: 0px auto 25px auto;
     height: 95px;
@@ -126,13 +126,14 @@
     height: 50px;
     border: 1px solid #8D28AD;
     color: #8D28AD;
-    padding: 0 2.5rem;
+    padding: 0 1rem;
     border-radius: 0.5rem;
     display: flex;
     gap: 0.5rem;
     align-items: center;
     font-size: 18px;
     font-weight: 600;
+    min-width: 150px;
 }
 .user-name .user-name-col-1 img{
     height: 28px;
@@ -230,7 +231,7 @@
     .header{
         height: 60px;
         gap: 1.5rem;
-        padding: 1rem;
+        padding: 1rem 0;
         justify-content:space-between;
         height: 60px;
     }

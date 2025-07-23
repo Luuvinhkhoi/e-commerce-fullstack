@@ -154,6 +154,8 @@
     background-color: #FFFFFF;
     border-radius: 0.5rem;
     padding: 1rem;
+    display: flex;
+    justify-content: center;
 }
 .subscribe-email-button button{
     background: none;

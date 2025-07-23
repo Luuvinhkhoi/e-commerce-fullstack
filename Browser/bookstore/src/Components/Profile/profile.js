@@ -22,7 +22,6 @@ export const Profile= ()=>{
         setActiveTab(tabIndex); // Cập nhật tab được chọn
     }; 
     async function handleProfileChange(e){
-        e.preventDefault()
         const updateData={phone_number:phoneNumberChange, user_name: userNameChange}
         await clevr.updateUser(updateData)
     }
